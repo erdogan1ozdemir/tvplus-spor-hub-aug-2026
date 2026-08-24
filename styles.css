@@ -1536,3 +1536,16 @@ button.action-card:hover { border-color: currentColor; transform: translateY(-1p
 .hero-peak{ font-family:'Bricolage Grotesque';font-size:22px;font-weight:700;
   color:var(--accent-deep);margin-top:4px; }
 @media(max-width:1000px){ .hero-kpi{ grid-template-columns:1fr; } }
+
+
+/* ——— Kaydırılabilir sezonsallık matrisi ——— */
+.matrix-scroll{ max-height:520px; overflow:auto; border:1px solid var(--line);
+  border-radius:var(--r-md); background:var(--bg-card); }
+.matrix-scroll .heatmap{ margin:0; }
+.matrix-scroll .hm-head{ position:sticky; top:0; z-index:3; background:var(--bg-card); }
+.matrix-scroll .hm-row-label{ position:sticky; left:0; z-index:2; background:var(--bg-card);
+  box-shadow:1px 0 0 var(--line-soft); cursor:help; }
+.matrix-scroll .hm-corner{ position:sticky; left:0; top:0; z-index:4; background:var(--bg-card); }
+.matrix-scroll::-webkit-scrollbar{ width:10px; height:10px; }
+.matrix-scroll::-webkit-scrollbar-thumb{ background:var(--line); border-radius:99px; }
+.sm-item .sm-label{ cursor:help; }

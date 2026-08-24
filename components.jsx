@@ -133,7 +133,7 @@ window.C = (function(){
       const max = Math.max(...row.values);
       const min = Math.min(...row.values);
       const range = max - min || 1;
-      grid.push(h('div',{key:'l'+ri, className:'hm-row-label', title:row.label},
+      grid.push(h('div',{key:'l'+ri, className:'hm-row-label', title:row.title||row.label},
         h('span',{style:{fontWeight:500, lineHeight:1.2}}, row.label),
         row.sub && h('span',{className:'txt-3', style:{fontSize:10, lineHeight:1.2, marginTop:2}}, row.sub)
       ));
@@ -225,7 +225,8 @@ window.C = (function(){
           h('div',{style:{display:'flex',justifyContent:'space-between',marginBottom:4,fontSize:13}},
             h('div',null,
               isActive && h('span',{style:{marginRight:4,color:'var(--coral-deep)',fontSize:11}}, '●'),
-              h('span',{style:{fontWeight:600}}, r.label),
+              h('span',{style:{fontWeight:600, cursor: r.title?'help':'inherit'},
+              title: r.title||undefined}, r.label),
               r.share != null && h('span',{className:'txt-3', style:{marginLeft:6}}, ' ' + (r.share*100).toFixed(1).replace('.',',')+'%')
             ),
             h('div',{className:'num', style:{fontWeight:600}, title: fmtFull(r.value)}, fmtNum(r.value),
@@ -749,18 +750,20 @@ window.C = (function(){
   // ======== Small Multiples Grid ========
   // Grid of mini line/bar charts - one per category, all on same y-scale optional
   // items: [{label, color, values, sub}]
-  function SmallMultiples({ items, height=56, monthsLabels=TR_MONTHS, yScale='shared', onClick }) {
+  function SmallMultiples({ items, height=56, monthsLabels=TR_MONTHS, yScale='shared', onClick,
+                            toplamEtiket='Son 12 Ay', yoyEtiket='YoY' }) {
     const globalMax = yScale === 'shared' ? Math.max(1, ...items.flatMap(it => it.values)) : null;
     return h('div',{className:'small-mults'},
       items.map((it, idx) => h(SmallMultipleItem, {
         key: it.label, item: it, idx,
         max: yScale === 'shared' ? globalMax : Math.max(1, ...it.values),
-        height, monthsLabels, onClick
+        height, monthsLabels, onClick, toplamEtiket, yoyEtiket
       }))
     );
   }
 
-  function SmallMultipleItem({ item: it, max, height, monthsLabels, onClick }) {
+  function SmallMultipleItem({ item: it, max, height, monthsLabels, onClick,
+                               toplamEtiket='Son 12 Ay', yoyEtiket='YoY' }) {
     const [hoverI, setHoverI] = React.useState(null);
     const svgRef = React.useRef(null);
     const peakI = it.values.indexOf(Math.max(...it.values));
@@ -775,8 +778,11 @@ window.C = (function(){
     },
       h('div',{className:'sm-header'},
         h('div',{className:'sm-dot', style:{background: color}}),
-        h('div',{className:'sm-label'}, it.label),
-        it.yoy != null && h('span',{className:'pill '+(it.yoy>0.02?'pos':it.yoy<-0.02?'neg':'neu'),style:{marginLeft:'auto',fontSize:11,padding:'1px 6px'}}, fmtPct(it.yoy,0))
+        h('div',{className:'sm-label', title: it.title || it.label}, it.label),
+        it.yoy != null && h('span',{className:'pill '+(it.yoy>0.02?'pos':it.yoy<-0.02?'neg':'neu'),
+          style:{marginLeft:'auto',fontSize:11,padding:'1px 6px'},
+          title:`${yoyEtiket} değişim: ${fmtPct(it.yoy,1)} · ${toplamEtiket} / önceki dönem`},
+          fmtPct(it.yoy,0))
       ),
       h('div',{className:'sm-body', style:{position:'relative'}},
         h('svg',{
@@ -819,9 +825,17 @@ window.C = (function(){
       h('div',{className:'sm-footer'},
         h('span',{className:'sm-peak'},
           hoverI != null ? monthsLabels[hoverI] + ': ' : 'Peak: ',
-          h('strong',null, hoverI != null ? fmtFull(activeValue) : monthsLabels[peakI])
+          h('strong',null, hoverI != null ? fmtFull(activeValue) : monthsLabels[peakI]),
+          hoverI != null && it.prevValues && it.prevValues[hoverI] > 0 && (() => {
+            const d = (it.values[hoverI] - it.prevValues[hoverI]) / it.prevValues[hoverI];
+            return h('span',{className:'pill '+(d>0.02?'pos':d<-0.02?'neg':'neu'),
+              style:{fontSize:9.5, padding:'0 4px', marginLeft:5},
+              title:`Önceki dönemin aynı ayı: ${fmtFull(it.prevValues[hoverI])}`}, fmtPct(d,0));
+          })()
         ),
-        h('span',{className:'sm-total'}, hoverI != null ? ('Toplam ' + fmtNum(total)) : fmtNum(total))
+        h('span',{className:'sm-total', title:`${toplamEtiket} toplam arama hacmi`},
+          h('span',{style:{fontWeight:400, color:'var(--ink-3)', marginRight:4}}, toplamEtiket),
+          h('strong',null, fmtNum(total)))
       )
     );
   }

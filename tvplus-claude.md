@@ -243,3 +243,13 @@ Kullanıcı geri bildirimi: görselleştirme, dinamizm ve YoY açısından eksik
 - Çeyreklik peak dağılımı (QStack) ve spor dalı YoY kazanan/kaybeden çubuk grafiği.
 
 **Ölçülen sonuç:** Son 12 Ay 3,50B · Önceki 12 Ay 3,34B · YoY +%5 · Peak ay Nis 26 (404,8M) · 10.379 keyword · 4.298 yükselen, 4.639 düşen.
+
+### Geri bildirim turu: tablo kaydırma, etiketleme, kırılım senkronu
+- **Kaydırılabilir matris:** "+12 satır daha" düğmesi kaldırıldı. Sezonsallık matrisi artık tüm satırları render edip `.matrix-scroll` içinde kendi kendine kaydırılıyor; ay başlıkları ve satır etiketleri sticky.
+- **Spor Dalı Karnesi etiketlendi:** kart altındaki değerin yanına "Son 12 Ay" yazıldı (tooltip: "Son 12 Ay toplam arama hacmi"), başlıktaki yüzde rozetine "YoY değişim: … · Son 12 Ay / önceki dönem" tooltip'i eklendi. Kart altına açıklama metni kondu.
+- **Karne hover'ı:** çubuk üzerine gelince ilgili ayın hacmi ve **önceki dönemin aynı ayına kıyasla YoY** rozeti görünüyor (ör. "Nis 26: 283.572.540 +33%"). `SmallMultiples` bileşenine `prevValues`, `toplamEtiket` ve `yoyEtiket` prop'ları eklendi.
+- **Kırılım senkronu düzeltildi:** `SezonTakvimi` kendi iç seviye state'ini tutuyordu, Gruplar sekmesindeki kırılım seçicisiyle bağlantısı yoktu. Bileşen kontrollü hale getirildi; artık kırılım seçimi hem matrisi hem grup tablosunu hem bölüm açıklamasını birlikte güncelliyor.
+- **Grup başlığı tooltip'leri:** Futbol, Çoklu/Jenerik, At Yarışı gibi başlıkların üzerine gelince grubun ne içerdiği görünüyor: üst kırılım, Son 12 Ay / Önceki 12 Ay / YoY, keyword sayısı ve pay, peak ay + çeyrek + mevsim tipi, ve alt kırılımdaki ilk 6 kalem ("İçerik (Organizasyon, 68 adet): Süper Lig, Premier Lig, …"). Tooltip matris satırlarında, karne kartlarında, ShareBars etiketlerinde ve tablo satırlarında aktif.
+- **Drill başlığı üst kırılımlı:** organizasyon detayı açıldığında başlık artık "Futbol" eyebrow'u üstünde "Süper Lig" olarak gösteriliyor.
+- **Grup Detayları tablosu Özdilek düzenine geçirildi:** `tbl tbl-kat-detay` sınıfı, renk noktası + `.kw-cell` (grup adı) + `.cat-cell` (üst kırılım), `.pill q1-q4` çeyrek rozetleri, `.col-hide-sm` responsive kolonlar, satır ayraçları ve renklendirme referansla aynı.
+- Yüzde ondalık ayırıcıları Türkçe virgüle çevrildi.

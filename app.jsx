@@ -1,115 +1,124 @@
 // TV+ Spor Talep Haritası — kök uygulama
 (function(){
   const h = React.createElement;
-  const C = window.C;
-  const T = window.TABS;
+  const C = window.C, T = window.TABS;
   const B = window.BRAND || {};
-  const SLUG = (B.slug || 'dash').replace(/[^a-z0-9-]/gi,'').toLowerCase();
-  const K_TAB = SLUG+'.tab', K_TWEAK = SLUG+'.tweaks', K_FILTRE = SLUG+'.filtre';
-
-  const TWEAK_DEFAULTS = {"theme":"light","palette":"tvplus","density":"comfortable"};
+  const SLUG = (B.slug||'dash').replace(/[^a-z0-9-]/gi,'').toLowerCase();
+  const K = n => SLUG+'.'+n;
+  const { fmtNum, FACET_ETIKET, applyFacets, TR_MONTHS, ROLLING_LABELS, qLabel } = U;
 
   const SEKMELER = [
-    {id:'ozet',    label:'Özet',                   Comp:T.OzetTab},
-    {id:'gruplar', label:'Gruplar',                Comp:T.GruplarTab},
-    {id:'keyword', label:'Keyword',                Comp:T.KeywordTab},
-    {id:'trendler',label:'Trendler & Sezonsallık', Comp:T.TrendlerTab},
-    {id:'sayfa',   label:'Sayfa Tipi & Intent',    Comp:T.SayfaTipiTab},
-    {id:'entity',  label:'Takım & Oyuncu',         Comp:T.EntityTab},
-    {id:'hakdisi', label:'Yayın Hakkı Dışı',       Comp:T.HakDisiTab},
-    {id:'karar',   label:'Karar Ağacı',            Comp:T.KararTab},
-    {id:'master',  label:'Master Liste',           Comp:T.MasterTab},
+    {id:'ozet',    label:'Özet',                Comp:T.OzetTab},
+    {id:'gruplar', label:'Gruplar',             Comp:T.GruplarTab},
+    {id:'keyword', label:'Keyword',             Comp:T.KeywordTab, rozet:r=>fmtNum(r.length)},
+    {id:'trendler',label:'Trendler',            Comp:T.TrendlerTab},
+    {id:'sayfa',   label:'Sayfa Tipi & Intent', Comp:T.SayfaTipiTab},
+    {id:'entity',  label:'Takım & Oyuncu',      Comp:T.EntityTab,
+      rozet:r=>fmtNum(r.filter(k=>k.ent==='Takım'||k.ent==='Oyuncu').length)},
+    {id:'hakdisi', label:'Yayın Hakkı Dışı',    Comp:T.HakDisiTab,
+      rozet:r=>fmtNum(r.filter(k=>k.hak==='TV+ Yok').length)},
+    {id:'karar',   label:'Karar Ağacı',         Comp:T.KararTab},
+    {id:'master',  label:'Master Liste',        Comp:T.MasterTab},
   ];
 
-  // Global filtrede gösterilecek birincil fasetler (kademeli)
-  const BIRINCIL = [['spor','Spor Dalı',190], ['org','Organizasyon',220], ['st','Sayfa Tipi',180]];
-  // İkincil analitik fasetler
-  const IKINCIL  = [['ent','Varlık Tipi',160], ['it','Intent',150], ['hak','Yayın Hakkı',170],
-                    ['sinif','Talep Şekli',160], ['bant','Hacim Bandı',170], ['cins','Cinsiyet',140],
-                    ['mus','Müsabaka Tipi',180], ['ktm','Katman',150]];
+  // Birincil kırılım fasetleri (kademeli)
+  const BIRINCIL = [['spor','Spor Dalı',185],['org','Organizasyon',215],['st','Sayfa Tipi',180],
+                    ['ent','Varlık Tipi',160]];
+  // Ek analitik fasetler
+  const EK = [['it','Intent',150],['hak','Yayın Hakkı',165],['mus','Müsabaka Tipi',175],
+              ['cins','Cinsiyet',140],['sev','Lig Seviyesi',160],['cog','Coğrafya',150],
+              ['ktm','Katman',145],['turk','Türk Bağlantısı',175]];
 
   function App(){
     const D = window.DATA, M = D.meta;
     const [tab, setTab] = React.useState(() =>
-      (location.hash.replace('#','').split('/')[0]) || localStorage.getItem(K_TAB) || 'ozet');
-    const [filtre, setFiltre] = React.useState(() => {
-      try { return JSON.parse(localStorage.getItem(K_FILTRE)) || {}; } catch { return {}; }
-    });
+      (location.hash.replace('#','').split('/')[0]) || localStorage.getItem(K('tab')) || 'ozet');
+    const [filtre, setFiltre] = React.useState(()=>{
+      try{ return JSON.parse(localStorage.getItem(K('filtre')))||{}; }catch{ return {}; }});
     const [arama, setArama] = React.useState('');
     const [peakAy, setPeakAy] = React.useState([]);
+    const [peakCeyrek, setPeakCeyrek] = React.useState([]);
+    const [mevsim, setMevsim] = React.useState([]);
+    const [bucket, setBucket] = React.useState([]);
+    const [trend, setTrend] = React.useState('');           // '' | Yükselen | Stabil | Düşen
+    const [viewMode, setViewMode] = React.useState(()=>
+      localStorage.getItem(K('viewMode'))==='calendar' ? 'calendar' : 'rolling');
+    const [ekAcik, setEkAcik] = React.useState(false);
+    const [secili, setSecili] = React.useState(null);
     const [keywordModal, setKeywordModal] = React.useState(null);
-    const [drill, setDrill] = React.useState(null);
-    const [ikincilAcik, setIkincilAcik] = React.useState(false);
     const [scrolled, setScrolled] = React.useState(false);
     const [tweaksOpen, setTweaksOpen] = React.useState(false);
-    const [tweaks, setTweaks] = React.useState(() => {
-      try { return {...TWEAK_DEFAULTS, ...JSON.parse(localStorage.getItem(K_TWEAK)||'{}')}; }
-      catch { return TWEAK_DEFAULTS; }
-    });
+    const [tweaks, setTweaks] = React.useState(()=>{
+      try{ return {theme:'light', palette:'tvplus', ...JSON.parse(localStorage.getItem(K('tweaks'))||'{}')}; }
+      catch{ return {theme:'light', palette:'tvplus'}; }});
 
-    React.useEffect(()=>{ localStorage.setItem(K_TAB, tab);
-      if(location.hash.replace('#','') !== tab)
-        history.replaceState(null,'', location.pathname+location.search+'#'+tab);
-    },[tab]);
-    React.useEffect(()=>{ localStorage.setItem(K_FILTRE, JSON.stringify(filtre)); },[filtre]);
+    React.useEffect(()=>{ localStorage.setItem(K('tab'), tab);
+      if(location.hash.replace('#','')!==tab)
+        history.replaceState(null,'',location.pathname+location.search+'#'+tab); },[tab]);
+    React.useEffect(()=>{ localStorage.setItem(K('filtre'), JSON.stringify(filtre)); },[filtre]);
+    React.useEffect(()=>{ localStorage.setItem(K('viewMode'), viewMode); },[viewMode]);
     React.useEffect(()=>{
       document.documentElement.dataset.theme = tweaks.theme;
       document.documentElement.dataset.palette = tweaks.palette;
-      localStorage.setItem(K_TWEAK, JSON.stringify(tweaks));
-    },[tweaks]);
+      localStorage.setItem(K('tweaks'), JSON.stringify(tweaks)); },[tweaks]);
     React.useEffect(()=>{
-      if(B.accent) document.documentElement.style.setProperty('--brand-accent', B.accent);
-      const onS = () => setScrolled(window.scrollY > 150);
-      const onH = () => setTab((location.hash.replace('#','').split('/')[0]) || 'ozet');
-      window.addEventListener('scroll', onS, {passive:true});
-      window.addEventListener('hashchange', onH);
-      return ()=>{ window.removeEventListener('scroll',onS); window.removeEventListener('hashchange',onH); };
+      if(window.BRAND_ACCENT) document.documentElement.style.setProperty('--brand-accent', window.BRAND_ACCENT);
+      const onS=()=>setScrolled(window.scrollY>150);
+      const onH=()=>setTab((location.hash.replace('#','').split('/')[0])||'ozet');
+      window.addEventListener('scroll',onS,{passive:true});
+      window.addEventListener('hashchange',onH);
+      return ()=>{window.removeEventListener('scroll',onS); window.removeEventListener('hashchange',onH);};
     },[]);
 
-    // Kademeli seçenekler: üst faset seçiliyse alt fasetin seçenekleri daralır
+    // Kademeli seçenekler
     const secenekler = React.useMemo(()=>{
-      const out = {};
-      const tumFaset = [...BIRINCIL, ...IKINCIL].map(f=>f[0]);
-      for(const alan of tumFaset){
-        const digerFiltre = {...filtre}; delete digerFiltre[alan];
-        const alt = U.uygula(D.keywords, digerFiltre, null);
-        out[alan] = [...new Set(alt.map(k=>k[alan]).filter(Boolean))]
+      const out={};
+      for(const [alan] of [...BIRINCIL, ...EK]){
+        const diger={...filtre}; delete diger[alan];
+        const alt=applyFacets(D.keywords, diger, null);
+        out[alan]=[...new Set(alt.map(k=>k[alan]).filter(Boolean))]
           .sort((a,b)=>String(a).localeCompare(String(b),'tr'));
       }
       return out;
     },[filtre]);
 
     const rows = React.useMemo(()=>{
-      let r = U.uygula(D.keywords, filtre, arama);
+      let r = applyFacets(D.keywords, filtre, arama);
       if(peakAy.length){
-        const s = new Set(peakAy.map(l => U.TR_MONTHS.indexOf(l)));
-        r = r.filter(k => k.peak && s.has(Number(k.peak.slice(5,7))-1));
+        const s=new Set(peakAy);
+        r = r.filter(k=>{ const i=(k.rpq||[]).length ? U.rollingOf(k).indexOf(Math.max(...U.rollingOf(k))) : -1;
+          return i>=0 && s.has(ROLLING_LABELS[i]); });
       }
+      if(peakCeyrek.length){
+        const s=new Set(peakCeyrek);
+        r = r.filter(k=>s.has(qLabel((k.rpq||[]).indexOf(1))));
+      }
+      if(mevsim.length){ const s=new Set(mevsim); r=r.filter(k=>s.has(k.sinif)); }
+      if(bucket.length){ const s=new Set(bucket); r=r.filter(k=>s.has(k.bucket)); }
+      if(trend) r = r.filter(k=>k.trend===trend);
       return r;
-    },[filtre, arama, peakAy]);
+    },[filtre, arama, peakAy, peakCeyrek, mevsim, bucket, trend]);
 
-    const aktifSayi = Object.values(filtre).filter(v=>v&&v.length).reduce((a,v)=>a+v.length,0)
-                    + peakAy.length + (arama?1:0);
+    const aktif = Object.values(filtre).reduce((a,v)=>a+(v?v.length:0),0)
+      + peakAy.length + peakCeyrek.length + mevsim.length + bucket.length
+      + (trend?1:0) + (arama?1:0);
+    const temizle = ()=>{ setFiltre({}); setArama(''); setPeakAy([]); setPeakCeyrek([]);
+      setMevsim([]); setBucket([]); setTrend(''); setSecili(null); };
 
-    function tweakUygula(patch){ setTweaks(t=>({...t, ...patch})); }
-
-    const onNavigateGrup = (alan, deger) => {
-      setDrill({alan, deger});
-      setFiltre(f => ({...f, [alan]: [deger]}));
-      setTab('gruplar');
-      window.scrollTo({top:0, behavior:'smooth'});
+    const onSelectGroup = (alan, deger) => {
+      setSecili({alan, deger});
+      setFiltre(f=>({...f,[alan]:[deger]}));
+      setTab('gruplar'); window.scrollTo({top:0, behavior:'smooth'});
     };
-    const onNavigateKw = (ctx) => {
-      if(ctx && ctx.alan) setFiltre(f => ({...f, [ctx.alan]:[ctx.deger]}));
-      setTab('keyword');
-      window.scrollTo({top:0, behavior:'smooth'});
+    const onNavigateKw = ctx => {
+      if(ctx&&ctx.alan) setFiltre(f=>({...f,[ctx.alan]:[ctx.deger]}));
+      setTab('keyword'); window.scrollTo({top:0, behavior:'smooth'});
     };
 
-    const Aktif = (SEKMELER.find(s=>s.id===tab) || SEKMELER[0]).Comp;
-    const ortak = { rows, setKeywordModal, onNavigateGrup, onNavigateKw, drill, setDrill };
+    const S = SEKMELER.find(s=>s.id===tab) || SEKMELER[0];
+    const ortak = { rows, viewMode, setKeywordModal, onSelectGroup, onNavigateKw, secili, setSecili };
 
     return h('div',{className:'app'},
-      // ——— Topbar ———
       h('div',{className:'topbar'},
         h('div',{className:'logo'},
           B.logo && h('img',{src:B.logo, alt:B.name, className:'brand-logo'}),
@@ -120,73 +129,88 @@
         h('div',{className:'inbound-brand'},
           h('div',{className:'inbound-ctrls'},
             h('button',{className:'ctrl inbound-ctrl',
-              onClick:()=>tweakUygula({theme: tweaks.theme==='dark'?'light':'dark'})},
-              tweaks.theme==='dark' ? '☀ Light' : '☾ Dark'),
+              onClick:()=>setTweaks(t=>({...t, theme:t.theme==='dark'?'light':'dark'}))},
+              tweaks.theme==='dark'?'☀ Light':'☾ Dark'),
             h('button',{className:'ctrl inbound-ctrl'+(tweaksOpen?' active':''),
-              onClick:()=>setTweaksOpen(o=>!o)}, '⚙ Tweaks')),
+              onClick:()=>setTweaksOpen(o=>!o)},'⚙ Tweaks')),
           h('div',{className:'inbound-logo-wrap'},
             h('img',{src:'assets/inbound-logo.png', alt:'Inbound', style:{height:20, display:'block'}}),
-            h('div',{style:{fontSize:8, letterSpacing:'0.18em', textTransform:'uppercase',
-              color:'rgba(255,255,255,0.75)', marginTop:3, textAlign:'center', fontWeight:700}},
+            h('div',{style:{fontSize:8, letterSpacing:'.18em', textTransform:'uppercase',
+              color:'rgba(255,255,255,.75)', marginTop:3, textAlign:'center', fontWeight:700}},
               'Inbound SEO')))),
 
-      // ——— Sekmeler ———
       h('div',{className:'tabs'},
         SEKMELER.map(s=>h('button',{key:s.id, className:'tab'+(tab===s.id?' active':''),
-          onClick:()=>{ setTab(s.id); }},
-          s.label,
-          s.id==='keyword' && h('span',{className:'badge'}, rows.length.toLocaleString('tr-TR'))))),
+          onClick:()=>setTab(s.id)}, s.label,
+          s.rozet && h('span',{className:'badge'}, s.rozet(rows))))),
 
-      // ——— Global filtre ———
       h('div',{className:'global-filter-wrap'+(scrolled?' scrolled':'')},
         h('div',{className:'filter-panel'},
-          h('div',{className:'filter-panel-label'},
-            h('span',null,'🎯 '), h('strong',null,'Faset Filtresi'),
-            aktifSayi>0 && h('span',{className:'txt-3',style:{fontSize:11,marginLeft:8}},
-              'Tüm sekmeler bu filtreye göre güncellenir')),
+          h('div',{className:'filter-panel-label'}, h('span',null,'🎯 '), h('strong',null,'Faset Filtresi')),
           h('input',{type:'search', className:'search-input', placeholder:'Keyword ara…',
-            value:arama, onChange:e=>setArama(e.target.value),
-            style:{minWidth:180, padding:'7px 10px', borderRadius:8,
-              border:'1px solid var(--line)', background:'var(--bg-card)', color:'var(--ink)'}}),
-          BIRINCIL.map(([alan,etiket,w]) => (secenekler[alan]||[]).length>1 &&
-            h(C.MultiSelect,{key:alan, label:etiket, options:secenekler[alan],
-              selected:filtre[alan]||[], width:w,
+            value:arama, onChange:e=>setArama(e.target.value)}),
+          BIRINCIL.map(([alan,lab,w])=>(secenekler[alan]||[]).length>1 &&
+            h(C.MultiSelect,{key:alan, label:lab, options:secenekler[alan], width:w,
+              selected:filtre[alan]||[], colorMap: alan==='spor'?window.SPOR_RENK:null,
               onChange:sel=>setFiltre(f=>({...f,[alan]:sel}))})),
-          h('button',{className:'chip-btn'+(ikincilAcik?' active':''),
-            onClick:()=>setIkincilAcik(o=>!o)}, ikincilAcik?'− Daha az filtre':'+ Daha fazla filtre'),
-          aktifSayi>0 && h('button',{className:'chip-btn',
-            onClick:()=>{setFiltre({}); setArama(''); setPeakAy([]); setDrill(null);}},
-            '× Temizle ('+aktifSayi+')')),
+          h('button',{className:'chip-btn'+(ekAcik?' active':''),
+            onClick:()=>setEkAcik(o=>!o)}, ekAcik?'− Ek filtre':'+ Ek filtre'),
+          aktif>0 && h('button',{className:'chip-btn', onClick:temizle},'× Temizle ('+aktif+')')),
 
-        ikincilAcik && h('div',{className:'filter-panel', style:{marginTop:8}},
-          h('div',{className:'filter-panel-label'},h('strong',null,'İkincil fasetler')),
-          IKINCIL.map(([alan,etiket,w]) => (secenekler[alan]||[]).length>1 &&
-            h(C.MultiSelect,{key:alan, label:etiket, options:secenekler[alan],
-              selected:filtre[alan]||[], width:w,
-              onChange:sel=>setFiltre(f=>({...f,[alan]:sel}))})),
-          h(C.MultiSelect,{label:'Peak Ay', options:U.TR_MONTHS, selected:peakAy,
-            onChange:setPeakAy, width:160})),
+        ekAcik && h('div',{className:'filter-panel', style:{marginTop:8}},
+          h('div',{className:'filter-panel-label'}, h('span',{className:'txt-3'},'EK FİLTRE')),
+          h(C.MultiSelect,{label:'Peak Ay', options:ROLLING_LABELS, selected:peakAy,
+            onChange:setPeakAy, width:155}),
+          h(C.MultiSelect,{label:'Peak Çeyrek', options:[0,1,2,3].map(qLabel), selected:peakCeyrek,
+            onChange:setPeakCeyrek, width:150}),
+          h(C.MultiSelect,{label:'Mevsim Tipi', options:D.facetDegerleri.sinif||[], selected:mevsim,
+            onChange:setMevsim, width:160}),
+          h(C.MultiSelect,{label:'Hacim Aralığı', options:D.facetDegerleri.bucket||[], selected:bucket,
+            onChange:setBucket, width:175}),
+          EK.map(([alan,lab,w])=>(secenekler[alan]||[]).length>1 &&
+            h(C.MultiSelect,{key:alan, label:lab, options:secenekler[alan], width:w,
+              selected:filtre[alan]||[], onChange:sel=>setFiltre(f=>({...f,[alan]:sel}))}))),
 
-        aktifSayi>0 && h('div',{className:'filter-chips'},
+        h('div',{className:'filter-panel', style:{marginTop:8}},
+          h('div',{className:'filter-panel-label'}, h('span',{className:'txt-3'},'GÖRÜNÜM')),
+          h('div',{className:'segmented', title:'Trend filtresi'},
+            [['','Tüm Trend'],['Yükselen','↑ Yükselen'],['Stabil','→ Stabil'],['Düşen','↓ Düşen']]
+              .map(([v,l])=>h('button',{key:v||'all', className: trend===v?'active':'',
+                onClick:()=>setTrend(v)}, l))),
+          h('div',{className:'segmented',
+            title:`Rolling = Son 12 Ay (${ROLLING_LABELS[0]} – ${ROLLING_LABELS[11]}) vs Önceki 12 Ay · Takvim = ${M.yillar.join(' / ')} yıl çizgileri. KPI ve YoY değerleri her zaman rolling karşılaştırmadır.`},
+            h('button',{className: viewMode==='rolling'?'active':'',
+              onClick:()=>setViewMode('rolling')},'Rolling 12 Ay'),
+            h('button',{className: viewMode==='calendar'?'active':'',
+              onClick:()=>setViewMode('calendar')},'Takvim Yılı')),
+          h('div',{className:'txt-3', style:{fontSize:10.5, marginLeft:'auto'}},
+            'Son 12 Ay: ', ROLLING_LABELS[0], ' – ', ROLLING_LABELS[11])),
+
+        aktif>0 && h('div',{className:'filter-chips'},
           h('span',{className:'lbl'},'Seçili:'),
-          Object.entries(filtre).flatMap(([alan,degerler])=>(degerler||[]).map(d=>
+          Object.entries(filtre).flatMap(([alan,ds])=>(ds||[]).map(d=>
             h('button',{key:alan+d, className:'filter-chip',
               onClick:()=>setFiltre(f=>({...f,[alan]:f[alan].filter(x=>x!==d)}))},
-              d, h('span',{className:'x'},'×')))),
-          peakAy.map(p=>h('button',{key:'pk'+p, className:'filter-chip',
-            onClick:()=>setPeakAy(a=>a.filter(x=>x!==p))}, 'Peak: '+p, h('span',{className:'x'},'×'))),
+              (FACET_ETIKET[alan]||alan)+': '+d, h('span',{className:'x'},'×')))),
+          peakAy.map(p=>h('button',{key:'pa'+p, className:'filter-chip',
+            onClick:()=>setPeakAy(a=>a.filter(x=>x!==p))},'Peak: '+p, h('span',{className:'x'},'×'))),
+          peakCeyrek.map(p=>h('button',{key:'pc'+p, className:'filter-chip',
+            onClick:()=>setPeakCeyrek(a=>a.filter(x=>x!==p))},'Çeyrek: '+p, h('span',{className:'x'},'×'))),
+          mevsim.map(p=>h('button',{key:'mv'+p, className:'filter-chip',
+            onClick:()=>setMevsim(a=>a.filter(x=>x!==p))}, p, h('span',{className:'x'},'×'))),
+          bucket.map(p=>h('button',{key:'bk'+p, className:'filter-chip',
+            onClick:()=>setBucket(a=>a.filter(x=>x!==p))}, p, h('span',{className:'x'},'×'))),
+          trend && h('button',{className:'filter-chip', onClick:()=>setTrend('')},
+            trend, h('span',{className:'x'},'×')),
           arama && h('button',{className:'filter-chip', onClick:()=>setArama('')},
-            'Arama: '+arama, h('span',{className:'x'},'×')))),
+            '"'+arama+'"', h('span',{className:'x'},'×')))),
 
-      // ——— İçerik ———
       h('div',{className:'content'},
         rows.length===0
           ? h(C.EmptyState,{icon:'🔍', title:'Sonuç bulunamadı',
-              desc:'Seçili filtrelerle eşleşen keyword yok.',
-              cta:'Filtreleri temizle', onCta:()=>{setFiltre({});setArama('');setPeakAy([]);}})
-          : h(Aktif, ortak)),
+              desc:'Seçili filtrelerle eşleşen keyword yok.', cta:'Filtreleri temizle', onCta:temizle})
+          : h(S.Comp, ortak)),
 
-      // ——— Tweaks ———
       tweaksOpen && h('div',{className:'tweaks-panel'},
         h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}},
           h('h3',{style:{margin:0}},'Tweaks'),
@@ -195,26 +219,22 @@
         h('div',{className:'tweaks-row'}, h('label',null,'Tema'),
           h('div',{className:'chips'}, [['light','Light'],['dark','Dark']].map(([v,l])=>
             h('button',{key:v, className:'chip-btn'+(tweaks.theme===v?' active':''),
-              onClick:()=>tweakUygula({theme:v})}, l)))),
+              onClick:()=>setTweaks(t=>({...t,theme:v}))}, l)))),
         h('div',{className:'tweaks-row'}, h('label',null,'Renk paleti'),
           h('div',{className:'chips'}, [['tvplus','TV+ Sarı'],['coral','Coral'],['neutral','Nötr']].map(([v,l])=>
             h('button',{key:v, className:'chip-btn'+(tweaks.palette===v?' active':''),
-              onClick:()=>tweakUygula({palette:v})}, l)))),
-        h('div',{style:{fontSize:10,color:'var(--ink-3)',marginTop:10,lineHeight:1.4}},
-          'Tema açık/koyu görünümü, palet aksan rengini değiştirir.')),
+              onClick:()=>setTweaks(t=>({...t,palette:v}))}, l))))),
 
-      // ——— Alt bar ———
       h('button',{className:'footer-logo-left', title:'Özet\'e dön',
-        onClick:()=>{ setTab('ozet'); window.scrollTo({top:0,behavior:'smooth'}); }},
+        onClick:()=>{setTab('ozet'); window.scrollTo({top:0,behavior:'smooth'});}},
         h('img',{src:'assets/inbound-small-logo.png', alt:'Inbound',
           style:{height:18, display:'block', opacity:.85}})),
       h('div',{className:'page-footer'},
         h('button',{className:'scroll-top-btn', title:'En üste çık',
           onClick:()=>window.scrollTo({top:0,behavior:'smooth'})},'↑')),
 
-      keywordModal && h(T.KeywordModal,{kw:keywordModal, onClose:()=>setKeywordModal(null)})
+      keywordModal && h(T.KeywordModal,{kw:keywordModal, viewMode, onClose:()=>setKeywordModal(null)})
     );
   }
-
   ReactDOM.createRoot(document.getElementById('root')).render(h(App));
 })();

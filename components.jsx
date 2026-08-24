@@ -2,6 +2,44 @@
 window.C = (function(){
   const { fmtNum, fmtFull, fmtPct, TR_MONTHS, TR_MONTHS_LONG, hmColor, hmText, sparkPath, serialToMonthIdx } = U;
   const h = React.createElement;
+  const BRAND_SLUG = ((window.BRAND && window.BRAND.slug) || 'dashboard').replace(/[^a-z0-9-]/gi, '').toLowerCase() || 'dashboard';
+
+  // ======== FloatingTooltip ========
+  // Portal-rendered, viewport-positioned tooltip. Escapes overflow:auto/hidden parents
+  // and sits above sticky headers via high z-index. Used by all chart hovers.
+  //
+  // Props:
+  //   x, y        - viewport coords of the anchor (use getBoundingClientRect on the cell/point)
+  //   placement   - 'top' | 'bottom' | 'right' (default 'top'); auto-flips if it would clip
+  //   className   - wrapper class (default 'chart-tip')
+  function FloatingTooltip({ x, y, placement = 'top', offset = 10, className = 'chart-tip', children }) {
+    const ref = React.useRef(null);
+    React.useLayoutEffect(() => {
+      const el = ref.current;
+      if (!el) return;
+      const w = el.offsetWidth;
+      const hh = el.offsetHeight;
+      const pad = 12;
+      let left = x - w / 2;
+      let top = placement === 'bottom' ? y + offset : y - hh - offset;
+      // If placement 'top' would clip above viewport, flip to bottom of anchor
+      if (top < pad) top = y + offset;
+      // If placement 'bottom' would clip below viewport, flip up
+      if (top + hh + pad > window.innerHeight) top = Math.max(pad, y - hh - offset);
+      // Horizontal clamping
+      if (left + w + pad > window.innerWidth) left = window.innerWidth - w - pad;
+      if (left < pad) left = pad;
+      el.style.left = left + 'px';
+      el.style.top = top + 'px';
+    });
+    return ReactDOM.createPortal(
+      h('div', {
+        ref, className,
+        style: { position: 'fixed', left: -9999, top: -9999, zIndex: 2000, pointerEvents: 'none' }
+      }, children),
+      document.body
+    );
+  }
 
   // ======== Tooltip singleton ========
   function useTooltip() {
@@ -58,7 +96,7 @@ window.C = (function(){
     if (yoy == null || isNaN(yoy)) return h('span',{className:'pill neu', title: tip || type}, '–');
     const cls = yoy > 0.02 ? 'pos' : yoy < -0.02 ? 'neg' : 'neu';
     const icon = yoy > 0.02 ? '↑' : yoy < -0.02 ? '↓' : '→';
-    const title = tip || `${type}: ${fmtPct(yoy, 1)} ${type === 'YoY' ? '(2024 → 2025)' : type === 'MoM' ? '(önceki aya göre)' : ''}`.trim();
+    const title = tip || `${type}: ${fmtPct(yoy, 1)} ${type === 'YoY' ? '(Önceki 12 Ay → Son 12 Ay)' : type === 'MoM' ? '(önceki aya göre)' : ''}`.trim();
     return h('span',{className:'pill '+cls, title}, icon+' '+fmtPct(yoy, 0));
   }
 
@@ -73,13 +111,22 @@ window.C = (function(){
   }
 
   // Heatmap with hover-value label
-  function Heatmap({rows, monthsLabels=TR_MONTHS, onClickCell, showPeakDot=true, showValues=true, year=null, showYoY=false}) {
+  // periodLabel/prevLabel: dönem adları ('Son 12 Ay' / 'Önceki 12 Ay') — grid köşesinde ve
+  // tooltip'te dönem ipucu olarak kullanılır; legacy `year` prop'u da kabul edilir.
+  // tipLabels/prevTipLabels: tooltip'te hücrenin kendi ayını yılıyla göstermek için
+  // (ör. 'Tem 25' / 'Tem 24'), line chart tooltip'leriyle aynı okuma.
+  function Heatmap({rows, monthsLabels=TR_MONTHS, tipLabels=null, prevTipLabels=null, onClickCell, showPeakDot=true, showValues=true, year=null, periodLabel=null, prevLabel=null, showYoY=false}) {
     const [hover, setHover] = React.useState(null); // { ri, i, x, y, row, v, prev, yoy, isPeak }
     const hostRef = React.useRef(null);
     const grid = [];
-    // Corner — show year label if provided
+    // Corner - show year label if provided
+    const valPeriod = periodLabel || year || 'Son 12 Ay';
+    const cmpPeriod = prevLabel || (year ? year - 1 : 'Önceki 12 Ay');
+    // Tooltip metrik başlıkları: ay etiketi varsa onu (Tem 25), yoksa dönem adını kullan
+    const valTip = (i) => (tipLabels && tipLabels[i]) || valPeriod;
+    const cmpTip = (i) => (prevTipLabels && prevTipLabels[i]) || cmpPeriod;
     grid.push(h('div',{className:'hm-head hm-corner', key:'corner'},
-      year != null && h('span',{className:'hm-year'}, year)
+      (periodLabel || year) != null && h('span',{className:'hm-year'}, periodLabel || year)
     ));
     monthsLabels.forEach((m,i) => grid.push(h('div',{key:'h'+i, className:'hm-head'}, m)));
     rows.forEach((row, ri) => {
@@ -88,7 +135,7 @@ window.C = (function(){
       const range = max - min || 1;
       grid.push(h('div',{key:'l'+ri, className:'hm-row-label', title:row.label},
         h('span',{style:{fontWeight:500, lineHeight:1.2}}, row.label),
-        row.sub && h('span',{className:'txt-3', style:{fontSize:9, lineHeight:1.2, marginTop:2}}, row.sub)
+        row.sub && h('span',{className:'txt-3', style:{fontSize:10, lineHeight:1.2, marginTop:2}}, row.sub)
       ));
       row.values.forEach((v,i) => {
         const t = (v - min) / range;
@@ -102,15 +149,14 @@ window.C = (function(){
           style:{ background: hmColor(t), color: hmText(t) },
           onMouseEnter: (e) => {
             const rect = e.currentTarget.getBoundingClientRect();
-            const hostRect = hostRef.current?.getBoundingClientRect();
             setHover({
               ri, i, row, v,
               prev: row.prevValues ? row.prevValues[i] : null,
               yoy,
               isPeak,
               month: monthsLabels[i],
-              x: rect.left + rect.width/2 - (hostRect?.left||0),
-              y: rect.top - (hostRect?.top||0)
+              x: rect.left + rect.width/2,
+              y: rect.top
             });
           },
           onMouseLeave: () => setHover(null),
@@ -123,22 +169,24 @@ window.C = (function(){
     });
     return h('div',{className:'heatmap-host', ref:hostRef, style:{position:'relative'}},
       h('div',{className:'heatmap'+(showYoY?' with-yoy':'')}, grid),
-      hover && h('div',{
-        className:'hm-tooltip',
-        style:{ left: hover.x, top: hover.y, transform:'translate(-50%, -108%)' }
-      },
+      hover && h(FloatingTooltip, { x: hover.x, y: hover.y, placement: 'top', className: 'hm-tooltip' },
         h('div',{className:'hm-tt-header'},
           hover.isPeak && h('span',{className:'hm-tt-peak-dot'}),
           h('span',{className:'hm-tt-title'}, hover.row.label),
-          h('span',{className:'hm-tt-sub'}, ' · ', hover.month)
+          // Ay bilgisi metriklerin başlığında zaten var; başlıkta tekrarlanmaz
+          !tipLabels && h('span',{className:'hm-tt-sub'}, ' · ', hover.month)
         ),
         h('div',{className:'hm-tt-metrics'},
           h('div',{className:'hm-tt-metric'},
-            h('div',{className:'hm-tt-m-label'}, year || '2025'),
+            h('div',{className:'hm-tt-m-label'}, valTip(hover.i),
+              tipLabels && h('span',{className:'hm-tt-m-hint'}, valPeriod)
+            ),
             h('div',{className:'hm-tt-m-val'}, fmtFull(hover.v))
           ),
           hover.prev != null && h('div',{className:'hm-tt-metric'},
-            h('div',{className:'hm-tt-m-label'}, (year ? year-1 : 2024)),
+            h('div',{className:'hm-tt-m-label'}, cmpTip(hover.i),
+              prevTipLabels && h('span',{className:'hm-tt-m-hint'}, cmpPeriod)
+            ),
             h('div',{className:'hm-tt-m-val', style:{color:'var(--ink-3)'}}, fmtFull(hover.prev))
           ),
           hover.yoy != null && h('div',{className:'hm-tt-metric'},
@@ -148,29 +196,47 @@ window.C = (function(){
             )
           )
         ),
-        hover.isPeak && h('div',{className:'hm-tt-footer'}, '★ Yılın peak ayı')
+        hover.isPeak && h('div',{className:'hm-tt-footer'}, '★ Dönemin peak ayı')
       )
     );
   }
 
-  function ShareBars({rows}) {
+  function ShareBars({rows, onClickRow, activeLabels}) {
     const sorted = [...rows].sort((a,b) => b.value - a.value);
     const max = sorted[0]?.value || 1;
+    const activeSet = activeLabels ? new Set(activeLabels) : null;
     return h('div',{style:{display:'flex',flexDirection:'column',gap:10}},
-      sorted.map((r,i) => h('div',{key:i},
-        h('div',{style:{display:'flex',justifyContent:'space-between',marginBottom:4,fontSize:12}},
-          h('div',null,
-            h('span',{style:{fontWeight:600}}, r.label),
-            r.share != null && h('span',{className:'txt-3', style:{marginLeft:6}}, ' ' + (r.share*100).toFixed(1).replace('.',',')+'%')
+      sorted.map((r,i) => {
+        const isActive = activeSet ? activeSet.has(r.label) : false;
+        const canClick = typeof onClickRow === 'function';
+        return h('div',{
+          key:i,
+          className: canClick ? 'share-row clickable' : 'share-row',
+          onClick: canClick ? () => onClickRow(r.label) : undefined,
+          style: {
+            cursor: canClick ? 'pointer' : 'default',
+            padding: canClick ? '4px 6px' : 0,
+            margin: canClick ? '-4px -6px' : 0,
+            borderRadius: 6,
+            background: isActive ? 'color-mix(in srgb, var(--coral) 10%, transparent)' : 'transparent',
+            transition: 'background .15s'
+          }
+        },
+          h('div',{style:{display:'flex',justifyContent:'space-between',marginBottom:4,fontSize:13}},
+            h('div',null,
+              isActive && h('span',{style:{marginRight:4,color:'var(--coral-deep)',fontSize:11}}, '●'),
+              h('span',{style:{fontWeight:600}}, r.label),
+              r.share != null && h('span',{className:'txt-3', style:{marginLeft:6}}, ' ' + (r.share*100).toFixed(1).replace('.',',')+'%')
+            ),
+            h('div',{className:'num', style:{fontWeight:600}, title: fmtFull(r.value)}, fmtNum(r.value),
+              r.yoy != null && h('span',{style:{marginLeft:8}}, h(YoYPill,{yoy:r.yoy}))
+            )
           ),
-          h('div',{className:'num', style:{fontWeight:600}}, fmtFull(r.value),
-            r.yoy != null && h('span',{style:{marginLeft:8}}, h(YoYPill,{yoy:r.yoy}))
+          h('div',{className:'tree-bar'},
+            h('div',{className:'fill', style:{width:(r.value/max*100)+'%', background: r.color || 'var(--accent)'}})
           )
-        ),
-        h('div',{className:'tree-bar'},
-          h('div',{className:'fill', style:{width:(r.value/max*100)+'%', background: r.color || 'var(--accent)'}})
-        )
-      ))
+        );
+      })
     );
   }
 
@@ -204,12 +270,68 @@ window.C = (function(){
     );
   }
 
+  // === Zoomable - chart'ı "Büyüt" butonu ile fullscreen modal'da açar.
+  // Mobilde her chart'ın yanına genişletme butonu: tıklayınca modal açılır,
+  // chart modal içinde belli ölçüde rescale edilir. Pinch-zoom da serbest.
+  function Zoomable({title, children, aspect='wide'}) {
+    const [open, setOpen] = React.useState(false);
+    return h(React.Fragment, null,
+      h('button',{
+        className:'zoom-btn',
+        onClick: () => setOpen(true),
+        title: 'Büyüt / odakla',
+        'aria-label': 'Büyüt'
+      },
+        h('svg',{width:14, height:14, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:2, strokeLinecap:'round', strokeLinejoin:'round'},
+          h('path',{d:'M15 3h6v6'}),
+          h('path',{d:'M9 21H3v-6'}),
+          h('path',{d:'M21 3l-7 7'}),
+          h('path',{d:'M3 21l7-7'})
+        )
+      ),
+      open && ReactDOM.createPortal(
+        h('div',{className:'zoom-overlay', onClick: e => e.target === e.currentTarget && setOpen(false)},
+          h('div',{className:'zoom-content zoom-' + aspect},
+            h('div',{className:'zoom-head'},
+              h('div',{className:'zoom-title'}, title || 'Grafik'),
+              h('button',{className:'zoom-close', onClick:()=>setOpen(false), 'aria-label':'Kapat'}, '×')
+            ),
+            h('div',{className:'zoom-body'}, children)
+          )
+        ),
+        document.body
+      )
+    );
+  }
+
   // === LineChart with crosshair tooltip ===
+  // Responsive: ResizeObserver ile container genişliğini ölçer, viewBox buna göre
+  // kurulur. SVG fixed height prop ile çizilir, aspect ratio bozulmaz, taşma olmaz.
   function LineChart({series, height=220, labels=TR_MONTHS, yFormat=fmtNum, legend}) {
     const [hoverI, setHoverI] = React.useState(null);
+    const wrapRef = React.useRef(null);
     const svgRef = React.useRef(null);
+    const [containerW, setContainerW] = React.useState(720);
 
-    const w = 720, pad = {t:16, r:16, b:28, l:48};
+    React.useLayoutEffect(() => {
+      const el = wrapRef.current;
+      if (!el || typeof ResizeObserver === 'undefined') return;
+      const set = () => { const cw = el.clientWidth; if (cw > 0) setContainerW(cw); };
+      set();
+      const ro = new ResizeObserver(set);
+      ro.observe(el);
+      return () => ro.disconnect();
+    }, []);
+
+    // Çizim sırası: overlay (karşılaştırma) serileri en üstte kalsın diye sona alınır.
+    // series dizisinin kendi sırası legend ve tooltip için korunur.
+    const drawSeries = React.useMemo(
+      () => [...series].sort((a,b) => (a.overlay?1:0) - (b.overlay?1:0)),
+      [series]
+    );
+
+    // r: son ay etiketi (ör. "Haz 26") eksenin sağ ucunda ortalandığı için taşmasın diye pay bırakılır
+    const w = Math.max(320, containerW), pad = {t:16, r:28, b:30, l:52};
     const cw = w - pad.l - pad.r;
     const ch = height - pad.t - pad.b;
     const all = series.flatMap(s => s.values || []).filter(v => v != null);
@@ -233,60 +355,96 @@ window.C = (function(){
     }
     function onLeave() { setHoverI(null); }
 
-    return h('div',{className:'chart-wrap', style:{position:'relative'}},
+    return h('div',{ref: wrapRef, className:'chart-wrap', style:{position:'relative', width:'100%'}},
       legend && h('div',{className:'legend', style:{marginBottom:8}},
         series.map((s,i) => h('div',{key:i,className:'li'},
-          h('div',{className:'swatch', style:{background:s.color}}),
+          // Kesikli seriler legend'da da kesikli görünsün
+          s.dashed
+            ? h('div',{className:'swatch', style:{background:'transparent', borderTop:`2px dashed ${s.color}`, borderRadius:0, height:0, alignSelf:'center'}})
+            : h('div',{className:'swatch', style:{background:s.color}}),
           h('span', null, s.name)
         ))
       ),
       h('svg',{
         ref: svgRef,
         viewBox:`0 0 ${w} ${height}`,
-        style:{width:'100%', height:'auto', display:'block', cursor:'crosshair'},
+        width: w, height,
+        style:{width:'100%', height, display:'block', cursor:'crosshair'},
         onMouseMove: onMove, onMouseLeave: onLeave
       },
         tickVals.map((t,i) => h('g',{key:'t'+i},
           h('line',{x1:pad.l, x2:pad.l+cw, y1:yAt(t), y2:yAt(t), stroke:'var(--line)', strokeDasharray:i===0?'':'2 3'}),
-          h('text',{x:pad.l-6, y:yAt(t)+3, fontSize:10, fill:'var(--ink-3)', textAnchor:'end'}, yFormat(t))
+          h('text',{x:pad.l-6, y:yAt(t)+3, fontSize:11, fill:'var(--ink-3)', textAnchor:'end'}, yFormat(t))
         )),
-        labels.map((l,i) => h('text',{key:'x'+i, x:xs[i], y:height-8, fontSize:10, fill:'var(--ink-3)', textAnchor:'middle'}, l)),
-        series.map((s,si) => {
+        labels.map((l,i) => h('text',{key:'x'+i, x:xs[i], y:height-8, fontSize:11, fill:'var(--ink-3)', textAnchor:'middle'}, l)),
+        // Karşılaştırma serileri (s.overlay) en son çizilir ve kesikli olur: GKP hacimleri
+        // bucketlandığı için iki dönem birebir çakışabiliyor; kesikli üst çizgi olmadan
+        // alttaki seri tamamen gizlenir ve grafik erken bitiyormuş gibi görünür.
+        drawSeries.map((s,si) => {
           if (!s.values) return null;
           const path = 'M' + s.values.map((v,i) => v==null?null:`${xs[i]},${yAt(v)}`).filter(Boolean).join(' L');
           return h('g',{key:'s'+si},
-            h('path',{d:path, fill:'none', stroke:s.color||'var(--accent)', strokeWidth:2, strokeLinecap:'round', strokeLinejoin:'round'}),
+            h('path',{
+              d:path, fill:'none', stroke:s.color||'var(--accent)', strokeWidth:2,
+              strokeLinecap:'round', strokeLinejoin:'round',
+              strokeDasharray: s.dashed ? '5 4' : undefined
+            }),
             s.values.map((v,i) => v==null?null:h('circle',{
-              key:'d'+i, cx:xs[i], cy:yAt(v), r: hoverI===i ? 5 : (s.peakIdx===i?4:3),
+              key:'d'+i, cx:xs[i], cy:yAt(v), r: hoverI===i ? 5 : (s.peakIdx===i?4:(s.overlay?2:3)),
               fill: s.peakIdx===i ? '#E85F36' : (s.color||'var(--accent)'),
-              stroke:'white', strokeWidth:1.5
+              stroke:'white', strokeWidth: s.overlay ? 1 : 1.5
             }))
           );
         }),
         hoverI != null && h('line',{x1:xs[hoverI], x2:xs[hoverI], y1:pad.t, y2:pad.t+ch, stroke:'var(--ink-3)', strokeDasharray:'3 3'})
       ),
-      // Tooltip panel
-      hoverI != null && h('div',{
-        className:'chart-tip',
-        style:{
-          left: `calc(${(xs[hoverI]/w)*100}% + 10px)`,
-          top: 0, pointerEvents:'none'
-        }
-      },
-        h('div',{style:{fontWeight:600, marginBottom:2}}, labels[hoverI]),
-        series.map((s,i) => h('div',{key:i, style:{display:'flex',alignItems:'center',gap:6,fontSize:11}},
-          h('div',{style:{width:8,height:8,borderRadius:2,background:s.color||'var(--accent)'}}),
-          h('span',{style:{color:'var(--ink-2)'}}, s.name+': '),
-          h('span',{className:'num',style:{fontWeight:600}}, yFormat(s.values?.[hoverI]))
-        ))
-      )
+      // Tooltip panel - portal to body so it escapes chart clipping and sticky headers
+      // Seriler en yeniden eskiye doğru listelenir (Son 12 Ay üstte, Önceki 12 Ay altta).
+      // Her satır kendi dönem etiketini taşır (s.pointLabels: ['Tem 25', …]); yoksa
+      // ortak eksen etiketi başlıkta gösterilir.
+      hoverI != null && (() => {
+        const r = svgRef.current?.getBoundingClientRect();
+        if (!r) return null;
+        const anchorX = r.left + (xs[hoverI] / w) * r.width;
+        const anchorY = r.top + (pad.t / height) * r.height;
+        const hasPointLabels = series.some(s => s.pointLabels);
+        const ordered = [...series].reverse();
+        return h(FloatingTooltip, { x: anchorX, y: anchorY, placement: 'top' },
+          !hasPointLabels && h('div',{style:{fontWeight:600, marginBottom:2}}, labels[hoverI]),
+          ordered.map((s,i) => h('div',{key:i, style:{display:'flex',alignItems:'center',gap:6,fontSize:12}},
+            h('div',{style:{width:8,height:8,borderRadius:2,background:s.color||'var(--accent)', flexShrink:0}}),
+            hasPointLabels
+              ? h('span',{style:{fontWeight:600}}, (s.pointLabels?.[hoverI] || labels[hoverI]) + ': ')
+              : h('span',{style:{color:'var(--ink-2)'}}, s.name+': '),
+            h('span',{className:'num',style:{fontWeight:600}}, yFormat(s.values?.[hoverI])),
+            hasPointLabels && s.name && h('span',{style:{color:'var(--ink-3)', fontSize:11, marginLeft:2}}, s.shortName || s.name)
+          ))
+        );
+      })()
     );
   }
 
   // === BarChart with hover tooltip ===
+  // Responsive: observes container width via ResizeObserver and redraws at that width
+  // (so aspect ratio doesn't squash the chart in narrow cards).
   function BarChart({data, height=220, yFormat=fmtPct, colorBy='yoy', onBarClick}) {
     const [hoverI, setHoverI] = React.useState(null);
-    const w = 720, pad = {t:20, r:16, b:56, l:44};
+    const wrapRef = React.useRef(null);
+    const svgRef = React.useRef(null);
+    const [containerW, setContainerW] = React.useState(720);
+
+    React.useLayoutEffect(() => {
+      const el = wrapRef.current;
+      if (!el || typeof ResizeObserver === 'undefined') return;
+      const set = () => { const cw = el.clientWidth; if (cw > 0) setContainerW(cw); };
+      set();
+      const ro = new ResizeObserver(set);
+      ro.observe(el);
+      return () => ro.disconnect();
+    }, []);
+
+    const w = Math.max(320, containerW);
+    const pad = {t:20, r:16, b:56, l:44};
     const cw = w - pad.l - pad.r, ch = height - pad.t - pad.b;
     const vals = data.map(d=>d.value);
     const maxV = Math.max(...vals, 0), minV = Math.min(...vals, 0);
@@ -296,8 +454,13 @@ window.C = (function(){
     const bw = cw / n * .7;
     const step = cw / n;
     const zero = yAt(0);
-    return h('div',{style:{position:'relative'}},
-      h('svg',{viewBox:`0 0 ${w} ${height}`, style:{width:'100%', height:'auto', display:'block'}},
+    return h('div',{ref: wrapRef, style:{position:'relative', width:'100%'}},
+      h('svg',{
+        ref: svgRef,
+        viewBox:`0 0 ${w} ${height}`,
+        width: w, height,
+        style:{width:'100%', height, display:'block'}
+      },
         h('line',{x1:pad.l, x2:pad.l+cw, y1:zero, y2:zero, stroke:'var(--line)'}),
         data.map((d,i) => {
           const x = pad.l + i*step + (step-bw)/2;
@@ -306,23 +469,19 @@ window.C = (function(){
           const color = d.color || (colorBy==='yoy' ? (d.value > 0 ? '#2E7D32' : '#D32F2F') : 'var(--accent)');
           return h('g',{key:i, onMouseEnter:()=>setHoverI(i), onMouseLeave:()=>setHoverI(null), onClick:()=>onBarClick && onBarClick(d), style:{cursor:onBarClick?'pointer':'default'}},
             h('rect',{x, y, width:bw, height:hh, fill:color, opacity: hoverI===i ? 1 : .85, rx:3}),
-            h('text',{x:x+bw/2, y:d.value>=0 ? y-6 : y+hh+14, fontSize:10, fill:'var(--ink-2)', textAnchor:'middle', fontFamily:'Bricolage Grotesque', fontWeight:600}, yFormat(d.value)),
-            h('text',{x:x+bw/2, y:height-32, fontSize:9, fill:'var(--ink-3)', textAnchor:'middle', transform:`rotate(-28 ${x+bw/2} ${height-32})`}, d.label.length>22?d.label.slice(0,22)+'…':d.label)
+            h('text',{x:x+bw/2, y:d.value>=0 ? y-6 : y+hh+14, fontSize:11, fill:'var(--ink-2)', textAnchor:'middle', fontFamily:'Bricolage Grotesque', fontWeight:600}, yFormat(d.value)),
+            h('text',{x:x+bw/2, y:height-32, fontSize:10, fill:'var(--ink-3)', textAnchor:'middle', transform:`rotate(-28 ${x+bw/2} ${height-32})`}, d.label.length>22?d.label.slice(0,22)+'…':d.label)
           );
         })
       ),
       hoverI != null && (() => {
-        const centerPct = ((pad.l + hoverI*step + step/2)/w)*100;
-        // Clamp to avoid edges: when near the left/right edge, anchor the tip start/end instead of center
-        const near = 12; // percent margin for edge handling
-        let left = centerPct + '%';
-        let transform = 'translateX(-50%)';
-        if (centerPct < near) { left = '0%'; transform = 'translateX(0)'; }
-        else if (centerPct > 100 - near) { left = '100%'; transform = 'translateX(-100%)'; }
-        return h('div',{
-          className:'chart-tip',
-          style:{ left, top: 4, transform, pointerEvents:'none', position:'absolute', maxWidth: 260 }
-        },
+        const svgRect = svgRef.current?.getBoundingClientRect();
+        if (!svgRect) return null;
+        const barCenterX = pad.l + hoverI*step + step/2;
+        const barTopY = Math.min(zero, yAt(data[hoverI].value));
+        const anchorX = svgRect.left + (barCenterX / w) * svgRect.width;
+        const anchorY = svgRect.top + (barTopY / height) * svgRect.height;
+        return h(FloatingTooltip, { x: anchorX, y: anchorY, placement: 'top' },
           h('div',{style:{fontWeight:600, whiteSpace:'normal'}}, data[hoverI].label),
           h('div',{className:'num'}, yFormat(data[hoverI].value))
         );
@@ -354,8 +513,9 @@ window.C = (function(){
       };
     });
     const hovered = hoverI!=null ? slicePaths[hoverI] : null;
+    const svgRef = React.useRef(null);
     return h('div',{style:{position:'relative', width:size, height:size}},
-      h('svg',{viewBox:`0 0 ${size} ${size}`, style:{width:size, height:size, display:'block'}},
+      h('svg',{ref: svgRef, viewBox:`0 0 ${size} ${size}`, style:{width:size, height:size, display:'block'}},
         slicePaths.map(s => h('path',{
           key:s.i, d:s.d, fill:s.color, stroke:'var(--bg-card)', strokeWidth:1.5,
           style:{cursor: onSliceClick?'pointer':'default', transition:'opacity .15s'},
@@ -366,30 +526,33 @@ window.C = (function(){
         })),
         // center label
         hovered ? h('g',null,
-          h('text',{x:cx, y:cy-6, fontSize:14, fontFamily:'Bricolage Grotesque', fontWeight:600, fill:'var(--ink)', textAnchor:'middle'}, (hovered.pct*100).toFixed(1).replace('.',',')+'%'),
-          h('text',{x:cx, y:cy+10, fontSize:10, fill:'var(--ink-3)', textAnchor:'middle'}, fmtNum(hovered.value))
+          h('text',{x:cx, y:cy-6, fontSize:15, fontFamily:'Bricolage Grotesque', fontWeight:600, fill:'var(--ink)', textAnchor:'middle'}, (hovered.pct*100).toFixed(1).replace('.',',')+'%'),
+          h('text',{x:cx, y:cy+10, fontSize:11, fill:'var(--ink-3)', textAnchor:'middle'}, fmtNum(hovered.value))
         ) : h('g',null,
-          h('text',{x:cx, y:cy-2, fontSize:11, fill:'var(--ink-3)', textAnchor:'middle'}, 'Toplam'),
-          h('text',{x:cx, y:cy+13, fontSize:14, fontFamily:'Bricolage Grotesque', fontWeight:600, fill:'var(--ink)', textAnchor:'middle'}, fmtNum(total))
+          h('text',{x:cx, y:cy-2, fontSize:12, fill:'var(--ink-3)', textAnchor:'middle'}, 'Toplam'),
+          h('text',{x:cx, y:cy+13, fontSize:15, fontFamily:'Bricolage Grotesque', fontWeight:600, fill:'var(--ink)', textAnchor:'middle'}, fmtNum(total))
         )
       ),
-      hovered && h('div',{
-        className:'chart-tip',
-        style:{ left:'50%', top: size + 6, transform:'translateX(-50%)', pointerEvents:'none', whiteSpace:'nowrap' }
-      },
-        h('div',{style:{display:'flex',alignItems:'center',gap:6}},
-          h('div',{style:{width:8,height:8,borderRadius:2,background:hovered.color}}),
-          h('span',{style:{fontWeight:600}}, hovered.label)
-        ),
-        h('div',{className:'num',style:{fontSize:11,color:'var(--ink-2)'}},
-          fmtFull(hovered.value) + ' · ' + (hovered.pct*100).toFixed(1).replace('.',',') + '%'
-        )
-      )
+      hovered && (() => {
+        const r = svgRef.current?.getBoundingClientRect();
+        if (!r) return null;
+        const anchorX = r.left + r.width / 2;
+        const anchorY = r.bottom;
+        return h(FloatingTooltip, { x: anchorX, y: anchorY, placement: 'bottom' },
+          h('div',{style:{display:'flex',alignItems:'center',gap:6}},
+            h('div',{style:{width:8,height:8,borderRadius:2,background:hovered.color}}),
+            h('span',{style:{fontWeight:600}}, hovered.label)
+          ),
+          h('div',{className:'num',style:{fontSize:12,color:'var(--ink-2)'}},
+            fmtFull(hovered.value) + ' · ' + (hovered.pct*100).toFixed(1).replace('.',',') + '%'
+          )
+        );
+      })()
     );
   }
 
   // === Info icon with centered modal popover ===
-  function InfoIcon({children, title='Bilgi'}) {
+  function InfoIcon({children, title='Bilgi', className}) {
     const [open, setOpen] = React.useState(false);
     React.useEffect(() => {
       if (!open) return;
@@ -405,7 +568,7 @@ window.C = (function(){
     }, [open]);
     return h(React.Fragment, null,
       h('button',{
-        className:'info-icon',
+        className: className || 'info-icon',
         onClick:(e)=>{e.stopPropagation(); setOpen(o=>!o);},
         'aria-label':'Bilgi'
       }, '?'),
@@ -426,15 +589,19 @@ window.C = (function(){
   }
 
   // === Expandable explainer ===
-  function Explainer({title, sub, emoji='📊', children, defaultOpen=false}) {
+  // `icon` prop takes priority over `emoji` (emoji kept for backward compat);
+  // pass a React SVG node via `icon` for distinctive visuals
+  function Explainer({title, sub, emoji='📊', icon, children, defaultOpen=false}) {
     const [open, setOpen] = React.useState(() => {
-      const saved = localStorage.getItem((window.BRAND&&window.BRAND.slug||'dash')+'.explainer.open');
+      const saved = localStorage.getItem(`${BRAND_SLUG}.explainer.open`);
       return saved == null ? defaultOpen : saved === '1';
     });
-    React.useEffect(() => { localStorage.setItem((window.BRAND&&window.BRAND.slug||'dash')+'.explainer.open', open ? '1':'0'); }, [open]);
+    React.useEffect(() => { localStorage.setItem(`${BRAND_SLUG}.explainer.open`, open ? '1':'0'); }, [open]);
     return h('div',{className:'explainer'+(open?' open':'')},
       h('button',{className:'explainer-head', onClick:()=>setOpen(o=>!o)},
-        h('span',{className:'emoji'}, emoji),
+        icon
+          ? h('span',{className:'explainer-icon'}, icon)
+          : h('span',{className:'emoji'}, emoji),
         h('div',{className:'title-part'},
           h('div',{className:'main-title'}, title),
           sub && h('div',{className:'sub-title'}, sub)
@@ -445,24 +612,42 @@ window.C = (function(){
     );
   }
 
-  // MultiSelect — dropdown with checkboxes for multi-category selection
-  function MultiSelect({label, options, selected, onChange, colorMap, maxDisplay=2, width=180}) {
+  // MultiSelect - dropdown with checkboxes for multi-category selection
+  // MultiSelect — opsiyonel `catalogFilter` ile option'lar dropdown içinden
+  // Var/Yok/Tümü olarak filtrelenebilir. Dropdown'un üstünde küçük chip'ler gösterilir.
+  function MultiSelect({label, options, selected, onChange, colorMap, maxDisplay=2, width=180, searchable=true, catalogFilter}) {
     const [open, setOpen] = React.useState(false);
+    const [query, setQuery] = React.useState('');
     const ref = React.useRef(null);
+    const inputRef = React.useRef(null);
     React.useEffect(() => {
-      const onDoc = e => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+      const onDoc = e => { if (ref.current && !ref.current.contains(e.target)) { setOpen(false); setQuery(''); } };
       document.addEventListener('mousedown', onDoc);
       return () => document.removeEventListener('mousedown', onDoc);
     }, []);
+    React.useEffect(() => {
+      if (open && inputRef.current) { setTimeout(() => inputRef.current?.focus(), 10); }
+    }, [open]);
+
     const toggle = (opt) => {
       if (selected.includes(opt)) onChange(selected.filter(o => o !== opt));
       else onChange([...selected, opt]);
     };
-    const allSelected = selected.length === 0 || selected.length === options.length;
     const displayText = selected.length === 0 ? `Tüm ${label}` :
       selected.length === 1 ? selected[0] :
       selected.length <= maxDisplay ? selected.join(', ') :
       `${selected.length} seçili`;
+
+    // Filter options by search query (case-insensitive, Turkish-friendly) + optional catalog filter
+    const filteredOptions = React.useMemo(() => {
+      let opts = options;
+      if (catalogFilter && catalogFilter.value && catalogFilter.getOptionCatalog) {
+        opts = opts.filter(o => catalogFilter.getOptionCatalog(o) === catalogFilter.value);
+      }
+      if (!query.trim()) return opts;
+      const q = query.toLowerCase().trim();
+      return opts.filter(o => String(o).toLowerCase().includes(q));
+    }, [options, query, catalogFilter]);
 
     return h('div',{ref, className:'multiselect', style:{width}},
       h('button',{
@@ -470,22 +655,74 @@ window.C = (function(){
         onClick:()=>setOpen(!open)
       },
         h('span',{className:'ms-text'}, displayText),
+        selected.length > 0 && h('span',{
+          className:'ms-count',
+          style:{marginLeft:'auto',marginRight:6,fontSize:11,padding:'1px 6px',borderRadius:8,background:'var(--coral-soft,rgba(255,123,83,.15))',color:'var(--coral-deep)',fontWeight:700}
+        }, selected.length),
         h('span',{className:'ms-caret'}, '▾')
       ),
       open && h('div',{className:'multiselect-panel'},
+        searchable && h('div',{className:'ms-search-wrap', style:{padding:'8px 10px 6px', borderBottom:'1px solid var(--line)'}},
+          h('input',{
+            ref: inputRef,
+            type:'text',
+            className:'ms-search',
+            placeholder: `${label} ara…`,
+            value: query,
+            onChange: e => setQuery(e.target.value),
+            style:{
+              width:'100%', padding:'6px 10px', fontSize:13,
+              border:'1px solid var(--line)', borderRadius:6,
+              background:'var(--bg)', color:'var(--ink)', outline:'none'
+            }
+          })
+        ),
+        // Optional catalog filter (Var/Yok) — small chip-style pills inside the dropdown
+        catalogFilter && h('div',{
+          className:'ms-catalog',
+          style:{
+            display:'flex', alignItems:'center', gap:4, flexWrap:'wrap',
+            padding:'6px 10px 4px', borderBottom:'1px solid var(--line)'
+          }
+        },
+          h('span',{style:{fontSize:11, color:'var(--ink-3)', fontWeight:600, textTransform:'uppercase', letterSpacing:'.08em', marginRight:4}}, (catalogFilter.label || 'Katalog') + ':'),
+          (catalogFilter.options || [
+            {value:'', label:'Tümü'},
+            {value:'Var', label:'Özdilekte Var'},
+            {value:'Yok', label:'Özdilekte Yok'}
+          ]).map(opt => {
+            const active = (catalogFilter.value || '') === opt.value;
+            return h('button',{
+              key: opt.value || 'all',
+              className: 'ms-catalog-chip' + (active ? ' active' : ''),
+              onClick: (e) => { e.stopPropagation(); catalogFilter.onChange(opt.value); },
+              style:{
+                padding:'3px 9px', fontSize:12, borderRadius:999, cursor:'pointer',
+                border:'1px solid ' + (active ? 'var(--coral)' : 'var(--line)'),
+                background: active ? 'color-mix(in srgb, var(--coral) 14%, var(--bg))' : 'var(--bg)',
+                color: active ? 'var(--coral-deep, var(--coral))' : 'var(--ink-2)',
+                fontWeight: active ? 700 : 500,
+                transition: 'background .15s, color .15s, border-color .15s'
+              }
+            }, opt.label);
+          })
+        ),
         h('div',{className:'ms-actions'},
-          h('button',{className:'ms-action', onClick:()=>onChange([])}, 'Tümü'),
-          h('button',{className:'ms-action', onClick:()=>onChange([...options])}, 'Hepsi')
+          h('button',{className:'ms-action', onClick:()=>onChange([])}, 'Hiçbiri'),
+          h('button',{className:'ms-action', onClick:()=>onChange([...filteredOptions])}, 'Hepsi'),
+          query && h('span',{style:{fontSize:11,color:'var(--ink-3)',marginLeft:'auto',paddingRight:4}}, filteredOptions.length + '/' + options.length)
         ),
         h('div',{className:'ms-options'},
-          options.map(opt => {
-            const isChecked = selected.length === 0 ? false : selected.includes(opt);
-            return h('label',{key:opt, className:'ms-option'},
-              h('input',{type:'checkbox', checked:isChecked, onChange:()=>toggle(opt)}),
-              colorMap && h('span',{className:'ms-swatch', style:{background:colorMap[opt]||'#888'}}),
-              h('span',{className:'ms-label'}, opt)
-            );
-          })
+          filteredOptions.length === 0
+            ? h('div',{className:'ms-empty', style:{padding:'14px 10px', fontSize:13, color:'var(--ink-3)', textAlign:'center'}}, 'Sonuç yok')
+            : filteredOptions.map(opt => {
+                const isChecked = selected.length === 0 ? false : selected.includes(opt);
+                return h('label',{key:opt, className:'ms-option'},
+                  h('input',{type:'checkbox', checked:isChecked, onChange:()=>toggle(opt)}),
+                  colorMap && h('span',{className:'ms-swatch', style:{background:colorMap[opt]||'#888'}}),
+                  h('span',{className:'ms-label'}, opt)
+                );
+              })
         )
       )
     );
@@ -510,47 +747,82 @@ window.C = (function(){
   }
 
   // ======== Small Multiples Grid ========
-  // Grid of mini line/bar charts — one per category, all on same y-scale optional
+  // Grid of mini line/bar charts - one per category, all on same y-scale optional
   // items: [{label, color, values, sub}]
   function SmallMultiples({ items, height=56, monthsLabels=TR_MONTHS, yScale='shared', onClick }) {
     const globalMax = yScale === 'shared' ? Math.max(1, ...items.flatMap(it => it.values)) : null;
     return h('div',{className:'small-mults'},
-      items.map((it, idx) => {
-        const max = yScale === 'shared' ? globalMax : Math.max(1, ...it.values);
-        const peakI = it.values.indexOf(Math.max(...it.values));
-        const total = it.values.reduce((a,b)=>a+b,0);
-        return h('div',{
-          key:it.label,
-          className:'sm-item'+(onClick?' clickable':''),
-          onClick: onClick ? () => onClick(it) : undefined
+      items.map((it, idx) => h(SmallMultipleItem, {
+        key: it.label, item: it, idx,
+        max: yScale === 'shared' ? globalMax : Math.max(1, ...it.values),
+        height, monthsLabels, onClick
+      }))
+    );
+  }
+
+  function SmallMultipleItem({ item: it, max, height, monthsLabels, onClick }) {
+    const [hoverI, setHoverI] = React.useState(null);
+    const svgRef = React.useRef(null);
+    const peakI = it.values.indexOf(Math.max(...it.values));
+    const total = it.values.reduce((a,b)=>a+b,0);
+    const color = it.color || 'var(--accent)';
+    const activeI = hoverI != null ? hoverI : peakI;
+    const activeValue = it.values[activeI];
+
+    return h('div',{
+      className:'sm-item'+(onClick?' clickable':''),
+      onClick: onClick ? () => onClick(it) : undefined
+    },
+      h('div',{className:'sm-header'},
+        h('div',{className:'sm-dot', style:{background: color}}),
+        h('div',{className:'sm-label'}, it.label),
+        it.yoy != null && h('span',{className:'pill '+(it.yoy>0.02?'pos':it.yoy<-0.02?'neg':'neu'),style:{marginLeft:'auto',fontSize:11,padding:'1px 6px'}}, fmtPct(it.yoy,0))
+      ),
+      h('div',{className:'sm-body', style:{position:'relative'}},
+        h('svg',{
+          ref: svgRef,
+          viewBox:`0 0 ${12*8} ${height}`, preserveAspectRatio:'none',
+          style:{width:'100%', height, cursor:'crosshair'},
+          onMouseMove: (e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const rel = (e.clientX - rect.left) / rect.width;
+            const i = Math.max(0, Math.min(11, Math.floor(rel * 12)));
+            setHoverI(i);
+          },
+          onMouseLeave: () => setHoverI(null)
         },
-          h('div',{className:'sm-header'},
-            h('div',{className:'sm-dot', style:{background: it.color || 'var(--accent)'}}),
-            h('div',{className:'sm-label'}, it.label),
-            it.yoy != null && h('span',{className:'pill '+(it.yoy>0.02?'pos':it.yoy<-0.02?'neg':'neu'),style:{marginLeft:'auto',fontSize:10,padding:'1px 6px'}}, fmtPct(it.yoy,0))
-          ),
-          h('div',{className:'sm-body'},
-            h('svg',{viewBox:`0 0 ${12*8} ${height}`, preserveAspectRatio:'none', style:{width:'100%',height}},
-              // bars
-              it.values.map((v,i) => {
-                const barH = (v / max) * (height - 6);
-                const x = i * 8 + 1;
-                const y = height - barH;
-                const isPeak = i === peakI;
-                return h('rect',{
-                  key:i, x, y, width:6, height: Math.max(1, barH),
-                  rx:1,
-                  fill: isPeak ? (it.color || 'var(--accent)') : `color-mix(in srgb, ${it.color || 'var(--accent)'} 35%, transparent)`
-                });
-              })
-            )
-          ),
-          h('div',{className:'sm-footer'},
-            h('span',{className:'sm-peak'}, 'Peak: ', h('strong',null, monthsLabels[peakI])),
-            h('span',{className:'sm-total'}, fmtNum(total))
-          )
-        );
-      })
+          it.values.map((v,i) => {
+            const barH = (v / max) * (height - 6);
+            const x = i * 8 + 1;
+            const y = height - barH;
+            const isPeak = i === peakI;
+            const isHover = i === hoverI;
+            return h('rect',{
+              key:i, x, y, width:6, height: Math.max(1, barH),
+              rx:1,
+              fill: (isHover || isPeak) ? color : `color-mix(in srgb, ${color} 35%, transparent)`,
+              style:{transition: 'fill .08s'}
+            });
+          })
+        ),
+        hoverI != null && (() => {
+          const r = svgRef.current?.getBoundingClientRect();
+          if (!r) return null;
+          const anchorX = r.left + ((hoverI + 0.5) / 12) * r.width;
+          const anchorY = r.top;
+          return h(FloatingTooltip, { x: anchorX, y: anchorY, placement: 'top', className: 'sm-tip chart-tip' },
+            h('div',{style:{fontWeight:700}}, monthsLabels[hoverI]),
+            h('div',{style:{fontFamily:'Bricolage Grotesque', fontWeight:700}}, fmtFull(it.values[hoverI]))
+          );
+        })()
+      ),
+      h('div',{className:'sm-footer'},
+        h('span',{className:'sm-peak'},
+          hoverI != null ? monthsLabels[hoverI] + ': ' : 'Peak: ',
+          h('strong',null, hoverI != null ? fmtFull(activeValue) : monthsLabels[peakI])
+        ),
+        h('span',{className:'sm-total'}, hoverI != null ? ('Toplam ' + fmtNum(total)) : fmtNum(total))
+      )
     );
   }
 
@@ -602,7 +874,7 @@ window.C = (function(){
         key:i, x, y,
         textAnchor:'middle', dominantBaseline:'middle',
         style:{
-          fontSize: 10,
+          fontSize:11,
           fontFamily:'Bricolage Grotesque',
           fontWeight: isPeak ? 700 : 500,
           fill: isPeak ? color : 'var(--ink-2)'
@@ -625,9 +897,9 @@ window.C = (function(){
         wedges,
         labels,
         // Center label
-        h('text',{x:cx, y:cy-8, textAnchor:'middle', style:{fontSize:10,fontFamily:'Outfit',fill:'var(--ink-3)',textTransform:'uppercase',letterSpacing:'.06em',fontWeight:600}}, monthsLabels[activeI]),
+        h('text',{x:cx, y:cy-8, textAnchor:'middle', style:{fontSize:11,fontFamily:'Outfit',fill:'var(--ink-3)',textTransform:'uppercase',letterSpacing:'.06em',fontWeight:600}}, monthsLabels[activeI]),
         h('text',{x:cx, y:cy+12, textAnchor:'middle', style:{fontSize:18,fontFamily:'Bricolage Grotesque',fontWeight:700,fill:'var(--ink)'}}, fmtNum(activeV)),
-        h('text',{x:cx, y:cy+28, textAnchor:'middle', style:{fontSize:9,fontFamily:'Outfit',fill:'var(--ink-3)'}}, activeI === peakIdx ? '★ Peak ayı' : `${((activeV/total)*100).toFixed(1).replace('.',',')}%`)
+        h('text',{x:cx, y:cy+28, textAnchor:'middle', style:{fontSize:10,fontFamily:'Outfit',fill:'var(--ink-3)'}}, activeI === peakIdx ? '★ Peak ayı' : `${((activeV/total)*100).toFixed(1).replace('.',',')}%`)
       )
     );
   }
@@ -745,8 +1017,8 @@ window.C = (function(){
 
     return h('svg',{viewBox:`0 0 ${width} ${height}`, style:{width:'100%',height:'auto',fontFamily:'Outfit',overflow:'visible'}},
       // Column headers
-      h('text',{x:x0, y:10, style:{fontSize:11,fontWeight:700,fill:'var(--ink-3)',letterSpacing:'.06em'}}, '2024'),
-      h('text',{x:x1, y:10, textAnchor:'end', style:{fontSize:11,fontWeight:700,fill:'var(--ink-3)',letterSpacing:'.06em'}}, '2025'),
+      h('text',{x:x0, y:10, style:{fontSize:12,fontWeight:700,fill:'var(--ink-3)',letterSpacing:'.06em'}}, '2024'),
+      h('text',{x:x1, y:10, textAnchor:'end', style:{fontSize:12,fontWeight:700,fill:'var(--ink-3)',letterSpacing:'.06em'}}, '2025'),
       // Lines
       sorted.map((it, i) => {
         const y24 = pad.t + (it.rank24 - 0.5) * rowH;
@@ -769,14 +1041,14 @@ window.C = (function(){
           h('circle',{cx:x0, cy:y24, r:isHover?7:5, fill:it.color, stroke:'var(--bg-card)', strokeWidth:2}),
           h('circle',{cx:x1, cy:y25, r:isHover?7:5, fill:it.color, stroke:'var(--bg-card)', strokeWidth:2}),
           // Left label (rank #)
-          h('text',{x:x0-10, y:y24+4, textAnchor:'end', style:{fontSize:11,fontWeight:600,fill:'var(--ink-3)'}}, '#' + it.rank24),
+          h('text',{x:x0-10, y:y24+4, textAnchor:'end', style:{fontSize:12,fontWeight:600,fill:'var(--ink-3)'}}, '#' + it.rank24),
           // Right label (category name)
-          h('text',{x:x1+12, y:y25+4, style:{fontSize:12,fontWeight: isHover ? 700 : 600, fill: isHover ? it.color : 'var(--ink)'}}, it.label),
+          h('text',{x:x1+12, y:y25+4, style:{fontSize:13,fontWeight: isHover ? 700 : 600, fill: isHover ? it.color : 'var(--ink)'}}, it.label),
           // Rank change badge
           diff !== 0 && h('text',{
             x: x1 + 12, y: y25 + 18,
             style:{
-              fontSize:10, fontWeight:700,
+              fontSize:11, fontWeight:700,
               fill: isUp ? '#10B981' : '#EF4444'
             }
           }, isUp ? `↑ ${diff}` : `↓ ${Math.abs(diff)}`)
@@ -786,7 +1058,7 @@ window.C = (function(){
   }
 
   // ======== Stream Graph (stacked area, centered) ========
-  // series: [{label, color, values}] — 12 monthly values each
+  // series: [{label, color, values}] - 12 monthly values each
   function StreamGraph({ series, height=260, width=720, monthsLabels=TR_MONTHS }) {
     if (!series || !series.length) return null;
     const n = series[0].values.length;
@@ -797,11 +1069,11 @@ window.C = (function(){
     const totals = Array.from({length:n}, (_,i) => series.reduce((s, ser) => s + (ser.values[i] || 0), 0));
     const maxTotal = Math.max(...totals) || 1;
 
-    // For each month, compute stacked positions (centered baseline — stream layout)
+    // For each month, compute stacked positions (centered baseline - stream layout)
     // Offset each month so that series are stacked symmetrically around the middle
     const positions = series.map(() => Array(n).fill({ y0: 0, y1: 0 }));
     for (let i = 0; i < n; i++) {
-      // Sort by value descending for this month? No — keep consistent order for smooth bands
+      // Sort by value descending for this month? No - keep consistent order for smooth bands
       let cumul = 0;
       const monthTotal = totals[i];
       const monthH = (monthTotal / maxTotal) * innerH;
@@ -848,7 +1120,7 @@ window.C = (function(){
         monthsLabels.map((m,i) => h('text',{
           key:m, x:xFor(i), y:height-6,
           textAnchor:'middle',
-          style:{fontSize:10, fontFamily:'Outfit', fill: i === hoverI ? 'var(--ink)' : 'var(--ink-3)', fontWeight: i === hoverI ? 700 : 500}
+          style:{fontSize:11, fontFamily:'Outfit', fill: i === hoverI ? 'var(--ink)' : 'var(--ink-3)', fontWeight: i === hoverI ? 700 : 500}
         }, m)),
         // Hover vertical line
         hoverI != null && h('line',{
@@ -857,7 +1129,7 @@ window.C = (function(){
         })
       ),
       // Legend
-      h('div',{style:{display:'flex',flexWrap:'wrap',gap:'4px 12px',marginTop:8,fontSize:11}},
+      h('div',{style:{display:'flex',flexWrap:'wrap',gap:'4px 12px',marginTop:8,fontSize:12}},
         series.map(ser => h('div',{key:ser.label, style:{display:'flex',alignItems:'center',gap:4}},
           h('div',{style:{width:10,height:10,borderRadius:2,background:ser.color}}),
           h('span',null, ser.label),
@@ -869,5 +1141,88 @@ window.C = (function(){
     );
   }
 
-  return { Kpi, YoYPill, Sparkline, Heatmap, ShareBars, QStack, Modal, LineChart, BarChart, Donut, InfoIcon, Explainer, MultiSelect, SectionHeader, SmallMultiples, PolarPeak, EmptyState, Skeleton, ChartActions, BumpChart, StreamGraph };
+  // ======== CopyButton ========
+  // Küçük kopyala butonu — tabloyu TSV olarak clipboard'a yazar (Excel/Sheets'e yapıştırılabilir).
+  // Props:
+  //   getData: () => { headers: string[], rows: Array<Array<string|number>> }
+  //   title?: 'Kopyala' (default)
+  //   size?: 'sm' | 'md' (default 'sm')
+  // Note: `rows` içindeki sub-row'ları nested array ile işaretle: {indent: 1, cells: [...]} → satır başına TAB eklenir
+  function CopyButton({getData, title='Kopyala', size='sm'}) {
+    const [copied, setCopied] = React.useState(false);
+    const handle = async (e) => {
+      e.stopPropagation();
+      const data = getData();
+      if (!data) return;
+      const lines = [];
+      if (data.headers) lines.push(data.headers.join('\t'));
+      if (data.rows) {
+        for (const row of data.rows) {
+          if (Array.isArray(row)) {
+            lines.push(row.map(cellToStr).join('\t'));
+          } else if (row && row.cells) {
+            const prefix = row.indent ? '\t'.repeat(row.indent) : '';
+            lines.push(prefix + row.cells.map(cellToStr).join('\t'));
+          }
+        }
+      }
+      const tsv = lines.join('\n');
+      // Try modern Clipboard API — if fails (headless, not focused, or not available), use fallback
+      const useFallback = () => {
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = tsv;
+          ta.style.position = 'fixed'; ta.style.top = '0'; ta.style.left = '0';
+          ta.style.opacity = '0'; ta.style.pointerEvents = 'none';
+          document.body.appendChild(ta);
+          ta.focus(); ta.select();
+          const ok = document.execCommand('copy');
+          document.body.removeChild(ta);
+          return ok;
+        } catch { return false; }
+      };
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText && document.hasFocus()) {
+          await navigator.clipboard.writeText(tsv);
+        } else {
+          useFallback();
+        }
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1400);
+      } catch {
+        if (useFallback()) {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 1400);
+        }
+      }
+    };
+    const cellToStr = (v) => {
+      if (v == null) return '';
+      if (typeof v === 'number') {
+        // Excel/Sheets TR locale: comma as decimal separator — but TSV should use period for numeric cells
+        // Keep as string with period so Excel parses as number regardless of locale
+        return Number.isInteger(v) ? String(v) : v.toFixed(4).replace(/\.?0+$/, '');
+      }
+      return String(v).replace(/\t/g,' ').replace(/\n/g,' ');
+    };
+    const btnSize = size === 'md' ? {padding:'6px 12px', fontSize:13} : {padding:'4px 9px', fontSize:12};
+    return h('button', {
+      className: 'copy-btn chip-btn' + (copied ? ' copied' : ''),
+      onClick: handle,
+      title: copied ? 'Kopyalandı!' : 'Tabloyu TSV olarak kopyala (Excel/Sheets\'e yapıştırılabilir)',
+      style: {
+        ...btnSize, borderRadius: 999, cursor: 'pointer',
+        display: 'inline-flex', alignItems: 'center', gap: 4,
+        background: copied ? 'color-mix(in srgb, var(--green, #059669) 16%, var(--bg-card))' : 'var(--bg-card)',
+        color: copied ? 'var(--green, #059669)' : 'var(--ink-2)',
+        border: '1px solid var(--line)',
+        fontWeight: 600,
+        transition: 'background .18s, color .18s, border-color .18s'
+      }
+    },
+      copied ? '✓ Kopyalandı' : (h('span', null, '📋 ', title))
+    );
+  }
+
+  return { Kpi, YoYPill, Sparkline, Heatmap, ShareBars, QStack, Modal, LineChart, BarChart, Donut, InfoIcon, Explainer, MultiSelect, SectionHeader, SmallMultiples, PolarPeak, EmptyState, Skeleton, ChartActions, BumpChart, StreamGraph, Zoomable, CopyButton };
 })();

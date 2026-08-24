@@ -218,3 +218,28 @@ Doğrulanmış 237 uzun kuyruk kulübünün hacim dağılımı:
 ### Marka görselleri
 - TV+ logosu markanın kendi asset'inden alındı (`assets/tvplus-logo.svg`, marka rengi #FAD604), Inbound logoları eklendi.
 - Header gradient'i TV+ kimliğine yaklaştırıldı: sarı → koyu (#FAD604 → #12100C). `data-palette="tvplus"` paleti eklendi ve varsayılan yapıldı.
+
+### Dashboard Özdilek yetenek setine geçirildi
+Kullanıcı geri bildirimi: görselleştirme, dinamizm ve YoY açısından eksikler vardı; Özdilek reposundaki tablo ve chart davranışları alınmalıydı.
+
+**Yapılan:**
+- Özdilek reposunun `components.jsx` (1.228 satır, 23 bileşen: + Zoomable, CopyButton) ve `styles.css` (1.514 satır) dosyaları alındı, marka bağımsızlaştırıldı.
+- `utils.js` Özdilek'in rolling 12 ay modeliyle geldi; üzerine TV+ faset yardımcıları eklendi (applyFacets, groupBy, seriesFor, FACET_ETIKET, SEVIYELER). `fmtNum`'a milyar (B) kademesi eklendi.
+- `scripts/build-data.js` yeniden yazıldı: her keyword satırı artık takvim yılı dizileri (m24/m25/m26), rolling toplamları (r12/p12/ryoy), takvim YoY, YTD YoY, peak çeyrek bayrakları (pq/rpq), Excel serial peak (peakSerial/rpeakSerial), bucket ve trend etiketi taşıyor.
+- Kat 1/2/3 yerine **faset seviyeleri**: Spor Dalı (20) / Organizasyon (164) / Sayfa Tipi (17) — chart üzerinden değiştirilebiliyor.
+
+**Karşılanan talepler:**
+- "Isı matrisi" → **Sezonsallık** olarak yeniden adlandırıldı.
+- Ay etiketleri artık yıllı: **Ağu 25 … Tem 26** (rolling görünüm). Takvim görünümünde Oca–Ara + legend'da 2024/2025/2026.
+- **Rolling 12 Ay / Takvim Yılı** segmented toggle; tüm chart ve tablolar bu moda göre yeniden çiziliyor.
+- Sezonsallık matrisinde: seviye seçimi (chart üzerinden), sıralama (Hacim ↓ / YoY ↑ / YoY ↓ / A–Z), **her hücrede YoY rozeti**, satır tıklaması ile grup detayı, Kopyala + CSV.
+- Spor dalı karnesinde her kart **kendi ölçeğinde** (yScale independent); alttaki değerin "Son 12 Ay toplam arama hacmi" olduğu açıkça yazıldı.
+- Tüm chart'larda hover metrikleri: LineChart crosshair, Heatmap hücre tooltip'i (dönem / önceki dönem / YoY / peak), Donut merkez etiketi + dilim tooltip'i, BarChart, PolarPeak, QStack, SmallMultiples.
+- **Pazar Özeti** hero bloğu: Son 12 Ay büyük rakam + YoY pill + Önceki 12 Ay karşılaştırmalı çizgi + Peak Ay kartı.
+- KPI şeridi: Keyword / Yükselen / Düşen / İzleme Intent'i / Veri Sayfası Talebi. Altında insight satırı.
+- **Ek filtre şeridi**: Peak Ay, Peak Çeyrek, Mevsim Tipi, Hacim Aralığı + Intent, Yayın Hakkı, Müsabaka Tipi, Cinsiyet, Lig Seviyesi, Coğrafya, Katman, Türk Bağlantısı. Trend segmented (Tüm / Yükselen / Stabil / Düşen).
+- Tablolar Özdilek düzenine geçirildi: ÖNCEKİ 12 AY / SON 12 AY / YOY / 12 AY TREND / PEAK AY / PEAK Ç. / BUCKET kolonları, sıralanabilir başlıklar, sayfalama.
+- Top listeler: Top 10 Hacim Lideri / En Çok Büyüyen / En Çok Daralan.
+- Çeyreklik peak dağılımı (QStack) ve spor dalı YoY kazanan/kaybeden çubuk grafiği.
+
+**Ölçülen sonuç:** Son 12 Ay 3,50B · Önceki 12 Ay 3,34B · YoY +%5 · Peak ay Nis 26 (404,8M) · 10.379 keyword · 4.298 yükselen, 4.639 düşen.

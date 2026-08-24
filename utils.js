@@ -1,68 +1,200 @@
-// Utilities — TV+ Spor Talep Haritası
+// Utilities
 window.U = (function(){
-  const D = window.DATA || {};
-  const META = D.meta || {};
-  const AYLAR = META.aylar || [];
   const TR_MONTHS = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
   const TR_MONTHS_LONG = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
 
-  // "2026-03" -> "Mar '26"
-  function ymLabel(ym){
-    if(!ym) return '–';
-    const [y,m] = String(ym).split('-');
-    return TR_MONTHS[Number(m)-1] + " '" + String(y).slice(2);
-  }
-  const AY_ETIKET = AYLAR.map(ymLabel);
-
-  function fmtNum(n){
-    if(n==null||isNaN(n)) return '–';
+  function fmtNum(n) {
+    if (n == null || isNaN(n)) return '–';
     n = Math.round(n);
-    if(Math.abs(n)>=1e6) return (n/1e6).toFixed(Math.abs(n)%1e6===0?0:1).replace('.',',')+'M';
-    if(Math.abs(n)>=1e3) return (n/1e3).toFixed(Math.abs(n)%1e3===0?0:1).replace('.',',')+'K';
+    if (Math.abs(n) >= 1e9) return (n/1e9).toFixed(Math.abs(n)%1e9===0?0:2).replace('.',',') + 'B';
+    if (Math.abs(n) >= 1e6) return (n/1e6).toFixed(n%1e6===0?0:1).replace('.',',') + 'M';
+    if (Math.abs(n) >= 1e3) return (n/1e3).toFixed(n%1e3===0?0:1).replace('.',',') + 'K';
     return n.toLocaleString('tr-TR');
   }
-  function fmtFull(n){ return (n==null||isNaN(n)) ? '–' : Math.round(n).toLocaleString('tr-TR'); }
-  function fmtPct(n, digits=1){
-    if(n==null||isNaN(n)) return '–';
-    return (n>0?'+':'') + (n*100).toFixed(digits).replace('.',',') + '%';
+  function fmtFull(n) {
+    if (n == null || isNaN(n)) return '–';
+    return Math.round(n).toLocaleString('tr-TR');
   }
-  function trendClass(v){ return v>0 ? 'pos' : v<0 ? 'neg' : 'neu'; }
-  function serialToMonthIdx(){ return null; }   // bu veri setinde Excel serial yok
+  function fmtPct(n, digits=1) {
+    if (n == null || isNaN(n)) return '–';
+    const v = (n*100);
+    return (v>0?'+':'') + v.toFixed(digits).replace('.',',') + '%';
+  }
+  function serialToMonthIdx(serial) {
+    // Excel serial -> calendar month index (0-11) of the serial's own year
+    if (!serial || typeof serial !== 'number') return null;
+    const d = new Date((serial - 25569) * 86400000);
+    return d.getUTCMonth();
+  }
+  function serialToRollingLabel(serial) {
+    // Excel serial -> "Tem 25" / "Oca 26" style year-suffixed month label
+    if (!serial || typeof serial !== 'number') return '–';
+    const d = new Date((serial - 25569) * 86400000);
+    return TR_MONTHS[d.getUTCMonth()] + ' ' + String(d.getUTCFullYear()).slice(2);
+  }
+  function trendClass(yoy) { return yoy > 0 ? 'pos' : yoy < 0 ? 'neg' : 'neu'; }
 
-  // ——— seri işlemleri ———
-  const N = () => AYLAR.length;
-  function aggregate(kws){
-    const out = new Array(N()).fill(0);
-    for(const k of kws){ const s=k.seri; if(!s) continue;
-      for(let i=0;i<N();i++) out[i] += s[i]||0; }
+  // ——— Rolling 12-month window helpers ———
+  // Window boundaries come from DATA.monthsR12 / monthsP12 (data/dashboard.js
+  // loads before utils.js). Labels carry the 2-digit year: "Tem 25" … "Haz 26".
+  const _D = window.DATA || {};
+  function ymLabel(ym) {
+    if (!ym) return '';
+    const [y, m] = String(ym).split('-');
+    return TR_MONTHS[Number(m) - 1] + ' ' + String(y).slice(2);
+  }
+  const ROLLING_LABELS = (_D.monthsR12 || []).map(ymLabel);
+  const P12_LABELS = (_D.monthsP12 || []).map(ymLabel);
+
+  // Full monthly series of a keyword/brand row (m24 optional — brands lack it)
+  function allMonthsOf(k) {
+    return [...(k.m24 || []), ...(k.m25 || []), ...(k.m26 || [])].map(v => v || 0);
+  }
+  // Son 12 Ay series (works for keywords and brands: data always ends at the last available month)
+  function rollingOf(k) { return allMonthsOf(k).slice(-12); }
+  // Önceki 12 Ay series; null if the row has no data that far back (e.g. brands without m24)
+  function prevRollingOf(k) {
+    const a = allMonthsOf(k);
+    if (a.length < 24) return null;
+    return a.slice(-24, -12);
+  }
+  // Calendar month index (0-11) of a rolling-window position (0-11)
+  function rollingIdxToCalMonth(i) {
+    const ym = (_D.monthsR12 || [])[i];
+    return ym ? Number(String(ym).split('-')[1]) - 1 : i;
+  }
+  // Rolling pencere tam 4 takvim çeyreğini kapsar; her çeyrek tek bir yıla düşer.
+  // Index = takvim çeyreği (0=Q1 … 3=Q4), değer = yıl ekli etiket ("Q3 25", "Q1 26").
+  const ROLLING_Q_LABELS = (() => {
+    const out = ['Q1', 'Q2', 'Q3', 'Q4'];
+    for (const ym of (_D.monthsR12 || [])) {
+      const [y, m] = String(ym).split('-');
+      const qi = Math.floor((Number(m) - 1) / 3);
+      out[qi] = 'Q' + (qi + 1) + ' ' + String(y).slice(2);
+    }
+    return out;
+  })();
+  // qIdx: 0-based takvim çeyreği → "Q3 25"
+  function qLabel(qIdx) { return ROLLING_Q_LABELS[qIdx] || ('Q' + (qIdx + 1)); }
+  const Q_MONTH_SPANS = ['Oca-Mar', 'Nis-Haz', 'Tem-Eyl', 'Eki-Ara'];
+  // Global "Peak Çeyrek" filtresi seçenekleri — app.jsx ve tabs.jsx ortak kullanır
+  const QUARTER_OPTIONS = ROLLING_Q_LABELS.map((l, i) => `${l} (${Q_MONTH_SPANS[i]})`);
+  // Rolling penceredeki çeyrek toplamları (index = takvim çeyreği)
+  function quarterSums(roll) {
+    const q = [0, 0, 0, 0];
+    for (let i = 0; i < 12; i++) q[Math.floor(rollingIdxToCalMonth(i) / 3)] += (roll[i] || 0);
+    return q;
+  }
+  // Son 12 ayda en yüksek hacimli takvim çeyreği (0-based)
+  function peakQuarterIdx(roll) {
+    const q = quarterSums(roll || []);
+    return q.indexOf(Math.max(...q));
+  }
+
+  // Build monthly totals aggregation for a set of keywords
+  function aggregateMonthly(kws, field='m25') {
+    const out = new Array(12).fill(0);
+    for (const k of kws) {
+      for (let i=0;i<12;i++) out[i] += (k[field]?.[i] || 0);
+    }
     return out;
   }
-  const sum = rows => rows.reduce((a,k)=>a+(k.sv||0),0);
-
-  // Son yarı ile önceki yarı karşılaştırması (13 ay penceresinde YoY yerine kullanılır)
-  function donemsel(seri){
-    if(!seri || seri.length < 4) return null;
-    const yari = Math.floor(seri.length/2);
-    const son = seri.slice(-yari).reduce((a,b)=>a+b,0);
-    const onceki = seri.slice(0, yari).reduce((a,b)=>a+b,0);
-    if(!onceki) return null;
-    return (son - onceki) / onceki;
+  // Aggregate rolling ('last') or previous ('prev') 12-month totals
+  function aggregateRolling(kws, which='last') {
+    const out = new Array(12).fill(0);
+    for (const k of kws) {
+      const a = which === 'prev' ? prevRollingOf(k) : rollingOf(k);
+      if (!a) continue;
+      for (let i=0;i<12;i++) out[i] += a[i] || 0;
+    }
+    return out;
   }
 
-  function siniflandir(seri){
-    const nz = (seri||[]).filter(v=>v>0);
-    if(!nz.length) return {sinif:'Veri Yok', cv:null, pd:null};
-    const ort = seri.reduce((a,b)=>a+b,0)/seri.length;
-    if(!ort) return {sinif:'Veri Yok', cv:null, pd:null};
-    const cv = Math.sqrt(seri.reduce((a,b)=>a+(b-ort)**2,0)/seri.length)/ort;
-    const pd = Math.max(...seri)/Math.max(Math.min(...nz),1);
-    return { sinif: cv<0.35 ? 'Evergreen' : (pd>=20||cv>=1.0) ? 'Spike' : 'Seasonal',
-             cv:+cv.toFixed(3), pd:+pd.toFixed(1) };
+  // Heatmap color scale — Google Sheets style: red (low) → yellow (mid) → green (high)
+  // #e67c73 → #fbbc04 → #57bb8a
+  function lerp(a, b, t) { return Math.round(a + (b-a)*t); }
+  function hmColor(t, palette='coral') {
+    t = Math.max(0, Math.min(1, t));
+    // red e67c73 = (230,124,115), yellow fbbc04 = (251,188,4), green 57bb8a = (87,187,138)
+    if (t < 0.5) {
+      const k = t*2;
+      const r = lerp(230, 251, k);
+      const g = lerp(124, 188, k);
+      const b = lerp(115, 4, k);
+      return `rgb(${r},${g},${b})`;
+    } else {
+      const k = (t-0.5)*2;
+      const r = lerp(251, 87, k);
+      const g = lerp(188, 187, k);
+      const b = lerp(4, 138, k);
+      return `rgb(${r},${g},${b})`;
+    }
   }
-  const peakIdx = seri => (seri||[]).indexOf(Math.max(...(seri||[0])));
+  function hmText(t) {
+    // Red/green ends are dark enough for white; yellow midband needs dark text
+    return (t > 0.75 || t < 0.25) ? 'white' : '#10332F';
+  }
 
-  // ——— faset filtresi ———
-  function uygula(rows, f, arama){
+  // CSV export
+  function toCSV(rows, headers) {
+    const esc = v => {
+      if (v == null) return '';
+      const s = String(v);
+      if (/[,"\n]/.test(s)) return '"' + s.replace(/"/g,'""') + '"';
+      return s;
+    };
+    const lines = [headers.map(h=>h.label).join(',')];
+    for (const r of rows) lines.push(headers.map(h => esc(typeof h.get==='function'?h.get(r):r[h.key])).join(','));
+    return lines.join('\n');
+  }
+  function downloadCSV(name, csv) {
+    const blob = new Blob(['\uFEFF' + csv], {type:'text/csv;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = name; a.click();
+    setTimeout(()=>URL.revokeObjectURL(url), 500);
+  }
+
+  // Simple debounce
+  function debounce(fn, ms=150) {
+    let t; return (...a) => { clearTimeout(t); t=setTimeout(()=>fn(...a), ms); };
+  }
+
+  // Sparkline SVG path
+  function sparkPath(values, w, h, pad=1) {
+    if (!values || !values.length) return {line:'', area:'', min:0, max:0};
+    const min = Math.min(...values), max = Math.max(...values);
+    const range = max - min || 1;
+    const n = values.length;
+    const xs = values.map((_,i) => pad + (i * (w - 2*pad)) / (n-1));
+    const ys = values.map(v => pad + (h - 2*pad) - ((v - min) / range) * (h - 2*pad));
+    let line = 'M' + xs.map((x,i) => `${x.toFixed(1)},${ys[i].toFixed(1)}`).join(' L');
+    let area = line + ` L${xs[n-1].toFixed(1)},${h-pad} L${xs[0].toFixed(1)},${h-pad} Z`;
+    return {line, area, min, max};
+  }
+
+  // Quartile bucket
+  function quarterName(i) { return 'Q' + (Math.floor(i/3)+1); }
+
+
+  // ——— TV+ faset yardımcıları ———
+  const FACET_ETIKET = {
+    spor:'Spor Dalı', org:'Organizasyon', st:'Sayfa Tipi', it:'Intent', ent:'Varlık Tipi',
+    hak:'Yayın Hakkı', mus:'Müsabaka Tipi', sev:'Lig Seviyesi', pres:'Prestij Katmanı',
+    cins:'Cinsiyet', km:'Kulüp/Milli', tb:'Takım/Bireysel', cog:'Coğrafya', yer:'Yerlilik',
+    turk:'Türk Bağlantısı', per:'Periyodiklik', tak:'Takvim Tipi', marka:'Marka Tipi',
+    dil:'Dil', uzn:'Sorgu Uzunluğu', ktm:'Katman', kurum:'Kurum Sorgusu',
+    sinif:'Mevsim Tipi', bucket:'Hacim Aralığı', trend:'Trend', kulup:'Kulüp',
+  };
+  // Kırılım hiyerarşisi: seviye 1 → 2 → 3 (Özdilek'teki Kat 1/2/3 karşılığı)
+  const SEVIYELER = [
+    {id:'spor', label:'Spor Dalı'},
+    {id:'org',  label:'Organizasyon'},
+    {id:'st',   label:'Sayfa Tipi'},
+  ];
+
+  // Faset filtresi: {alan:[değerler]} — boş dizi = filtre yok
+  function applyFacets(rows, f, arama){
     let out = rows;
     for(const [alan, degerler] of Object.entries(f||{})){
       if(!degerler || !degerler.length) continue;
@@ -76,75 +208,73 @@ window.U = (function(){
     return out;
   }
 
-  // ——— renk ———
-  const lerp = (a,b,t) => Math.round(a+(b-a)*t);
-  function hmColor(t){
-    t = Math.max(0, Math.min(1, t));
-    if(t<0.5){ const k=t*2; return `rgb(${lerp(230,251,k)},${lerp(124,188,k)},${lerp(115,4,k)})`; }
-    const k=(t-0.5)*2; return `rgb(${lerp(251,87,k)},${lerp(188,187,k)},${lerp(4,138,k)})`;
-  }
-  const hmText = t => (t>0.75||t<0.25) ? 'white' : '#10332F';
-
-  // Tableau 10 colorblind-safe — grup renk atamaları için
-  const PALET = ['#4E79A7','#F28E2B','#E15759','#76B7B2','#59A14F',
-                 '#EDC948','#B07AA1','#FF9DA7','#9C755F','#BAB0AC'];
-  function renkAta(adlar){
-    const m = {};
-    adlar.forEach((a,i)=>{ m[a] = PALET[i % PALET.length]; });
-    return m;
-  }
-  const SINIF_RENK = {Evergreen:'#2E7D32', Seasonal:'#F5A623', Spike:'#D32F2F', 'Veri Yok':'#8A8A8A'};
-  const HAK_RENK   = {'TV+ Var':'#2E7D32', 'TV+ Yok':'#D32F2F', 'Doğrulanacak':'#F5A623', 'Kısmi':'#B07AA1'};
-
-  // ——— sparkline path ———
-  function sparkPath(values, w, h, pad=1){
-    if(!values || !values.length) return {line:'',area:'',min:0,max:0};
-    const min=Math.min(...values), max=Math.max(...values), range=max-min||1, n=values.length;
-    const xs = values.map((_,i)=> pad + (i*(w-2*pad))/Math.max(n-1,1));
-    const ys = values.map(v => pad + (h-2*pad) - ((v-min)/range)*(h-2*pad));
-    const line = 'M'+xs.map((x,i)=>`${x.toFixed(1)},${ys[i].toFixed(1)}`).join(' L');
-    return { line, area: line+` L${xs[n-1].toFixed(1)},${h-pad} L${xs[0].toFixed(1)},${h-pad} Z`, min, max };
-  }
-
-  // ——— CSV ———
-  function toCSV(rows, headers){
-    const esc = v => { if(v==null) return ''; const s=String(v);
-      return /[;"\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; };
-    return [headers.map(h=>esc(h.label)).join(';'),
-      ...rows.map(r=>headers.map(h=>esc(typeof h.get==='function'?h.get(r):r[h.key])).join(';'))].join('\n');
-  }
-  function downloadCSV(name, csv){
-    const blob = new Blob(['﻿'+csv], {type:'text/csv;charset=utf-8'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob); a.download = name; a.click();
-    setTimeout(()=>URL.revokeObjectURL(a.href), 500);
-  }
-  function debounce(fn, ms=150){ let t; return (...a)=>{clearTimeout(t); t=setTimeout(()=>fn(...a),ms);}; }
-  const quarterName = i => 'Q'+(Math.floor(i/3)+1);
-
-  // ——— gruplama (grup kartlarına tıklanınca detay için) ———
-  function grupla(rows, alan){
+  // Grupla: herhangi bir faset ekseninde, rolling + takvim metrikleriyle
+  function groupBy(rows, alan, altAlan){
     const m = new Map();
     for(const k of rows){
       const v = k[alan]; if(v===undefined || v==='') continue;
-      if(!m.has(v)) m.set(v, {ad:v, alan, hacim:0, kw:0, satirlar:[], seri:new Array(N()).fill(0)});
-      const g = m.get(v); g.hacim += k.sv||0; g.kw++; g.satirlar.push(k);
-      for(let i=0;i<N();i++) g.seri[i] += (k.seri && k.seri[i])||0;
+      const key = altAlan ? v + ' ▸ ' + (k[altAlan]||'–') : v;
+      if(!m.has(key)) m.set(key, {label:key, ust:v, alt: altAlan?k[altAlan]:null,
+        alan, rows:[], r12:0, p12:0, tot24:0, tot25:0, kwCount:0});
+      const g = m.get(key);
+      g.rows.push(k); g.kwCount++;
+      g.r12 += k.r12||0; g.p12 += k.p12||0;
+      g.tot24 += (k.m24||[]).reduce((a,b)=>a+(b||0),0);
+      g.tot25 += (k.m25||[]).reduce((a,b)=>a+(b||0),0);
     }
-    const toplam = rows.reduce((a,k)=>a+(k.sv||0),0) || 1;
+    const toplamR12 = rows.reduce((a,k)=>a+(k.r12||0),0) || 1;
     return [...m.values()].map(g=>{
-      const s = siniflandir(g.seri);
-      return {...g, ...s, pay:g.hacim/toplam, peakIdx:peakIdx(g.seri),
-              peak:AYLAR[peakIdx(g.seri)]||null, trend:donemsel(g.seri)};
-    }).sort((a,b)=>b.hacim-a.hacim);
+      const roll = aggregateRolling(g.rows,'last');
+      const prev = aggregateRolling(g.rows,'prev');
+      const cal25 = aggregateMonthly(g.rows,'m25');
+      const cal24 = aggregateMonthly(g.rows,'m24');
+      const cal26 = aggregateMonthly(g.rows,'m26');
+      const nz = roll.filter(v=>v>0);
+      const mean = roll.reduce((a,b)=>a+b,0)/(roll.length||1);
+      const cv = mean ? Math.sqrt(roll.reduce((a,b)=>a+(b-mean)**2,0)/roll.length)/mean : 0;
+      const pdr = nz.length ? Math.max(...roll)/Math.max(Math.min(...nz),1) : 0;
+      const pIdx = roll.indexOf(Math.max(...roll));
+      return {...g, roll, prev, cal24, cal25, cal26,
+        ryoy: g.p12>0 ? (g.r12-g.p12)/g.p12 : null,
+        yoy:  g.tot24>0 ? (g.tot25-g.tot24)/g.tot24 : null,
+        share: g.r12/toplamR12,
+        peakIdx: pIdx, peakLabel: ROLLING_LABELS[pIdx] || '–',
+        peakQ: peakQuarterIdx(roll),
+        sezType: cv<0.35 ? 'Evergreen' : (pdr>=20||cv>=1.0) ? 'Spike' : 'Seasonal',
+        cv:+cv.toFixed(3), pdRatio:+pdr.toFixed(1),
+        rising: g.rows.filter(k=>k.trend==='Yükselen').length,
+        falling: g.rows.filter(k=>k.trend==='Düşen').length,
+      };
+    }).sort((a,b)=>b.r12-a.r12);
   }
 
+  // Görünüm moduna göre seri + etiketler
+  function seriesFor(g, viewMode){
+    if(viewMode==='calendar'){
+      const out=[];
+      if(g.cal24 && g.cal24.some(v=>v)) out.push({name:'2024', color:'#9C9C9C', values:g.cal24});
+      if(g.cal25 && g.cal25.some(v=>v)) out.push({name:'2025', color:'#4E79A7', values:g.cal25});
+      if(g.cal26 && g.cal26.some(v=>v)) out.push({name:'2026', color:'#FAD604',
+        values: g.cal26.concat(new Array(Math.max(0,12-g.cal26.length)).fill(null))});
+      return {series:out, labels:TR_MONTHS};
+    }
+    return {series:[
+      {name:'Önceki 12 Ay', color:'#BAB0AC', values:g.prev, dashed:true},
+      {name:'Son 12 Ay',    color:'var(--accent-deep)', values:g.roll},
+    ], labels:ROLLING_LABELS};
+  }
+
+  const SEZ_RENK = {Evergreen:'#2E7D32', Seasonal:'#F5A623', Spike:'#D32F2F', 'Veri Yok':'#8A8A8A'};
+  const HAK_RENK = {'TV+ Var':'#2E7D32','TV+ Yok':'#D32F2F','Doğrulanacak':'#F5A623','Kısmi':'#B07AA1'};
+
   return {
-    D, META, AYLAR, AY_ETIKET, TR_MONTHS, TR_MONTHS_LONG, ymLabel,
-    fmtNum, fmtFull, fmtPct, trendClass, serialToMonthIdx,
-    aggregate, sum, donemsel, siniflandir, peakIdx, uygula, grupla,
-    hmColor, hmText, PALET, renkAta, SINIF_RENK, HAK_RENK,
-    sparkPath, toCSV, downloadCSV, debounce, quarterName,
-    aggregateMonthly: aggregate,
+    TR_MONTHS, TR_MONTHS_LONG,
+    FACET_ETIKET, SEVIYELER, applyFacets, groupBy, seriesFor, SEZ_RENK, HAK_RENK,
+    ROLLING_LABELS, P12_LABELS, ymLabel,
+    ROLLING_Q_LABELS, QUARTER_OPTIONS, qLabel, quarterSums, peakQuarterIdx,
+    fmtNum, fmtFull, fmtPct, serialToMonthIdx, serialToRollingLabel, trendClass,
+    aggregateMonthly, aggregateRolling, rollingOf, prevRollingOf, rollingIdxToCalMonth,
+    hmColor, hmText,
+    toCSV, downloadCSV, debounce, sparkPath, quarterName,
   };
 })();

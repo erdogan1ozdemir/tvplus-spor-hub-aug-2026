@@ -1,239 +1,219 @@
 #!/usr/bin/env node
 /**
- * build-data.js — data/raw/hacim_*.csv  ->  data/dashboard.js
+ * build-data.js — data/raw/hacim_*.csv → data/dashboard.js
  *
- * Faset modeli: her keyword satiri 20+ oznitelik kolonu tasir. Dashboard
- * herhangi bir faset kombinasyonuyla yeniden clusterlayabilir; sabit
- * Kat1/Kat2/Kat3 hiyerarsisi yoktur.
+ * Şema, rolling 12 ay modeliyle uyumludur: her keyword satırı takvim yılı
+ * dizileri (m24/m25/m26) ve rolling pencere toplamlarını (r12/p12/ryoy) taşır.
+ * Gruplama sabit bir hiyerarşiye bağlı değildir; 26 faset kolonunun herhangi
+ * biri çalışma zamanında kırılım ekseni olarak kullanılabilir.
  *
- * Hacim kaynagi: DataForSEO (tek kaynak). Ahrefs degerleri bu dosyaya girmez.
+ * Hacim kaynağı: DataForSEO (tek kaynak). Ahrefs değerleri bu dosyaya girmez.
  */
 const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
-const RAW = path.join(ROOT, 'data', 'raw');
-const OUT = path.join(ROOT, 'data', 'dashboard.js');
+const RAW  = path.join(ROOT, 'data', 'raw');
+const OUT  = path.join(ROOT, 'data', 'dashboard.js');
 
-// ————————————————————————————————————————————— CSV
-function parseCSV(text) {
-  if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
-  const rows = [];
-  let row = [], cell = '', q = false;
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i];
-    if (q) {
-      if (c === '"') { if (text[i + 1] === '"') { cell += '"'; i++; } else q = false; }
-      else cell += c;
-    } else if (c === '"') q = true;
-    else if (c === ',') { row.push(cell); cell = ''; }
-    else if (c === '\n') { row.push(cell); rows.push(row); row = []; cell = ''; }
-    else if (c !== '\r') cell += c;
+const PALETTE = ['#4E79A7','#F28E2B','#E15759','#76B7B2','#59A14F',
+                 '#EDC948','#B07AA1','#FF9DA7','#9C755F','#BAB0AC'];
+
+// ——————————————————————————————————————————— CSV
+function parseCSV(text){
+  if(text.charCodeAt(0)===0xFEFF) text = text.slice(1);
+  const rows=[]; let row=[], cell='', q=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(q){ if(c==='"'){ if(text[i+1]==='"'){cell+='"';i++;} else q=false; } else cell+=c; }
+    else if(c==='"') q=true;
+    else if(c===',') { row.push(cell); cell=''; }
+    else if(c==='\n'){ row.push(cell); rows.push(row); row=[]; cell=''; }
+    else if(c!=='\r') cell+=c;
   }
-  if (cell !== '' || row.length) { row.push(cell); rows.push(row); }
-  const head = rows.shift().map(h => h.trim());
-  return rows.filter(r => r.length > 1).map(r => {
-    const o = {};
-    head.forEach((h, i) => { o[h] = (r[i] ?? '').trim(); });
-    return o;
+  if(cell!=='' || row.length){ row.push(cell); rows.push(row); }
+  const head = rows.shift().map(h=>h.trim());
+  return rows.filter(r=>r.length>1).map(r=>{
+    const o={}; head.forEach((h,i)=>{ o[h]=(r[i]??'').trim(); }); return o;
   });
 }
 
-// ————————————————————————————————————————————— sezonsallik
-function siniflandir(seri) {
-  const nz = seri.filter(v => v > 0);
-  if (!nz.length) return { sinif: 'Veri Yok', cv: null, pd: null };
-  const ort = seri.reduce((a, b) => a + b, 0) / seri.length;
-  if (!ort) return { sinif: 'Veri Yok', cv: null, pd: null };
-  const varyans = seri.reduce((a, b) => a + (b - ort) ** 2, 0) / seri.length;
-  const cv = Math.sqrt(varyans) / ort;
-  const pd = Math.max(...seri) / Math.max(Math.min(...nz), 1);
-  let sinif = 'Seasonal';
-  if (cv < 0.35) sinif = 'Evergreen';
-  else if (pd >= 20 || cv >= 1.0) sinif = 'Spike';
-  return { sinif, cv: +cv.toFixed(3), pd: +pd.toFixed(1) };
+// ——————————————————————————————————————————— yardımcılar
+const serial = ym => {
+  const [y,m] = ym.split('-').map(Number);
+  return Math.round(Date.UTC(y, m-1, 1)/86400000) + 25569;
+};
+const toplam = a => a.reduce((x,y)=>x+(y||0),0);
+const ort    = a => a.length ? toplam(a)/a.length : 0;
+function oran(sonra, once){ return (once>0) ? (sonra-once)/once : null; }
+
+function siniflandir(seri){
+  const nz = seri.filter(v=>v>0);
+  if(!nz.length) return {sinif:'Veri Yok', cv:null, pd:null};
+  const m = ort(seri);
+  if(!m) return {sinif:'Veri Yok', cv:null, pd:null};
+  const cv = Math.sqrt(seri.reduce((a,b)=>a+(b-m)**2,0)/seri.length)/m;
+  const pd = Math.max(...seri)/Math.max(Math.min(...nz),1);
+  return { sinif: cv<0.35 ? 'Evergreen' : (pd>=20||cv>=1.0) ? 'Spike' : 'Seasonal',
+           cv:+cv.toFixed(3), pd:+pd.toFixed(1) };
 }
-
-// ————————————————————————————————————————————— YoY / donem modeli
-// Veri penceresi 2024-01'den itibaren; takvim yili, YTD ve rolling 12 ay karsilastirmalari.
-function donemler(aylar, seri) {
-  const yil = {};
-  aylar.forEach((ym, i) => {
-    const y = ym.slice(0, 4);
-    (yil[y] = yil[y] || { toplam: 0, ay: 0, seri: [] });
-    yil[y].toplam += seri[i] || 0; yil[y].ay++; yil[y].seri.push(seri[i] || 0);
-  });
-  const yillar = Object.keys(yil).sort();
-  const sonYil = yillar[yillar.length - 1];
-  const oncekiYil = yillar[yillar.length - 2];
-
-  // Takvim YoY: son TAM yil ile bir onceki tam yil
-  const tamYillar = yillar.filter(y => yil[y].ay === 12);
-  let yoyTakvim = null, takvimA = null, takvimB = null;
-  if (tamYillar.length >= 2) {
-    takvimB = tamYillar[tamYillar.length - 1]; takvimA = tamYillar[tamYillar.length - 2];
-    const a = yil[takvimA].toplam, b = yil[takvimB].toplam;
-    if (a > 0) yoyTakvim = (b - a) / a;
-  }
-  // YTD YoY: kismi son yilin ay sayisi kadar, onceki yilin ayni donemiyle
-  let yoyYtd = null, ytdAy = null;
-  if (oncekiYil && yil[sonYil].ay < 12) {
-    ytdAy = yil[sonYil].ay;
-    const buYil = yil[sonYil].toplam;
-    const gecen = yil[oncekiYil].seri.slice(0, ytdAy).reduce((a, b) => a + b, 0);
-    if (gecen > 0) yoyYtd = (buYil - gecen) / gecen;
-  }
-  // Rolling 12 ay vs onceki 12 ay
-  let yoyRolling = null, r12 = null, p12 = null;
-  if (seri.length >= 24) {
-    r12 = seri.slice(-12).reduce((a, b) => a + b, 0);
-    p12 = seri.slice(-24, -12).reduce((a, b) => a + b, 0);
-    if (p12 > 0) yoyRolling = (r12 - p12) / p12;
-  }
-  return {
-    yillar, yilToplam: Object.fromEntries(yillar.map(y => [y, yil[y].toplam])),
-    yilSeri: Object.fromEntries(yillar.map(y => [y, yil[y].seri])),
-    yoyTakvim, takvimA, takvimB, yoyYtd, ytdAy, yoyRolling, r12, p12
-  };
-}
-
-function bant(sv) {
-  if (!sv) return 'Veri yok';
-  if (sv < 1000) return '< 1.000';
-  if (sv < 5000) return '1.000-4.999';
-  if (sv < 20000) return '5.000-19.999';
-  if (sv < 100000) return '20.000-99.999';
-  if (sv < 1000000) return '100.000-999.999';
+function bant(sv){
+  if(!sv) return 'Veri yok';
+  if(sv<1000) return '< 1.000';
+  if(sv<5000) return '1.000 – 4.999';
+  if(sv<20000) return '5.000 – 19.999';
+  if(sv<100000) return '20.000 – 99.999';
+  if(sv<1000000) return '100.000 – 999.999';
   return '1M+';
 }
+// Çeyrek peak bayrakları: hangi takvim çeyreği zirve yapıyor
+function ceyrekBayrak(m12){
+  const q=[0,0,0,0];
+  m12.forEach((v,i)=>{ q[Math.floor(i/3)] += v||0; });
+  const mx = Math.max(...q);
+  return { pq: q.map(v => (mx>0 && v===mx) ? 1 : 0), qSum:q };
+}
 
-// ————————————————————————————————————————————— facet haritasi
-// CSV kolonu -> DATA icindeki kisa ad (dosya boyutu icin)
+// CSV kolonu → DATA kısa adı
 const FACET = {
-  organizasyon: 'org', spor_dali: 'spor', musabaka_tipi: 'mus', lig_seviyesi: 'sev',
-  prestij_katmani: 'pres', cinsiyet: 'cins', kulup_milli: 'km', takim_bireysel: 'tb',
-  cografya: 'cog', yerlilik: 'yer', turk_baglantisi: 'turk', yayin_hakki: 'hak',
-  periyodiklik: 'per', takvim_tipi: 'tak', sayfa_tipi: 'st', intent_katmani: 'it',
-  entity_tipi: 'ent', marka_tipi: 'marka', dil: 'dil', sorgu_uzunlugu: 'uzn',
-  varyant_kodu: 'vk', katman: 'ktm', kurum_sorgusu: 'kurum',
-  kulup_dogrulama: 'dog', kulup: 'kulup'
+  organizasyon:'org', spor_dali:'spor', musabaka_tipi:'mus', lig_seviyesi:'sev',
+  prestij_katmani:'pres', cinsiyet:'cins', kulup_milli:'km', takim_bireysel:'tb',
+  cografya:'cog', yerlilik:'yer', turk_baglantisi:'turk', yayin_hakki:'hak',
+  periyodiklik:'per', takvim_tipi:'tak', sayfa_tipi:'st', intent_katmani:'it',
+  entity_tipi:'ent', marka_tipi:'marka', dil:'dil', sorgu_uzunlugu:'uzn',
+  varyant_kodu:'vk', katman:'ktm', kurum_sorgusu:'kurum',
+  kulup_dogrulama:'dog', oyuncu_dogrulama:'odog', kulup:'kulup',
 };
 
-// ————————————————————————————————————————————— yukle
+// ——————————————————————————————————————————— yükle
 const dosyalar = fs.readdirSync(RAW)
-  .filter(f => f.startsWith('hacim_') && f.endsWith('.csv') && !f.endsWith('_elenen.csv'));
-if (!dosyalar.length) { console.error('data/raw altinda hacim_*.csv bulunamadi.'); process.exit(1); }
+  .filter(f=>f.startsWith('hacim_') && f.endsWith('.csv') && !f.endsWith('_elenen.csv'));
+if(!dosyalar.length){ console.error('data/raw altında hacim_*.csv bulunamadı.'); process.exit(1); }
 
-let aylar = null;
-const kwMap = new Map();     // normalize keyword -> satir (mukerrer engelle)
-let elenenMukerrer = 0;
+let AY = null;
+const kwMap = new Map();
+let mukerrer = 0;
 
-for (const f of dosyalar) {
-  const rows = parseCSV(fs.readFileSync(path.join(RAW, f), 'utf8'));
-  if (!rows.length) continue;
-  const ayKol = Object.keys(rows[0]).filter(k => /^\d{4}-\d{2}$/.test(k)).sort();
-  if (!aylar || ayKol.length > aylar.length) aylar = ayKol;
+for(const f of dosyalar){
+  const rows = parseCSV(fs.readFileSync(path.join(RAW,f),'utf8'));
+  if(!rows.length) continue;
+  const ayKol = Object.keys(rows[0]).filter(k=>/^\d{4}-\d{2}$/.test(k)).sort();
+  if(!AY || ayKol.length > AY.length) AY = ayKol;
 
-  for (const r of rows) {
-    if (r.veri_var !== 'evet') continue;
-    const kw = (r.keyword || '').trim().toLowerCase();
-    if (!kw) continue;
-    const sv = parseInt(r.search_volume || '0', 10) || 0;
-    if (kwMap.has(kw)) { elenenMukerrer++; if (sv <= kwMap.get(kw).sv) continue; }
+  for(const r of rows){
+    if(r.veri_var !== 'evet') continue;
+    const kw = (r.keyword||'').trim().toLowerCase();
+    if(!kw) continue;
+    const sv = parseInt(r.search_volume||'0',10) || 0;
+    if(kwMap.has(kw)){ mukerrer++; if(sv <= kwMap.get(kw).sv) continue; }
 
-    const seri = ayKol.map(m => parseInt(r[m] || '0', 10) || 0);
-    const { sinif, cv, pd } = siniflandir(seri);
-    const maxI = seri.indexOf(Math.max(...seri));
-    const nzMin = Math.min(...seri.filter(v => v > 0).concat([Infinity]));
-    const minI = seri.findIndex(v => v === nzMin);
-
-    const dn = donemler(ayKol, seri);
-    const o = { kw, sv, seri, sinif, cv, pd, bant: bant(sv),
-                peak: ayKol[maxI] || null, dip: (minI >= 0 ? ayKol[minI] : null),
-                yoy: dn.yoyTakvim, yoyYtd: dn.yoyYtd, yoyR: dn.yoyRolling,
-                r12: dn.r12, p12: dn.p12, yilT: dn.yilToplam,
-                kaynak: f.replace('hacim_', '').replace('.csv', '') };
-    for (const [csvKol, kisa] of Object.entries(FACET)) {
-      if (r[csvKol] !== undefined && r[csvKol] !== '') o[kisa] = r[csvKol];
-    }
-    kwMap.set(kw, o);
+    const seri = ayKol.map(m => parseInt(r[m]||'0',10) || 0);
+    const o = { kw, sv, _seri:seri, _ay:ayKol, kaynak:f.replace('hacim_','').replace('.csv','') };
+    for(const [csvKol,kisa] of Object.entries(FACET))
+      if(r[csvKol]!==undefined && r[csvKol]!=='') o[kisa] = r[csvKol];
+    kwMap.set(kw,o);
   }
 }
 
-const keywords = [...kwMap.values()].sort((a, b) => b.sv - a.sv);
+// Takvim yılı blokları
+const yillar = [...new Set(AY.map(a=>a.slice(0,4)))].sort();
+const months2024 = AY.filter(a=>a.startsWith(yillar[0]));
+const months2025 = yillar[1] ? AY.filter(a=>a.startsWith(yillar[1])) : [];
+const months2026 = yillar[2] ? AY.filter(a=>a.startsWith(yillar[2])) : [];
+const monthsR12  = AY.slice(-12);
+const monthsP12  = AY.length>=24 ? AY.slice(-24,-12) : [];
 
-// ————————————————————————————————————————————— agregasyonlar
-function grupla(alan, filtre = () => true) {
-  const m = new Map();
-  for (const k of keywords) {
-    if (!filtre(k)) continue;
-    const v = k[alan];
-    if (v === undefined || v === '') continue;
-    if (!m.has(v)) m.set(v, { ad: v, hacim: 0, kw: 0, seri: new Array(aylar.length).fill(0) });
-    const g = m.get(v);
-    g.hacim += k.sv; g.kw++;
-    k.seri.forEach((s, i) => { g.seri[i] += s; });
-  }
-  return [...m.values()]
-    .map(g => {
-      const dn = donemler(aylar, g.seri);
-      return { ...g, ...siniflandir(g.seri),
-               peak: aylar[g.seri.indexOf(Math.max(...g.seri))] || null,
-               yoy: dn.yoyTakvim, yoyYtd: dn.yoyYtd, yoyR: dn.yoyRolling,
-               r12: dn.r12, p12: dn.p12, yilT: dn.yilToplam };
-    })
-    .sort((a, b) => b.hacim - a.hacim);
+const keywords = [];
+for(const o of kwMap.values()){
+  const idx = ym => o._ay.indexOf(ym);
+  const al  = liste => liste.map(ym => { const i=idx(ym); return i>=0 ? o._seri[i] : 0; });
+  const m24 = al(months2024), m25 = al(months2025), m26 = al(months2026);
+  const tum = [...m24, ...m25, ...m26];
+  const r12arr = tum.slice(-12);
+  const p12arr = tum.length>=24 ? tum.slice(-24,-12) : null;
+  const r12 = toplam(r12arr), p12 = p12arr ? toplam(p12arr) : null;
+
+  const a24 = m24.length ? Math.round(ort(m24)) : null;
+  const a25 = m25.length ? Math.round(ort(m25)) : null;
+  const yoy = oran(toplam(m25), toplam(m24));
+  const ryoy = p12!=null ? oran(r12, p12) : null;
+  // YTD: kısmi son yıl ile önceki yılın aynı ay sayısı
+  const ytd = (m26.length && m25.length>=m26.length)
+    ? oran(toplam(m26), toplam(m25.slice(0,m26.length))) : null;
+
+  const {pq}  = ceyrekBayrak(m25.length?m25:m24);
+  const rC    = ceyrekBayrak(r12arr);
+  const peakI25 = m25.length ? m25.indexOf(Math.max(...m25)) : -1;
+  const peakIR  = r12arr.indexOf(Math.max(...r12arr));
+  const sz = siniflandir(tum);
+  const nz = tum.filter(v=>v>0);
+  const dipI = nz.length ? tum.indexOf(Math.min(...nz)) : -1;
+
+  const k = { kw:o.kw, sv:o.sv, m24, m25, m26,
+    a24, a25, yoy, r12, p12, ryoy, ytd,
+    pq, rpq: rC.pq,
+    peakSerial: peakI25>=0 ? serial(months2025[peakI25]) : null,
+    rpeakSerial: peakIR>=0 ? serial(monthsR12[peakIR]) : null,
+    peakYm: peakIR>=0 ? monthsR12[peakIR] : null,
+    dipYm: dipI>=0 ? AY[dipI] : null,
+    bucket: bant(r12 ? Math.round(r12/12) : o.sv),
+    sinif: sz.sinif, cv: sz.cv, pd: sz.pd,
+    trend: ryoy==null ? 'Veri Yok' : ryoy>0.05 ? 'Yükselen' : ryoy<-0.05 ? 'Düşen' : 'Stabil',
+    kaynak:o.kaynak };
+  for(const kisa of Object.values(FACET)) if(o[kisa]!==undefined) k[kisa]=o[kisa];
+  // Özdilek uyumluluk alanları
+  k.brand   = (k.ent==='Takım'||k.ent==='Oyuncu') ? k.kw : null;
+  k.catalog = k.hak==='TV+ Var' ? 'Var' : k.hak==='TV+ Yok' ? 'Yok' : '';
+  keywords.push(k);
 }
+keywords.sort((a,b)=>(b.r12||0)-(a.r12||0));
 
-const jenerik = k => k.marka === 'Jenerik' || !k.marka;
-
+// ——————————————————————————————————————————— faset envanteri
 const facetDegerleri = {};
-for (const kisa of Object.values(FACET)) {
-  const set = new Set();
-  for (const k of keywords) if (k[kisa]) set.add(k[kisa]);
-  if (set.size && set.size < 400) facetDegerleri[kisa] = [...set].sort();
+for(const kisa of Object.values(FACET)){
+  const s = new Set();
+  for(const k of keywords) if(k[kisa]) s.add(k[kisa]);
+  if(s.size && s.size<600) facetDegerleri[kisa] = [...s].sort((a,b)=>String(a).localeCompare(String(b),'tr'));
 }
+facetDegerleri.sinif  = [...new Set(keywords.map(k=>k.sinif))].sort();
+facetDegerleri.bucket = ['< 1.000','1.000 – 4.999','5.000 – 19.999','20.000 – 99.999','100.000 – 999.999','1M+']
+  .filter(b=>keywords.some(k=>k.bucket===b));
+facetDegerleri.trend  = ['Yükselen','Stabil','Düşen'];
 
+// Spor dalı renk paleti (rolling hacme göre)
+const sporSirali = [...new Set(keywords.map(k=>k.spor).filter(Boolean))]
+  .map(s=>({s, v: keywords.filter(k=>k.spor===s).reduce((a,k)=>a+(k.r12||0),0)}))
+  .sort((a,b)=>b.v-a.v).map(x=>x.s);
+const SPOR_RENK = {};
+sporSirali.forEach((s,i)=>{ SPOR_RENK[s] = PALETTE[i%PALETTE.length]; });
+
+const jenerik = keywords.filter(k=>!k.marka || k.marka==='Jenerik');
 const DATA = {
   meta: {
-    olusturma: new Date().toISOString().slice(0, 10),
+    olusturma: new Date().toISOString().slice(0,10),
     kaynak: 'DataForSEO · Google Ads Search Volume · Türkiye/Türkçe',
-    aylar,
+    aylar: AY, yillar, dosyalar, mukerrer,
     toplamKeyword: keywords.length,
-    donem: (() => { const d = donemler(aylar, new Array(aylar.length).fill(0));
-      return { yillar: d.yillar, takvimA: d.takvimA, takvimB: d.takvimB, ytdAy: d.ytdAy }; })(),
-    toplamHacim: keywords.filter(jenerik).reduce((a, k) => a + k.sv, 0),
-    markaliHacim: keywords.filter(k => !jenerik(k)).reduce((a, k) => a + k.sv, 0),
-    dosyalar,
-    elenenMukerrer
+    toplamR12: jenerik.reduce((a,k)=>a+(k.r12||0),0),
+    toplamP12: jenerik.reduce((a,k)=>a+(k.p12||0),0),
   },
-  facetAdlari: FACET,
-  facetDegerleri,
+  months2024, months2025, months2026, monthsR12, monthsP12,
+  facetAdlari: FACET, facetDegerleri,
   keywords,
-  ozet: {
-    sporDali:    grupla('spor', jenerik),
-    organizasyon: grupla('org', jenerik),
-    sayfaTipi:   grupla('st', jenerik),
-    intent:      grupla('it', jenerik),
-    yayinHakki:  grupla('hak', jenerik),
-    entityTipi:  grupla('ent', jenerik),
-    cinsiyet:    grupla('cins', jenerik),
-    musabakaTipi: grupla('mus', jenerik),
-    sezonsallik: grupla('sinif', jenerik),
-    katman:      grupla('ktm', jenerik),
-    marka:       grupla('marka')
-  }
 };
 
-fs.mkdirSync(path.dirname(OUT), { recursive: true });
+fs.mkdirSync(path.dirname(OUT), {recursive:true});
 fs.writeFileSync(OUT,
   'window.DATA = ' + JSON.stringify(DATA) + ';\n' +
-  'window.BRAND_ACCENT = (window.BRAND && window.BRAND.accent) || "#FFC900";\n', 'utf8');
+  'window.SPOR_RENK = ' + JSON.stringify(SPOR_RENK) + ';\n' +
+  'window.BRAND_ACCENT = (window.BRAND && window.BRAND.accent) || "#FAD604";\n', 'utf8');
 
-const mb = (fs.statSync(OUT).size / 1048576).toFixed(2);
-console.log(`Dosya      : ${dosyalar.join(', ')}`);
-console.log(`Ay penceresi: ${aylar[0]} -> ${aylar[aylar.length - 1]} (${aylar.length} ay)`);
-console.log(`Keyword    : ${keywords.length} (mukerrer elenen: ${elenenMukerrer})`);
-console.log(`Jenerik hacim: ${DATA.meta.toplamHacim.toLocaleString('tr-TR')}`);
-console.log(`Markali hacim: ${DATA.meta.markaliHacim.toLocaleString('tr-TR')}`);
-console.log(`Cikti      : data/dashboard.js (${mb} MB)`);
+const mb = (fs.statSync(OUT).size/1048576).toFixed(2);
+const ryoy = oran(DATA.meta.toplamR12, DATA.meta.toplamP12);
+console.log(`Dosya       : ${dosyalar.join(', ')}`);
+console.log(`Takvim      : ${yillar.join(' / ')}  (${AY.length} ay: ${AY[0]} → ${AY[AY.length-1]})`);
+console.log(`Rolling     : Son 12 ${monthsR12[0]}→${monthsR12[11]} | Önceki 12 ${monthsP12[0]||'–'}→${monthsP12[11]||'–'}`);
+console.log(`Keyword     : ${keywords.length} (mükerrer elenen: ${mukerrer})`);
+console.log(`Son 12 Ay   : ${DATA.meta.toplamR12.toLocaleString('tr-TR')}`);
+console.log(`Önceki 12 Ay: ${DATA.meta.toplamP12.toLocaleString('tr-TR')}  → YoY ${ryoy==null?'–':(ryoy*100).toFixed(1)+'%'}`);
+console.log(`Çıktı       : data/dashboard.js (${mb} MB)`);

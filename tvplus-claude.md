@@ -287,3 +287,11 @@ Kullanıcı geri bildirimi: görselleştirme, dinamizm ve YoY açısından eksik
 ### Veri kapsamı teyidi
 - Oyuncu ve takım keyword'leri veri setinde mevcut: Takım 2.259 keyword / 2,09B, Oyuncu 6.390 keyword / 282M, Maç 937, Lig-Organizasyon 622, Etkinlik 137, Jenerik 34.
 - Tüm hacimler Türkiye ve Türkçe için: DataForSEO `location_code 2792`, `language_code tr`.
+
+### Karar mantığı derinleştirildi
+- **Paylaşımlı takım & oyuncu katmanı.** Kullanıcı tespiti: futbolda takım ve oyuncu sayfaları bir kez kurulduğunda Şampiyonlar Ligi, Avrupa Ligi, Konferans Ligi, Süper Lig, La Liga, Serie A, Premier Lig gibi birçok organizasyona aynı anda hizmet ediyor. Karar sekmesine "Paylaşımlı Takım & Oyuncu Katmanı" bölümü eklendi: her spor dalı için takım ve oyuncu keyword sayısı, talebi ve kaç organizasyona hizmet ettiği tabloda gösteriliyor. Ölçülen: **Futbol dikeyinde 1.910 takım + 3.025 oyuncu keyword'ü, 2,30B aylık talep, 68 organizasyona paylaşımlı hizmet.** Hub gerekçesine bu ortak yatırım notu eklendi.
+- **Sezon dışı taban metriği eklendi.** Etkinlik ölçekli organizasyonlarda oran değil mutlak hacim belirleyici: rolling penceredeki en sakin altı ayın toplamı hesaplanıyor. 500K üzerindeki organizasyonlarda karar **"Etkinlik Ölçekli · Sürekli Açık"** oluyor; sayfa yıl boyu açık kalıp etkinlik döneminde derinleşiyor, dönem dışında kadro ve geçmiş karşılaşma katmanına iniyor.
+- Ölçülen örnekler: Milli Takım Karşılaşmaları sezon dışı 1,3M → Sürekli Açık · UEFA Şampiyonlar Ligi 11,5M → Hub · UEFA Avrupa Ligi 3,2M → Hub · UFC 1,3M ve Evergreen → Landing · Kadın Voleybol Milli Takımı 64,9K → Etkinlik Ölçekli.
+- Milli takım nüansı: sezon dışı taban zayıf olsa bile milli takım kalıcı bir varlık olduğundan sayfanın tamamen kapatılmak yerine ince katmanda açık tutulabileceği gerekçeye eklendi.
+- Karar tablosuna **Sezon Dışı** kolonu eklendi; eşiği geçen değerler yeşil vurgulanıyor.
+- **Karar tablosu keyword tablosu yapısına geçirildi:** `card flush` + `table.tbl`, renk noktalı `kw-cell` + `cat-cell` (spor dalı), `pill` ve `pill q1-q4` rozetleri, sparkline trend kolonu, aynı başlık ve hücre dili.

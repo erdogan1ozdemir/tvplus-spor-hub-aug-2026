@@ -748,29 +748,54 @@ window.TABS = (function(){
       h(Kaynak,{}));
   }
 
-  // ══════════════════════════════════════════ KARAR AĞACI
-  function kararVer(o){
-    if(o.hak==='TV+ Yok')
-      return o.r12>=6000000
-        ? {karar:'Veri Sayfası', renk:'#B07AA1', gerekce:'Yayın hakkı bulunmuyor ancak talep çok yüksek. Puan durumu ve fikstür sayfaları hak gerektirmediğinden köprü kurgusu değerlendirilebilir.'}
-        : {karar:'Şimdilik Değil', renk:'#9C9C9C', gerekce:'Yayın hakkı bulunmuyor ve talep büyüklüğü ayrı sayfa yatırımını gerektirecek seviyede değil.'};
-    if(o.r12<240000)
-      return {karar:'Şimdilik Değil', renk:'#9C9C9C', gerekce:'Talep hacmi ayrı sayfa seti için sınırlı kalmaktadır. Takip listesinde tutulabilir.'};
-    if(o.sezType==='Spike' && o.altPay<0.12)
-      return {karar:'Etkinlik Ölçekli', renk:'#F5A623', gerekce:'Talep tek bir pencereye yığılıyor ve alt sayfa derinliği düşük. Aktif dönemde derinleşen, sezon dışında sadeleşen yapı uygundur.'};
-    if(o.altPay>=0.12 && o.r12>=1200000)
-      return {karar:'Hub', renk:'#2E7D32', gerekce:'Hem yüksek talep hem alt sayfa derinliği mevcut. Puan durumu, fikstür, takım ve oyuncu katmanı birlikte kurulabilir.'};
-    return {karar:'Landing', renk:'#4E79A7', gerekce:'Talep anlamlı ancak alt sayfa derinliği sınırlı. Tek güçlü sayfa üzerinde izleme intent\'ine odaklanılabilir.'};
+  // Sezon dışı taban: rolling penceredeki en sakin 6 ayın toplamı.
+  // Oran değil mutlak hacim belirleyicidir; talep sezon dışında da sürüyorsa sayfa kapanmaz.
+  const SEZON_DISI_ESIK = 500000;
+  function sezonDisi(roll){
+    return [...(roll||[])].sort((a,b)=>a-b).slice(0,6).reduce((a,b)=>a+b,0);
   }
 
+  // ══════════════════════════════════════════ KARAR AĞACI
   const KOVA_TANIM = {
-    'Hub': 'Çok sayfalı yapı. Organizasyonun hub sayfası altında puan durumu, fikstür, takım ve oyuncu sayfaları birlikte kurulur. Hem yüksek talep hem alt sayfa derinliği bulunan organizasyonlar için uygundur; iç bağlantı ağı lig, takım, oyuncu ve maç sayfaları arasında kapalı devre oluşturur.',
+    'Hub': 'Çok sayfalı yapı. Organizasyonun hub sayfası altında puan durumu, fikstür, takım ve oyuncu sayfaları birlikte kurulur. Hem yüksek talep hem alt sayfa derinliği bulunan organizasyonlar için uygundur; iç bağlantı ağı lig, takım, oyuncu ve maç sayfaları arasında kapalı devre oluşturur. Futbol dikeyinde takım ve oyuncu katmanı organizasyonlar arasında paylaşımlıdır.',
     'Landing': 'Tek güçlü sayfa. Talep anlamlı ancak alt sayfa derinliği sınırlı olduğunda tercih edilir. Sayfa izleme intent\'ine ("canlı izle", "nerede izlenir", "hangi kanalda") odaklanır; veri tabloları sayfa içinde modül olarak durur, ayrı URL açılmaz.',
-    'Etkinlik Ölçekli': 'Aktif dönemde derinleşen, sezon dışında sadeleşen yapı. Talebin tek bir pencereye yığıldığı ve alt sayfa derinliğinin düşük olduğu organizasyonlar için uygundur. Etkinlik döneminde fikstür, sonuç ve yayın sayfaları açılır; dönem bitince yapı tek bir özet sayfaya iner.',
+    'Etkinlik Ölçekli · Sürekli Açık': 'Talep etkinlik penceresinde zirve yapar ancak sezon dışında da sürer. Sayfa yıl boyu açık tutulur: etkinlik döneminde fikstür, sonuç ve yayın modülleriyle derinleşir; dönem dışında kadro, geçmiş karşılaşmalar ve genel bilgi katmanına iner. Milli takımlar tipik örnektir, çünkü maç olmadığı dönemde de kadro, aday listesi ve gelecek maç sorguları aranmaya devam eder.',
+    'Etkinlik Ölçekli': 'Aktif dönemde derinleşen, sezon dışında sadeleşen yapı. Talebin tek bir pencereye yığıldığı ve sezon dışı tabanın zayıf kaldığı organizasyonlar için uygundur. Etkinlik döneminde fikstür, sonuç ve yayın sayfaları açılır; dönem bitince yapı tek bir özet sayfaya iner.',
     'Veri Sayfası': 'Yayın hakkı bulunmayan ancak talebi çok yüksek organizasyonlar. Puan durumu ve fikstür sayfaları yayın hakkı gerektirmediğinden açılabilir; buradan yayın hakkı olan içeriğe köprü kurulur. Tıklama beklentisi ölçülü tutulmalıdır, çünkü bu sorguların cevabı Google\'ın kendi spor bileşeninde verilmektedir.',
     'Şimdilik Değil': 'Talep büyüklüğü ayrı sayfa yatırımını gerektirecek seviyede değil veya yayın hakkı bulunmuyor. Takip listesinde tutulur; talep eşiği aşıldığında yeniden değerlendirilebilir.',
   };
   const kovaTanim = k => KOVA_TANIM[k] || '';
+
+  function kararVer(o){
+    const sd = sezonDisi(o.roll);
+    const surekli = sd >= SEZON_DISI_ESIK;
+
+    if(o.hak==='TV+ Yok')
+      return o.r12>=6000000
+        ? {karar:'Veri Sayfası', gerekce:'Yayın hakkı bulunmuyor ancak talep çok yüksek. Puan durumu ve fikstür sayfaları hak gerektirmediğinden açılabilir; buradan yayın hakkı olan içeriğe köprü kurulur.'}
+        : {karar:'Şimdilik Değil', gerekce:'Yayın hakkı bulunmuyor ve talep büyüklüğü ayrı sayfa yatırımını gerektirecek seviyede değil.'};
+
+    if(o.r12<240000)
+      return {karar:'Şimdilik Değil', gerekce:'Talep hacmi ayrı sayfa seti için sınırlı kalmaktadır. Takip listesinde tutulabilir.'};
+
+    if(o.sezType==='Spike' && o.altPay<0.12){
+      if(surekli)
+        return {karar:'Etkinlik Ölçekli · Sürekli Açık',
+          gerekce:`Talep etkinlik penceresinde yığılıyor ancak sezon dışında da sürüyor: en sakin altı ayın toplamı ${fmtNum(sd)}. Sayfa yıl boyu açık tutulabilir; etkinlik döneminde fikstür, sonuç ve yayın modülleriyle derinleşir, dönem dışında kadro, geçmiş karşılaşmalar ve genel bilgi katmanına iner.`};
+      return {karar:'Etkinlik Ölçekli',
+        gerekce:`Talep tek bir pencereye yığılıyor ve sezon dışı taban zayıf (en sakin altı ay ${fmtNum(sd)}). Aktif dönemde derinleşen, dönem bitince tek özet sayfaya inen yapı uygundur.` +
+          (o.km==='Milli Takım' ? ' Milli takım kalıcı bir varlık olduğundan sayfa tamamen kapatılmak yerine kadro, geçmiş karşılaşmalar ve gelecek maç takvimiyle ince bir katmanda açık tutulabilir.' : '')};
+    }
+
+    if(o.altPay>=0.12 && o.r12>=1200000)
+      return {karar:'Hub',
+        gerekce:'Hem yüksek talep hem alt sayfa derinliği mevcut. Puan durumu, fikstür, takım ve oyuncu katmanı birlikte kurulabilir.' +
+          (o.spor==='Futbol' ? ' Takım ve oyuncu sayfaları futbol genelinde paylaşımlıdır; bir kez kurulduğunda bu organizasyonla birlikte diğer futbol organizasyonlarına da hizmet eder.' : '')};
+
+    return {karar:'Landing',
+      gerekce:'Talep anlamlı ancak alt sayfa derinliği sınırlı. Tek güçlü sayfa üzerinde izleme intent\'ine odaklanılabilir; veri tabloları sayfa içinde modül olarak durur.' +
+        (surekli ? ` Sezon dışı taban güçlü (${fmtNum(sd)}), sayfa yıl boyu açık kalabilir.` : '')};
+  }
 
   function KararTab({rows, viewMode, onSelectGroup, setKeywordModal}){
     const [acikKova, setAcikKova] = React.useState(null);
@@ -778,12 +803,14 @@ window.TABS = (function(){
       const alt = topR12(g.rows.filter(k=>['Puan Durumu','Fikstür','Kadro','İstatistik'].includes(k.st)));
       const izl = topR12(g.rows.filter(k=>k.it==='İzleme'));
       const hak = (g.rows.find(k=>k.hak)||{}).hak || 'Doğrulanacak';
-      const o = {...g, altPay: g.r12 ? alt/g.r12 : 0, izleme:izl, hak};
+      const spor = (g.rows.find(k=>k.spor)||{}).spor || '';
+      const km = (g.rows.find(k=>k.km)||{}).km || '';
+      const o = {...g, altPay: g.r12 ? alt/g.r12 : 0, izleme:izl, hak, spor, km};
       return {...o, ...kararVer(o)};
     }),[rows]);
-    const kovalar=['Hub','Landing','Etkinlik Ölçekli','Veri Sayfası','Şimdilik Değil'];
-    const RENK={'Hub':'#2E7D32','Landing':'#4E79A7','Etkinlik Ölçekli':'#F5A623',
-                'Veri Sayfası':'#B07AA1','Şimdilik Değil':'#9C9C9C'};
+    const kovalar=['Hub','Landing','Etkinlik Ölçekli · Sürekli Açık','Etkinlik Ölçekli','Veri Sayfası','Şimdilik Değil'];
+    const RENK={'Hub':'#2E7D32','Landing':'#4E79A7','Etkinlik Ölçekli · Sürekli Açık':'#59A14F',
+                'Etkinlik Ölçekli':'#F5A623','Veri Sayfası':'#B07AA1','Şimdilik Değil':'#9C9C9C'};
     return h('div',{className:'tab-content-anim'},
       h(C.Explainer,{title:'Karar çerçevesi nasıl işliyor?', icon:'karar', defaultOpen:true},
         h('p',null,'Her organizasyon dört eksende değerlendirilir: ', h('strong',null,'Son 12 Ay talep büyüklüğü'),
@@ -830,39 +857,134 @@ window.TABS = (function(){
           h('h3',{style:{fontSize:14, marginBottom:12}},'Kovalara göre pay'),
           h(C.ShareBars,{rows:kovalar.map(k=>({label:k, color:RENK[k],
             value:orgRows.filter(o=>o.karar===k).reduce((a,o)=>a+o.r12,0)}))}))),
-      h(C.SectionHeader,{icon:'hedef', title:'Organizasyon bazlı karar tablosu',
+      (function(){
+        // Takım ve oyuncu sayfaları lig başına değil, spor dalı genelinde kurulur:
+        // bir kez açıldığında o spor dalındaki tüm organizasyonlara hizmet eder.
+        const sporlar = [...new Set(rows.map(k=>k.spor).filter(Boolean))];
+        const satirlar = sporlar.map(function(sp){
+          const ic = rows.filter(k=>k.spor===sp);
+          const tk = ic.filter(k=>k.ent==='Takım'), oy = ic.filter(k=>k.ent==='Oyuncu');
+          const orgAdet = new Set(ic.map(k=>k.org).filter(Boolean)).size;
+          return {spor:sp, orgAdet,
+            tkKw:tk.length, tkVol:topR12(tk),
+            oyKw:oy.length, oyVol:topR12(oy),
+            toplam: topR12(tk)+topR12(oy)};
+        }).filter(x=>x.toplam>0).sort((a,b)=>b.toplam-a.toplam);
+        if(!satirlar.length) return null;
+        const ust = satirlar[0];
+        return h(React.Fragment,null,
+          h(C.SectionHeader,{icon:'karne', title:'Paylaşımlı Takım & Oyuncu Katmanı',
+            desc:'bu katman lig başına değil, spor dalı genelinde bir kez kurulur'}),
+          h('div',{className:'insight-bar', style:{marginTop:0}},
+            h('span',null,
+              h('strong',null, ust.spor), ' dikeyinde takım ve oyuncu sayfaları ',
+              h('strong',null, fmtNum(ust.toplam)), ' aylık talebe karşılık geliyor ve ',
+              h('strong',null, ust.orgAdet), ' ayrı organizasyona aynı anda hizmet ediyor. ',
+              'Bir takım sayfası hem kendi liginde hem Şampiyonlar Ligi, Avrupa Ligi ve ',
+              'Konferans Ligi eşleşmelerinde; bir oyuncu sayfası hem kulübünde hem milli takımında ',
+              'karşılık buluyor. Bu nedenle katmanın maliyeti tek bir organizasyona değil, ',
+              'spor dalının tamamına dağılır ve Hub kararlarında ortak yatırım olarak ',
+              'değerlendirilebilir.')),
+          h('div',{className:'card flush', style:{marginBottom:18}},
+            h('div',{className:'tbl-wrap'},
+              h('table',{className:'tbl'},
+                h('thead',null,h('tr',null,
+                  h('th',null,'Spor Dalı'),
+                  h('th',{className:'num'},'Organizasyon'),
+                  h('th',{className:'num'},'Takım KW'),
+                  h('th',{className:'num'},'Takım Talebi'),
+                  h('th',{className:'num'},'Oyuncu KW'),
+                  h('th',{className:'num'},'Oyuncu Talebi'),
+                  h('th',{className:'num'},'Paylaşımlı Toplam'))),
+                h('tbody',null, satirlar.map(function(x){
+                  return h('tr',{key:x.spor, className:'clickable',
+                    onClick:()=>onSelectGroup('spor', x.spor)},
+                    h('td',{className:'kw-cell'},
+                      h('div',{style:{display:'flex',alignItems:'center',gap:7}},
+                        h('div',{style:{width:8,height:8,borderRadius:2,flexShrink:0,
+                          background:(window.SPOR_RENK||{})[x.spor]||'#BAB0AC'}}),
+                        x.spor)),
+                    h('td',{className:'num'}, x.orgAdet),
+                    h('td',{className:'num'}, x.tkKw.toLocaleString('tr-TR')),
+                    h('td',{className:'num'}, h('strong',null, fmtFull(x.tkVol))),
+                    h('td',{className:'num'}, x.oyKw.toLocaleString('tr-TR')),
+                    h('td',{className:'num'}, fmtFull(x.oyVol)),
+                    h('td',{className:'num'}, h('strong',null, fmtNum(x.toplam))));
+                })))),
+            h('div',{className:'txt-3', style:{fontSize:10.5, padding:'10px 14px',
+              borderTop:'1px solid var(--line)'}},
+              'Organizasyon kolonu, o spor dalında takım veya oyuncu talebi bulunan ' +
+              'organizasyon sayısını gösterir. Paylaşımlı toplam, katman bir kez kurulduğunda ' +
+              'karşılanacak aylık arama hacmidir.')));
+      })(),
+
+      h(C.SectionHeader,{icon:'hedef', title:'Organizasyon Bazlı Karar Tablosu',
         desc:'satıra tıklayın, organizasyon detayı açılır',
-        actions: h('button',{className:'chip-btn', onClick:()=>downloadCSV('tvplus-karar.csv',
-          toCSV(orgRows,[{label:'Organizasyon',key:'label'},{label:'Öneri',key:'karar'},
-            {label:'Önceki 12 Ay',key:'p12'},{label:'Son 12 Ay',key:'r12'},
+        actions: h('button',{className:'chip-btn', style:{padding:'6px 12px',borderRadius:999},
+          onClick:()=>downloadCSV('tvplus-karar.csv',
+          toCSV(orgRows,[{label:'Organizasyon',key:'label'},{label:'Spor Dalı',key:'spor'},
+            {label:'Öneri',key:'karar'},{label:'Önceki 12 Ay',key:'p12'},{label:'Son 12 Ay',key:'r12'},
             {label:'YoY %',get:r=>r.ryoy==null?'':(r.ryoy*100).toFixed(1)},
             {label:'Mevsim Tipi',key:'sezType'},
             {label:'Alt Sayfa Payı %',get:r=>(r.altPay*100).toFixed(1)},
+            {label:'Sezon Dışı 6 Ay',get:r=>sezonDisi(r.roll)},
             {label:'İzleme Talebi',key:'izleme'},{label:'Yayın Hakkı',key:'hak'},
             {label:'Peak Ay',key:'peakLabel'},{label:'Gerekçe',key:'gerekce'}]))},'↓ CSV')}),
-      h('div',{className:'tbl-wrap'},
-        h('table',null,
-          h('thead',null,h('tr',null,
-            h('th',null,'Organizasyon'), h('th',null,'Öneri'),
-            h('th',{className:'num'},'Önceki 12 Ay'), h('th',{className:'num'},'Son 12 Ay'),
-            h('th',{className:'num'},'YoY'), h('th',null,'12 Ay Trend'),
-            h('th',null,'Mevsim Tipi'), h('th',{className:'num'},'Alt Sayfa Payı'),
-            h('th',{className:'num'},'İzleme'), h('th',null,'Yayın Hakkı'), h('th',null,'Peak Ay'))),
-          h('tbody',null, orgRows.map(o=>h('tr',{key:o.label, className:'clickable',
-            style:{cursor:'pointer'}, onClick:()=>onSelectGroup('org', o.ust)},
-            h('td',null, h('span',{style:{fontWeight:600}}, o.label)),
-            h('td',null, h('span',{className:'pill', style:{
-              background:`color-mix(in srgb, ${RENK[o.karar]} 16%, transparent)`,
-              color:RENK[o.karar], fontWeight:600}}, o.karar)),
-            h('td',{className:'num'}, fmtFull(o.p12)),
-            h('td',{className:'num'}, h('strong',null, fmtFull(o.r12))),
-            h('td',{className:'num'}, h(YoY,{v:o.ryoy})),
-            h('td',null, h(C.Sparkline,{values:o.roll, w:100, h:26, color:RENK[o.karar]})),
-            h('td',null, h('span',{style:{color:SEZ_RENK[o.sezType], fontWeight:600}}, o.sezType)),
-            h('td',{className:'num'}, '%'+(o.altPay*100).toFixed(1)),
-            h('td',{className:'num'}, fmtNum(o.izleme)),
-            h('td',null, h('span',{className:'pill '+(o.hak==='TV+ Var'?'pos':o.hak==='TV+ Yok'?'neg':'neu')}, o.hak)),
-            h('td',null, o.peakLabel)))))),
+      h('div',{className:'card flush'},
+        h('div',{className:'tbl-wrap'},
+          h('table',{className:'tbl'},
+            h('thead',null,h('tr',null,
+              h('th',null,'Organizasyon'),
+              h('th',null,'Öneri'),
+              h('th',{className:'num'}, viewMode==='calendar' ? (D().meta.yillar[0]||'Önceki Yıl') : 'Önceki 12 Ay'),
+              h('th',{className:'num'}, viewMode==='calendar' ? (D().meta.yillar[1]||'Son Yıl') : 'Son 12 Ay'),
+              h('th',{className:'num'},'YoY'),
+              h('th',null,'12 Ay Trend'),
+              h('th',null,'Peak Ay'),
+              h('th',null,'Peak Ç.'),
+              h('th',{className:'num'},'Alt Sayfa'),
+              h('th',{className:'num'},'Sezon Dışı'),
+              h('th',{className:'num'},'İzleme'),
+              h('th',null,'Mevsim Tipi'),
+              h('th',null,'Yayın Hakkı'))),
+            h('tbody',null, orgRows.map(function(o){
+              const sd = sezonDisi(o.roll);
+              const ust = ustDeger(o);
+              return h('tr',{key:o.label, className:'clickable', title:kovaTanim(o.karar),
+                onClick:()=>onSelectGroup('org', o.ust)},
+                h('td',{className:'kw-cell', style:{maxWidth:230}},
+                  h('div',{style:{display:'flex',alignItems:'center',gap:7}},
+                    h('div',{style:{width:8,height:8,borderRadius:2,flexShrink:0,
+                      background:(window.SPOR_RENK||{})[ust]||'#BAB0AC'}}),
+                    h('div',{style:{minWidth:0}},
+                      h('div',null, o.label),
+                      ust && h('div',{className:'cat-cell'}, ust)))),
+                h('td',null, h('span',{className:'pill', style:{
+                  background:`color-mix(in srgb, ${RENK[o.karar]} 15%, transparent)`,
+                  color:RENK[o.karar], fontWeight:600, whiteSpace:'nowrap'}}, o.karar)),
+                h('td',{className:'num'}, fmtFull(oncekiHacimFor(o, viewMode))),
+                h('td',{className:'num'}, fmtFull(hacimFor(o, viewMode))),
+                h('td',{className:'num'}, h(YoY,{v:yoyFor(o, viewMode), tip:yoyEtiketFor(viewMode)})),
+                h('td',{style:{width:110}}, h(C.Sparkline,{values:o.roll, w:100, h:26,
+                  color:RENK[o.karar]})),
+                h('td',null, h('span',{className:'pill neu'}, o.peakLabel)),
+                h('td',null, h('span',{className:'pill q'+(o.peakQ+1),
+                  title:'Son 12 ayın en yüksek hacimli çeyreği'}, qLabel(o.peakQ))),
+                h('td',{className:'num'}, '%'+(o.altPay*100).toFixed(1)),
+                h('td',{className:'num', title:'En sakin altı ayın toplam arama hacmi'},
+                  h('span',{style:{color: sd>=SEZON_DISI_ESIK ? 'var(--green)' : 'var(--ink-3)',
+                    fontWeight: sd>=SEZON_DISI_ESIK ? 600 : 400}}, fmtNum(sd))),
+                h('td',{className:'num'}, fmtNum(o.izleme)),
+                h('td',null, h('span',{style:{color:SEZ_RENK[o.sezType], fontWeight:600}}, o.sezType)),
+                h('td',null, h('span',{className:'pill '+
+                  (o.hak==='TV+ Var'?'pos':o.hak==='TV+ Yok'?'neg':'neu')}, o.hak)));
+            })))),
+        h('div',{className:'txt-3', style:{fontSize:10.5, padding:'10px 14px',
+          borderTop:'1px solid var(--line)'}},
+          'Sezon Dışı kolonu, Son 12 Ay penceresindeki en sakin altı ayın toplam arama hacmidir. ',
+          fmtNum(SEZON_DISI_ESIK), ' üzerindeki organizasyonlarda sayfa yıl boyu açık tutulabilir; ',
+          'talep etkinlik penceresi dışında da sürmektedir.')),
+
       h(C.SectionHeader,{icon:'bilgi', title:'Gerekçeler', desc:'talep büyüklüğüne göre ilk 12'}),
       h('div',{className:'grid grid-2'},
         orgRows.slice(0,12).map(o=>h('div',{className:'card', key:o.label,

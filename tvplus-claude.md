@@ -295,3 +295,13 @@ Kullanıcı geri bildirimi: görselleştirme, dinamizm ve YoY açısından eksik
 - Milli takım nüansı: sezon dışı taban zayıf olsa bile milli takım kalıcı bir varlık olduğundan sayfanın tamamen kapatılmak yerine ince katmanda açık tutulabileceği gerekçeye eklendi.
 - Karar tablosuna **Sezon Dışı** kolonu eklendi; eşiği geçen değerler yeşil vurgulanıyor.
 - **Karar tablosu keyword tablosu yapısına geçirildi:** `card flush` + `table.tbl`, renk noktalı `kw-cell` + `cat-cell` (spor dalı), `pill` ve `pill q1-q4` rozetleri, sparkline trend kolonu, aynı başlık ve hücre dili.
+
+### Hata: varlık filtresi grup tablosuna yansımıyordu
+- Kullanıcı tespiti: sezonsallık matrisindeki Takım/Oyuncu/Maç/Lig filtresi altındaki tabloyu güncellemiyordu.
+- Sebep: `entFiltre` state'i `SezonTakvimi` bileşeninin içinde kapalıydı, yalnızca matrisi daraltıyordu. Kırılım seçicisinde daha önce yapılan düzeltmenin aynısı uygulandı: state `GruplarTab`'a taşındı, bileşen kontrollü prop alacak şekilde güncellendi.
+- Doğrulandı: Oyuncu seçildiğinde matris 164 → 11 satır, grup tablosu da 164 → 11 satır; bölüm açıklaması "yalnızca Oyuncu satırları" ibaresini gösteriyor.
+
+### Keyword listesinde oyuncu/takım keşfedilebilirliği
+- Veri en baştan eksiksizdi; sorun keşfedilebilirlikti. Varsayılan sıralama hacme göre olduğu için ligler ve büyük kulüpler listenin tepesini dolduruyor, oyuncu satırları çok aşağıda kalıyordu.
+- Keyword sekmesi toolbar'ına sayaçlı hızlı varlık seçici eklendi: Tümü 10,4K · Takım 2,4K · Oyuncu 6,3K · Maç 937 · Lig 622.
+- Doğrulandı: Oyuncu seçildiğinde 6,3K keyword / 223,3M talep; liste Arda Güler 12,1M, Kerem Aktürkoğlu 6,9M, Kenan Yıldız 4,5M ile açılıyor. Arama kutusundan "arda güler" arandığında dört satır (jenerik, istatistik, hangi takımda, kimdir) hacimleriyle geliyor.

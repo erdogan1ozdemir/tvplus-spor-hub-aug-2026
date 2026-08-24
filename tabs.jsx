@@ -61,11 +61,14 @@ window.TABS = (function(){
   // ══════════════════════════════════════════ SEZONSALLIK MATRİSİ
   // Özdilek'teki "Kat 1 Sezon Takvimi" karşılığı: seviye seçimi, sıralama,
   // hücre içi YoY rozeti, kopyala + CSV.
-  function SezonTakvimi({rows, viewMode, onSelectGroup, baslik, aciklama, seviye:dSeviye, setSeviye:dSet}){
+  function SezonTakvimi({rows, viewMode, onSelectGroup, baslik, aciklama,
+                          seviye:dSeviye, setSeviye:dSet, entFiltre:dEnt, setEntFiltre:dEntSet}){
     const [iSeviye, iSet] = React.useState('spor');
-    const [entFiltre, setEntFiltre] = React.useState('');
+    const [iEnt, iEntSet] = React.useState('');
     const seviye = dSeviye || iSeviye;
     const setSeviye = dSet || iSet;
+    const entFiltre = dEnt !== undefined ? dEnt : iEnt;
+    const setEntFiltre = dEntSet || iEntSet;
     const rowsF = entFiltre ? rows.filter(r=>r.ent===entFiltre) : rows;
     const [sirala, setSirala] = React.useState('hacim');
     const gruplar = React.useMemo(()=>{
@@ -503,7 +506,11 @@ window.TABS = (function(){
   function GruplarTab({rows, viewMode, secili, setSecili, setKeywordModal, onSelectGroup, onNavigateKw}){
     const [seviye, setSeviye] = React.useState('org');
     const [altSeviye, setAltSeviye] = React.useState('');
-    const gruplar = React.useMemo(()=>groupBy(rows, seviye, altSeviye||null), [rows,seviye,altSeviye]);
+    const [entFiltre, setEntFiltre] = React.useState('');
+    // Varlık filtresi hem sezonsallık matrisini hem alttaki grup tablosunu daraltır
+    const rowsF = entFiltre ? rows.filter(r=>r.ent===entFiltre) : rows;
+    const gruplar = React.useMemo(()=>groupBy(rowsF, seviye, altSeviye||null),
+      [rowsF, seviye, altSeviye]);
     const g = secili ? gruplar.find(x=>x.ust===secili.deger) : null;
 
     return h('div',{className:'tab-content-anim'},
@@ -562,9 +569,12 @@ window.TABS = (function(){
 
       h(SezonTakvimi,{rows, viewMode, onSelectGroup, baslik:'Sezonsallık',
         seviye, setSeviye:(v)=>{setSeviye(v); setSecili(null);},
+        entFiltre, setEntFiltre:(v)=>{setEntFiltre(v); setSecili(null);},
         aciklama:`${FACET_ETIKET[seviye]} kırılımı · alttaki tablo ve grafikler aynı eksene bağlıdır`}),
       h(C.SectionHeader,{icon:'liste', title:'Grup Detayları',
-        desc:`${FACET_ETIKET[seviye]} ekseninde ${gruplar.length.toLocaleString('tr-TR')} grup · satıra tıklayın, detay kartı açılır`}),
+        desc:`${FACET_ETIKET[seviye]} ekseninde ${gruplar.length.toLocaleString('tr-TR')} grup`
+          + (entFiltre ? ` · yalnızca ${entFiltre} satırları` : '')
+          + ' · satıra tıklayın, detay kartı açılır'}),
       h(GrupTablosu,{gruplar, seviye, onSelectGroup, viewMode}),
       h(Kaynak,{}));
   }
@@ -572,10 +582,12 @@ window.TABS = (function(){
   // ══════════════════════════════════════════ KEYWORD
   function KeywordTab({rows, viewMode, setKeywordModal}){
     const [q, setQ] = React.useState('');
+    const [entHizli, setEntHizli] = React.useState('');
     const veri = React.useMemo(()=>{
       const qq=q.trim().toLowerCase();
-      return qq ? rows.filter(r=>r.kw.includes(qq)) : rows;
-    },[rows,q]);
+      let r = entHizli ? rows.filter(x=>x.ent===entHizli) : rows;
+      return qq ? r.filter(x=>x.kw.includes(qq)) : r;
+    },[rows,q,entHizli]);
     const takvim = viewMode==='calendar';
     const son = veri.reduce((a,k)=>a+(takvim?(k.m25||[]).reduce((x,y)=>x+(y||0),0):(k.r12||0)),0);
     const onc = veri.reduce((a,k)=>a+(takvim?(k.m24||[]).reduce((x,y)=>x+(y||0),0):(k.p12||0)),0);
@@ -585,7 +597,15 @@ window.TABS = (function(){
     return h('div',{className:'tab-content-anim'},
       h('div',{className:'toolbar'},
         h('input',{className:'input input-search', placeholder:'Keyword ara…', value:q,
-          onChange:e=>setQ(e.target.value), style:{flex:1, minWidth:200}}),
+          onChange:e=>setQ(e.target.value), style:{flex:1, minWidth:180}}),
+        h('div',{className:'segmented', title:'Varlık tipine göre daralt'},
+          [['','Tümü'],['Takım','Takım'],['Oyuncu','Oyuncu'],['Maç','Maç'],
+           ['Lig/Organizasyon','Lig']].map(function(e){
+            return h('button',{key:e[0]||'all', className: entHizli===e[0]?'active':'',
+              onClick:()=>setEntHizli(e[0])}, e[1],
+              h('span',{className:'badge', style:{marginLeft:5}},
+                fmtNum(e[0] ? rows.filter(r=>r.ent===e[0]).length : rows.length)));
+          })),
         h('span',{className:'txt-3', style:{fontSize:13}}, fmtNum(veri.length)+' keyword'),
         h(C.CopyButton,{getData:()=>({
           headers:['Keyword','Spor Dalı','Organizasyon','Sayfa Tipi','Önceki 12 Ay','Son 12 Ay','YoY %','Bucket','Peak Ay'],

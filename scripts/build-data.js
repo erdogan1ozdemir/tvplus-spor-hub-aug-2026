@@ -54,6 +54,49 @@ function siniflandir(seri) {
   return { sinif, cv: +cv.toFixed(3), pd: +pd.toFixed(1) };
 }
 
+// ————————————————————————————————————————————— YoY / donem modeli
+// Veri penceresi 2024-01'den itibaren; takvim yili, YTD ve rolling 12 ay karsilastirmalari.
+function donemler(aylar, seri) {
+  const yil = {};
+  aylar.forEach((ym, i) => {
+    const y = ym.slice(0, 4);
+    (yil[y] = yil[y] || { toplam: 0, ay: 0, seri: [] });
+    yil[y].toplam += seri[i] || 0; yil[y].ay++; yil[y].seri.push(seri[i] || 0);
+  });
+  const yillar = Object.keys(yil).sort();
+  const sonYil = yillar[yillar.length - 1];
+  const oncekiYil = yillar[yillar.length - 2];
+
+  // Takvim YoY: son TAM yil ile bir onceki tam yil
+  const tamYillar = yillar.filter(y => yil[y].ay === 12);
+  let yoyTakvim = null, takvimA = null, takvimB = null;
+  if (tamYillar.length >= 2) {
+    takvimB = tamYillar[tamYillar.length - 1]; takvimA = tamYillar[tamYillar.length - 2];
+    const a = yil[takvimA].toplam, b = yil[takvimB].toplam;
+    if (a > 0) yoyTakvim = (b - a) / a;
+  }
+  // YTD YoY: kismi son yilin ay sayisi kadar, onceki yilin ayni donemiyle
+  let yoyYtd = null, ytdAy = null;
+  if (oncekiYil && yil[sonYil].ay < 12) {
+    ytdAy = yil[sonYil].ay;
+    const buYil = yil[sonYil].toplam;
+    const gecen = yil[oncekiYil].seri.slice(0, ytdAy).reduce((a, b) => a + b, 0);
+    if (gecen > 0) yoyYtd = (buYil - gecen) / gecen;
+  }
+  // Rolling 12 ay vs onceki 12 ay
+  let yoyRolling = null, r12 = null, p12 = null;
+  if (seri.length >= 24) {
+    r12 = seri.slice(-12).reduce((a, b) => a + b, 0);
+    p12 = seri.slice(-24, -12).reduce((a, b) => a + b, 0);
+    if (p12 > 0) yoyRolling = (r12 - p12) / p12;
+  }
+  return {
+    yillar, yilToplam: Object.fromEntries(yillar.map(y => [y, yil[y].toplam])),
+    yilSeri: Object.fromEntries(yillar.map(y => [y, yil[y].seri])),
+    yoyTakvim, takvimA, takvimB, yoyYtd, ytdAy, yoyRolling, r12, p12
+  };
+}
+
 function bant(sv) {
   if (!sv) return 'Veri yok';
   if (sv < 1000) return '< 1.000';
@@ -104,8 +147,11 @@ for (const f of dosyalar) {
     const nzMin = Math.min(...seri.filter(v => v > 0).concat([Infinity]));
     const minI = seri.findIndex(v => v === nzMin);
 
+    const dn = donemler(ayKol, seri);
     const o = { kw, sv, seri, sinif, cv, pd, bant: bant(sv),
                 peak: ayKol[maxI] || null, dip: (minI >= 0 ? ayKol[minI] : null),
+                yoy: dn.yoyTakvim, yoyYtd: dn.yoyYtd, yoyR: dn.yoyRolling,
+                r12: dn.r12, p12: dn.p12, yilT: dn.yilToplam,
                 kaynak: f.replace('hacim_', '').replace('.csv', '') };
     for (const [csvKol, kisa] of Object.entries(FACET)) {
       if (r[csvKol] !== undefined && r[csvKol] !== '') o[kisa] = r[csvKol];
@@ -129,7 +175,13 @@ function grupla(alan, filtre = () => true) {
     k.seri.forEach((s, i) => { g.seri[i] += s; });
   }
   return [...m.values()]
-    .map(g => ({ ...g, ...siniflandir(g.seri), peak: aylar[g.seri.indexOf(Math.max(...g.seri))] || null }))
+    .map(g => {
+      const dn = donemler(aylar, g.seri);
+      return { ...g, ...siniflandir(g.seri),
+               peak: aylar[g.seri.indexOf(Math.max(...g.seri))] || null,
+               yoy: dn.yoyTakvim, yoyYtd: dn.yoyYtd, yoyR: dn.yoyRolling,
+               r12: dn.r12, p12: dn.p12, yilT: dn.yilToplam };
+    })
     .sort((a, b) => b.hacim - a.hacim);
 }
 
@@ -148,6 +200,8 @@ const DATA = {
     kaynak: 'DataForSEO · Google Ads Search Volume · Türkiye/Türkçe',
     aylar,
     toplamKeyword: keywords.length,
+    donem: (() => { const d = donemler(aylar, new Array(aylar.length).fill(0));
+      return { yillar: d.yillar, takvimA: d.takvimA, takvimB: d.takvimB, ytdAy: d.ytdAy }; })(),
     toplamHacim: keywords.filter(jenerik).reduce((a, k) => a + k.sv, 0),
     markaliHacim: keywords.filter(k => !jenerik(k)).reduce((a, k) => a + k.sv, 0),
     dosyalar,

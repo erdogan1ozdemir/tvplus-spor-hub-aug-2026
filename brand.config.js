@@ -2,10 +2,12 @@
 window.BRAND = {
   name: "TV+",
   title: "Spor Talep Haritası & Sayfa Mimarisi",
-  subtitle: "Türkiye · Turkcell TV+ Spor Portföyü",
+  subtitle: "Turkcell TV+ · Türkiye Spor Portföyü",
   lang: "tr",
-  accent: "#FFC900",          // TV+ sarısı
-  accentDark: "#1A1A1A",
-  slug: "tvplus-spor",
+  accent: "#FAD604",          // TV+ sarısı (logo SVG'sinden alındı)
+  accentDeep: "#D9B703",
+  dark: "#12100C",            // TV+ koyu zemin
+  slug: "tvplus",
+  logo: "assets/tvplus-logo.svg",
   agency: { name: "Inbound SEO", label: "Inbound", show: true }
 };

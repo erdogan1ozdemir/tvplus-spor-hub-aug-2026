@@ -91,7 +91,7 @@ def post(payload, auth):
 
 def main():
     src, dst = sys.argv[1], sys.argv[2]
-    date_from = None
+    date_from = "2024-01-01"          # varsayilan: 2024 basindan itibaren tam gecmis
     if "--date-from" in sys.argv:
         date_from = sys.argv[sys.argv.index("--date-from") + 1]
 

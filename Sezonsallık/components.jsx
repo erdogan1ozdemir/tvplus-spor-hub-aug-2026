@@ -428,10 +428,10 @@ window.C = (function(){
   // === Expandable explainer ===
   function Explainer({title, sub, emoji='📊', children, defaultOpen=false}) {
     const [open, setOpen] = React.useState(() => {
-      const saved = localStorage.getItem((window.BRAND&&window.BRAND.slug||'dash')+'.explainer.open');
+      const saved = localStorage.getItem('vitra.explainer.open');
       return saved == null ? defaultOpen : saved === '1';
     });
-    React.useEffect(() => { localStorage.setItem((window.BRAND&&window.BRAND.slug||'dash')+'.explainer.open', open ? '1':'0'); }, [open]);
+    React.useEffect(() => { localStorage.setItem('vitra.explainer.open', open ? '1':'0'); }, [open]);
     return h('div',{className:'explainer'+(open?' open':'')},
       h('button',{className:'explainer-head', onClick:()=>setOpen(o=>!o)},
         h('span',{className:'emoji'}, emoji),
@@ -496,7 +496,7 @@ window.C = (function(){
   function SectionHeader({ icon, title, desc, accent = 'coral', actions }) {
     const accentColor = accent === 'coral' ? 'var(--coral)' :
                         accent === 'teal' ? 'var(--teal)' :
-                        accent === 'blue' ? 'var(--brand-accent)' :
+                        accent === 'blue' ? 'var(--vitra-blue)' :
                         accent;
     return h('div',{className:'section-header'},
       h('div',{className:'sh-bar', style:{background:`linear-gradient(180deg, ${accentColor} 0%, color-mix(in srgb, ${accentColor} 60%, transparent) 100%)`}}),

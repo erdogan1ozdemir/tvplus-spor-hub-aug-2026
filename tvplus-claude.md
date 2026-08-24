@@ -196,3 +196,25 @@ Doğrulanmış 237 uzun kuyruk kulübünün hacim dağılımı:
 - Karar Ağacı, organizasyonu dört eksende puanlayıp beş kovadan birine atıyor: Hub 8, Landing 23, Etkinlik Ölçekli 17, Veri Sayfası 8, Şimdilik Değil.
 - Toplam veri: 10.396 tekil keyword, 296.5M jenerik aylık talep, 13 aylık seri.
 - Bu oturumda toplam DFS maliyeti: $3.69.
+
+### Dashboard referans tasarım sistemine geçirildi
+- Kullanıcı talebi: tüm tasarım yapısı, görselleştirme, chart'lar, tablo detayları, gruba tıklayınca ilgili grup sayfasına gitme, chart hover metrikleri Özdilek/VitrA repolarındaki gibi olsun. Ay dağılımı pie chart. Yerel `Sezonsallık/` klasörü baz alınsın, Özdilek'teki ek özelleştirmeler de eklensin.
+- `components.jsx` ve `styles.css` referans repodan alınıp marka bağımsızlaştırıldı. 21 bileşen: Kpi, YoYPill, Sparkline, Heatmap, ShareBars, QStack, Modal, LineChart, BarChart, Donut, InfoIcon, Explainer, MultiSelect, SectionHeader, SmallMultiples, PolarPeak, EmptyState, Skeleton, ChartActions, BumpChart, StreamGraph.
+- `utils.js` referans API'siyle uyumlu yeniden yazıldı (fmtNum, fmtFull, fmtPct, hmColor, hmText, sparkPath, toCSV, downloadCSV) ve TV+ modeline özgü fonksiyonlar eklendi (grupla, uygula, siniflandir, donemsel, renkAta).
+- `tabs.jsx` ve `app.jsx` `window.TABS` / React.createElement yapısıyla yeniden yazıldı.
+- **Gruba tıklama:** tablo satırı, ısı matrisi hücresi, small multiples kartı ve YoY çubuğu tıklanabilir; `onNavigateGrup(alan, deger)` global filtreyi uygulayıp Gruplar sekmesinde drill-down kartı açıyor.
+- **Hover metrikleri:** LineChart crosshair tooltip'i, Heatmap hücre tooltip'i (yıl / önceki yıl / YoY), Donut merkez etiketi ve dilim tooltip'i, BarChart ve PolarPeak hover değerleri.
+- Ay dağılımı Donut (çeyrek payı) ve PolarPeak (aylık zirve haritası) olarak eklendi.
+- Özdilek'ten alınan ek özelleştirmeler: brand.config.js ile marka bağımsızlık, URL hash sync, ikincil analitik filtre paneli (Varlık Tipi, Intent, Yayın Hakkı, Talep Şekli, Hacim Bandı, Cinsiyet, Müsabaka Tipi, Katman, Peak Ay), kademeli faset seçenekleri, filtre chip'leri, Tweaks paneli (tema + palet), footer logo ve scroll-top.
+
+### Arama hacmi 2024'ten itibaren çekildi, YoY modeli kuruldu
+- Kullanıcı talebi: 13 ay yerine 2024'ten itibaren veri, sezonsallığa YoY ile bakılması.
+- **Tespit:** DFS MCP yanıtı `monthly_searches` alanını 12 aya kesiyordu; doğrudan API `date_from` ile **31 ay** (2024-01 → 2026-07) döndürüyor. `dfs_volume.py` varsayılanı `date_from=2024-01-01` yapıldı.
+- Tüm seed'ler yeniden çekildi (`scripts/refetch_all.sh`). Toplam 10.379 tekil keyword, 295.5M jenerik aylık talep, 31 aylık seri.
+- `build-data.js` içine dönem modeli eklendi: takvim yılı toplamları, **takvim YoY** (son iki tam yıl), **YTD YoY** (kısmi yılın ayı kadar önceki yılla), **rolling 12 ay** (r12 / p12 / yoyR).
+- Ölçülen sonuç: Takvim YoY +%12.3 (2024 → 2025), YTD YoY +%7.3 (2026 ilk 7 ay vs 2025).
+- Tüm chart'lar yıl bazlı seriye geçirildi: LineChart 2024/2025/2026 ayrı çizgi, tablolarda YoY pill'i, Trendler sekmesi YoY temelli yükselen/gerileyen listeleri ve spor dalı YoY çubuk grafiği.
+
+### Marka görselleri
+- TV+ logosu markanın kendi asset'inden alındı (`assets/tvplus-logo.svg`, marka rengi #FAD604), Inbound logoları eklendi.
+- Header gradient'i TV+ kimliğine yaklaştırıldı: sarı → koyu (#FAD604 → #12100C). `data-palette="tvplus"` paleti eklendi ve varsayılan yapıldı.

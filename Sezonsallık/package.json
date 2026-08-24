@@ -1,0 +1,15 @@
+{
+  "name": "vitra-dashboard",
+  "version": "1.0.0",
+  "description": "VitrA Türkiye Banyo Pazarı — Sezonsallık & Keyword Intelligence dashboardu",
+  "main": "server.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

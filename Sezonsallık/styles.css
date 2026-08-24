@@ -1,13 +1,20 @@
-/* Fontlar index.html icinde Google Fonts uzerinden yuklenir:
-   Bricolage Grotesque (baslik) + Outfit (govde) */
 /* Vitra Sezonsallık Dashboard */
+@font-face { font-family: 'Bricolage Grotesque'; src: url('fonts/BricolageGrotesque-Regular.ttf') format('truetype'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Bricolage Grotesque'; src: url('fonts/BricolageGrotesque-Medium.ttf') format('truetype'); font-weight: 500; font-display: swap; }
+@font-face { font-family: 'Bricolage Grotesque'; src: url('fonts/BricolageGrotesque-SemiBold.ttf') format('truetype'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'Bricolage Grotesque'; src: url('fonts/BricolageGrotesque-Bold.ttf') format('truetype'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'Outfit'; src: url('fonts/Outfit-Regular.ttf') format('truetype'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Outfit'; src: url('fonts/Outfit-Medium.ttf') format('truetype'); font-weight: 500; font-display: swap; }
+@font-face { font-family: 'Outfit'; src: url('fonts/Outfit-SemiBold.ttf') format('truetype'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'Outfit'; src: url('fonts/Outfit-Bold.ttf') format('truetype'); font-weight: 700; font-display: swap; }
+
 :root {
   --coral: #FF7B52;
   --coral-tint: #FFE3D8;
   --coral-deep: #E85F36;
   --teal: #10332F;
   --teal-soft: #1A4238;
-  --vitra-blue:#FAD604;
+  --vitra-blue: #0054A6;
   --vitra-blue-soft: #E6EEF7;
   --white: #fff;
   --ink: #10332F;
@@ -84,7 +91,7 @@ h4 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacin
 .app { min-height: 100vh; display: flex; flex-direction: column; }
 
 .topbar {
-  background: linear-gradient(118deg, #FAD604 0%, #E0A800 16%, #2A2413 52%, #12100C 100%);
+  background: linear-gradient(135deg, #ff7c53 0%, #2a4a46 45%, #11332f 100%);
   border-bottom: none;
   padding: 16px 28px;
   display: flex;
@@ -92,7 +99,7 @@ h4 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacin
   gap: 20px;
   position: sticky; top: 0; z-index: 50;
   border-radius: 0 0 18px 18px;
-  box-shadow: 0 4px 24px rgba(18,16,12,0.32);
+  box-shadow: 0 4px 24px rgba(17,51,47,0.25);
 }
 .topbar .logo { display: flex; align-items: center; gap: 10px; font-family: 'Bricolage Grotesque'; font-weight: 700; font-size: 16px; }
 .topbar .logo-dot { width: 28px; height: 28px; border-radius: 50%; border: 3px solid var(--accent); }
@@ -1105,45 +1112,4 @@ tr.row-hl { background: var(--accent-wash) !important; }
   20% { opacity: 1; transform: translateY(0); }
   80% { opacity: 1; }
   100% { opacity: 0; }
-}
-
-
-/* ——— TV+ paleti: coral yerine marka sarısı ——— */
-[data-palette="tvplus"]{
-  --accent:#FAD604; --accent-deep:#D9B703; --accent-wash:#FFF7CC;
-  --coral:#FAD604; --coral-deep:#D9B703; --coral-tint:#FFF7CC;
-}
-[data-theme="dark"][data-palette="tvplus"]{
-  --accent:#FAD604; --accent-deep:#FFE44D; --accent-wash:#332B0C;
-  --coral:#FAD604; --coral-deep:#FFE44D; --coral-tint:#332B0C;
-}
-/* Sarı zeminde okunabilirlik: aksan üstündeki metin koyu olmalı */
-[data-palette="tvplus"] .chip-btn.active,
-[data-palette="tvplus"] .tab.active{ color:#12100C; }
-.topbar .logo img.brand-logo{ height:30px; margin-right:14px; flex-shrink:0; display:block; }
-.topbar .logo-band-sep{ width:1px; height:30px; background:rgba(255,255,255,.22); margin:0 4px; }
-
-
-/* ——— TV+ eklentileri ——— */
-.tab-content-anim{ animation: tab-fade-in .28s cubic-bezier(.2,.8,.2,1); }
-@keyframes tab-fade-in{ from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none} }
-
-.share-row{ border-radius:8px; transition:background .15s; }
-.share-row.clickable:hover{ background:color-mix(in srgb, var(--accent) 10%, transparent); }
-
-.kw-link{
-  border:0; background:none; padding:0; font:inherit; text-align:left; cursor:pointer;
-  color:var(--ink); font-weight:500; border-bottom:1px dotted var(--ink-3);
-}
-.kw-link:hover{ color:var(--accent-deep); border-bottom-color:var(--accent); }
-
-.search-input{ font-family:inherit; font-size:12.5px; }
-.search-input:focus{ outline:2px solid color-mix(in srgb, var(--accent) 50%, transparent); outline-offset:1px; }
-
-/* grid-2 dar ekranda tek kolona düşsün */
-@media (max-width: 900px){
-  .grid-2, .grid-3, .kpi-5, .kpi-6{ grid-template-columns:1fr !important; }
-}
-@media (max-width: 1200px){
-  .kpi-5, .kpi-6{ grid-template-columns:repeat(3,1fr) !important; }
 }

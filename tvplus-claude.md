@@ -176,3 +176,23 @@ Doğrulanmış 237 uzun kuyruk kulübünün hacim dağılımı:
 - "ufc canlı izle": Google bileşeni yok, SERP web sonuçlarıyla başlıyor, **1. sırada TV+**. GSC'de CTR %21.71.
 - "galatasaray fenerbahçe": bileşen maçları organizasyon etiketiyle gösteriyor ancak cevabı tüketmiyor; 1. sırada Transfermarkt "Tüm karşılaşmalar" (bilanço: 173 maç, 61 FB, 54 B, 58 GS). PAA'da "GS maçı saat kaçta hangi kanalda?" var.
 - Bulgular `data/bulgular/serp_ozellikleri_ve_strateji.md` dosyasında.
+
+### Oyuncu evreni tamamlandı
+- Kadro çıkarımı düzeltildi: kadrolar ayrı şablon sayfasından transclude edildiği için wikitext yerine render edilmiş HTML (`prop=text`) kullanıldı. Bölüm adı önceliklendirildi ("Kadro" > "Oyuncular"), çünkü "Oyuncular" bölümü çoğu kulüpte tarihi futbolcuları içeriyor.
+- 178/185 kulüp, 5.254 tekil oyuncu, 21.016 keyword. DFS maliyeti $2.79.
+- 6.390 keyword veri döndü, 24.14M ham hacim.
+- Oyuncu listesine kadro şablonlarından kulüp adları sızmış; `oyuncu_dogrulama` kolonu eklendi. Kulüp adı 128 kayıt (5.07M), doğrulanmış oyuncu 6.246 kayıt (18.99M).
+- **Doğrulanmış oyuncu bant dağılımı:** < 1.000 → 3.872 oyuncu (563K) · 1.000-4.999 → 670 (1.49M) · 5.000-19.999 → 300 (2.90M) · 20.000-99.999 → 127 (5.35M) · 100.000+ → 39 (8.41M).
+- **5.000 üstü 466 oyuncu, oyuncu talebinin %89'unu taşıyor.** Takım tarafındaki eşikle aynı kırılma noktası.
+- En yüksek: Arda Güler 1.00M, Kerem Aktürkoğlu 550K, Victor Osimhen 450K, Barış Alper Yılmaz 450K, Kenan Yıldız 450K, Uğurcan Çakır 301K, Lamine Yamal 246K, Alperen Şengün 246K.
+- İnformasyonel katman ince: "kimdir + hangi takımda + istatistik" toplamı jenerik talebin %1-8'i. En yüksek Arda Güler 35K, Kenan Yıldız 28K, Kerem Aktürkoğlu 27K.
+
+### Dashboard kuruldu ve repoya push edildi
+- Repo: https://github.com/erdogan1ozdemir/tvplus-spor-hub-aug-2026
+- Yapı referans repolarla aynı: `brand.config.js` > `data/raw/*.csv` > `scripts/build-data.js` > `data/dashboard.js` > `index.html` + `utils.js` + `components.jsx` + `tabs.jsx` + `app.jsx`.
+- Bileşenler: `Kpi`, `Chip`, `SectionHeader`, `Bars`, `Spark`, `Heat`, `Tablo` (sıralanabilir), `MultiSelect` (çoklu seçim + arama), `Modal`, `LineChart`, `HeatMatrix`.
+- Dinamikler: global faset filtresi (13 eksen), keyword arama, keyword detay modalı (aylık grafik + ısı şeridi + 24 faset rozeti), URL hash sync, localStorage kalıcılık, tema değiştirme, her sekmede CSV export.
+- 9 sekme: Özet · Organizasyonlar (kırılım ekseni seçilebilir + ısı matrisi) · Keyword · Trendler & Sezonsallık · Sayfa Tipi & Intent · Takım & Oyuncu · Yayın Hakkı Dışı · Karar Ağacı · Master Liste.
+- Karar Ağacı, organizasyonu dört eksende puanlayıp beş kovadan birine atıyor: Hub 8, Landing 23, Etkinlik Ölçekli 17, Veri Sayfası 8, Şimdilik Değil.
+- Toplam veri: 10.396 tekil keyword, 296.5M jenerik aylık talep, 13 aylık seri.
+- Bu oturumda toplam DFS maliyeti: $3.69.

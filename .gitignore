@@ -3,3 +3,5 @@ data/raw/_wiki_cache/
 data/raw/_*.txt
 .DS_Store
 *.log
+__pycache__/
+*.pyc

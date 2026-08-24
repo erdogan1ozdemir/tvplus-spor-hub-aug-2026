@@ -14,7 +14,12 @@ http.createServer((req, res) => {
   const file = path.join(__dirname, path.normalize(p).replace(/^(\.\.[/\\])+/, ''));
   fs.readFile(file, (err, buf) => {
     if (err) { res.writeHead(404); return res.end('Not found'); }
-    res.writeHead(200, { 'Content-Type': TYPES[path.extname(file)] || 'application/octet-stream' });
+    res.writeHead(200, {
+      'Content-Type': TYPES[path.extname(file)] || 'application/octet-stream',
+      // Veri ve kaynak dosyalari yeniden derlendiginde tarayici eskisini gostermesin
+      'Cache-Control': 'no-cache, must-revalidate',
+      'ETag': '"' + fs.statSync(file).mtimeMs + '"'
+    });
     res.end(buf);
   });
 }).listen(PORT, () => console.log(`TV+ dashboard: http://localhost:${PORT}`));

@@ -264,3 +264,26 @@ Kullanıcı geri bildirimi: görselleştirme, dinamizm ve YoY açısından eksik
 - **Karar Ağacı kovaları tanımlandı ve tıklanabilir yapıldı:** Hub, Landing, Etkinlik Ölçekli, Veri Sayfası ve Şimdilik Değil kartlarının üzerine gelince ne anlama geldikleri görünüyor; tıklanınca tanım metni ve o kovaya düşen organizasyonların tam tablosu açılıyor.
 - **Spor dalı pazar payı listesi kaydırılabilir** yapıldı, ilk 9 yerine 20 spor dalının tamamı listeleniyor.
 - **Takvim yılı grafiğinde 2026 çizgisi** veri olmayan aylarda sıfıra düşmek yerine kesiliyor (null).
+
+### Premium revizyon turu
+- **Emojiler tamamen kaldırıldı.** Yerine 18 parçalık ince çizgili SVG ikon seti (`Ikon` bileşeni) eklendi; SectionHeader ve Explainer bu setle çalışıyor. Sayfada sıfır emoji.
+- **"Faset Filtresi" etiketi ve emojisi kaldırıldı**, filtre şeridi doğrudan arama kutusu ve seçicilerle başlıyor.
+- **Sekme seçimi alt çizgiden hap görünümüne geçirildi**: seçili sekme kart zeminiyle birleşiyor, alt çizgi yok.
+- **Topbar gradienti yatay olarak ters çevrildi** (siyah sol → sarı sağ). Sarı zeminde okunabilirlik için Inbound bloğu koyu kutuya alındı, wordmark beyaz kaldı.
+- **Tweaks paneli kaldırıldı**, rapor nötr palette açılıyor; yalnızca açık/koyu tema düğmesi bırakıldı.
+- **Insight şeridindeki sarı sol çizgi kaldırıldı**, yerine yumuşak gradient zemin ve ince kenarlık kondu.
+- **Aylık ritim kartı yeniden düzenlendi**: başlık üste alındı, yıl alt başlığı kaldırıldı, "Toplam Son 12 Ay / YoY / Peak ay" özeti kartın sağ üstüne taşındı, grafik karta ortalandı. "Son 12 Ay toplamı" ibaresi Spor Dalı Pazar Payı başlığının sağına alındı.
+- **Sezonsallık kartındaki iç başlık kaldırıldı**, bilgi ikonu "Sezon Takvimi & Mevsimsel Ritim" bölüm başlığının yanına taşındı ve başlık ölçeğine büyütüldü; filtreler yukarı yaklaştı.
+- **Small multiples kartlarında başlıklara sol boşluk** verildi.
+- **Sezonsallık matrisine varlık tipi filtresi eklendi**: Tümü / Takım / Oyuncu / Maç / Lig.
+- **Keyword tablosuna "Varlık" kolonu eklendi**, oyuncu ve takım satırları listede ayırt edilebiliyor.
+
+### Faset denetimi ve düzeltme
+- `scripts/faset_denetim.py` yazıldı. Yeniden çekim sırasında `oyuncu_dogrulama` kolonu kaybolmuştu; yeniden üretildi.
+- **492 varlık tipi düzeltmesi:** kadro şablonlarından oyuncu listesine sızan kulüp adları (Atlético Madrid, Hull City, Real Madrid CF gibi) Oyuncu'dan Takım'a taşındı.
+- **13 organizasyon düzeltmesi:** organizasyon adı spor dalıyla aynı olan dikeyler gerçek organizatöre bağlandı: At Yarışı → TJK · At Yarışı, Golf → Golf Turnuvaları, Hentbol → Hentbol Ligleri.
+- Denetim sonrası kalan tutarsızlık yok (organizasyon = spor dalı, boş varlık tipi, boş spor dalı kontrolleri temiz).
+
+### Veri kapsamı teyidi
+- Oyuncu ve takım keyword'leri veri setinde mevcut: Takım 2.259 keyword / 2,09B, Oyuncu 6.390 keyword / 282M, Maç 937, Lig-Organizasyon 622, Etkinlik 137, Jenerik 34.
+- Tüm hacimler Türkiye ve Türkçe için: DataForSEO `location_code 2792`, `language_code tr`.

@@ -47,10 +47,9 @@
     const [secili, setSecili] = React.useState(null);
     const [keywordModal, setKeywordModal] = React.useState(null);
     const [scrolled, setScrolled] = React.useState(false);
-    const [tweaksOpen, setTweaksOpen] = React.useState(false);
-    const [tweaks, setTweaks] = React.useState(()=>{
-      try{ return {theme:'light', palette:'tvplus', ...JSON.parse(localStorage.getItem(K('tweaks'))||'{}')}; }
-      catch{ return {theme:'light', palette:'tvplus'}; }});
+    // Rapor nötr palette açılır; yalnızca açık/koyu tema seçilebilir.
+    const [tema, setTema] = React.useState(()=>
+      localStorage.getItem(K('tema'))==='dark' ? 'dark' : 'light');
 
     React.useEffect(()=>{ localStorage.setItem(K('tab'), tab);
       if(location.hash.replace('#','')!==tab)
@@ -58,9 +57,9 @@
     React.useEffect(()=>{ localStorage.setItem(K('filtre'), JSON.stringify(filtre)); },[filtre]);
     React.useEffect(()=>{ localStorage.setItem(K('viewMode'), viewMode); },[viewMode]);
     React.useEffect(()=>{
-      document.documentElement.dataset.theme = tweaks.theme;
-      document.documentElement.dataset.palette = tweaks.palette;
-      localStorage.setItem(K('tweaks'), JSON.stringify(tweaks)); },[tweaks]);
+      document.documentElement.dataset.theme = tema;
+      document.documentElement.dataset.palette = 'neutral';
+      localStorage.setItem(K('tema'), tema); },[tema]);
     React.useEffect(()=>{
       if(window.BRAND_ACCENT) document.documentElement.style.setProperty('--brand-accent', window.BRAND_ACCENT);
       const onS=()=>setScrolled(window.scrollY>150);
@@ -129,10 +128,8 @@
         h('div',{className:'inbound-brand'},
           h('div',{className:'inbound-ctrls'},
             h('button',{className:'ctrl inbound-ctrl',
-              onClick:()=>setTweaks(t=>({...t, theme:t.theme==='dark'?'light':'dark'}))},
-              tweaks.theme==='dark'?'☀ Light':'☾ Dark'),
-            h('button',{className:'ctrl inbound-ctrl'+(tweaksOpen?' active':''),
-              onClick:()=>setTweaksOpen(o=>!o)},'⚙ Tweaks')),
+              onClick:()=>setTema(t=>t==='dark'?'light':'dark')},
+              tema==='dark'?'Açık tema':'Koyu tema')),
           h('div',{className:'inbound-logo-wrap'},
             h('img',{src:'assets/inbound-logo.png', alt:'Inbound', style:{height:20, display:'block'}}),
             h('div',{style:{fontSize:8, letterSpacing:'.18em', textTransform:'uppercase',
@@ -146,7 +143,6 @@
 
       h('div',{className:'global-filter-wrap'+(scrolled?' scrolled':'')},
         h('div',{className:'filter-panel'},
-          h('div',{className:'filter-panel-label'}, h('span',null,'🎯 '), h('strong',null,'Faset Filtresi')),
           h('input',{type:'search', className:'search-input', placeholder:'Keyword ara…',
             value:arama, onChange:e=>setArama(e.target.value)}),
           BIRINCIL.map(([alan,lab,w])=>(secenekler[alan]||[]).length>1 &&
@@ -207,23 +203,9 @@
 
       h('div',{className:'content'},
         rows.length===0
-          ? h(C.EmptyState,{icon:'🔍', title:'Sonuç bulunamadı',
+          ? h(C.EmptyState,{icon:'', title:'Sonuç bulunamadı',
               desc:'Seçili filtrelerle eşleşen keyword yok.', cta:'Filtreleri temizle', onCta:temizle})
           : h(S.Comp, ortak)),
-
-      tweaksOpen && h('div',{className:'tweaks-panel'},
-        h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}},
-          h('h3',{style:{margin:0}},'Tweaks'),
-          h('button',{className:'modal-close', style:{width:24,height:24,fontSize:16},
-            onClick:()=>setTweaksOpen(false)},'×')),
-        h('div',{className:'tweaks-row'}, h('label',null,'Tema'),
-          h('div',{className:'chips'}, [['light','Light'],['dark','Dark']].map(([v,l])=>
-            h('button',{key:v, className:'chip-btn'+(tweaks.theme===v?' active':''),
-              onClick:()=>setTweaks(t=>({...t,theme:v}))}, l)))),
-        h('div',{className:'tweaks-row'}, h('label',null,'Renk paleti'),
-          h('div',{className:'chips'}, [['tvplus','TV+ Sarı'],['coral','Coral'],['neutral','Nötr']].map(([v,l])=>
-            h('button',{key:v, className:'chip-btn'+(tweaks.palette===v?' active':''),
-              onClick:()=>setTweaks(t=>({...t,palette:v}))}, l))))),
 
       h('button',{className:'footer-logo-left', title:'Özet\'e dön',
         onClick:()=>{setTab('ozet'); window.scrollTo({top:0,behavior:'smooth'});}},

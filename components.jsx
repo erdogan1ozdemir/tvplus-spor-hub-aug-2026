@@ -77,6 +77,38 @@ window.C = (function(){
     return { tipEl, showTip, moveTip, hideTip };
   }
 
+
+  // ======== İkon seti ========
+  // Emoji yerine ince çizgili SVG ikonlar; premium ve tema uyumlu.
+  const IKON_YOL = {
+    ozet:      'M3 13h4v8H3zM10 3h4v18h-4zM17 9h4v12h-4z',
+    takvim:    'M3 6a2 2 0 012-2h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2z M3 10h18 M8 2v4 M16 2v4',
+    trend:     'M3 17l6-6 4 4 8-8 M21 7v5h-5',
+    pay:       'M12 3a9 9 0 109 9h-9z M14 3.5A7.5 7.5 0 0120.5 10H14z',
+    karne:     'M4 4h7v7H4z M13 4h7v7h-7z M4 13h7v7H4z M13 13h7v7h-7z',
+    liste:     'M8 6h13 M8 12h13 M8 18h13 M3 6h.01 M3 12h.01 M3 18h.01',
+    anahtar:   'M15 7a4 4 0 11-3.9 5H7v3H4v-3H2v-3h9.1A4 4 0 0115 7z',
+    hedef:     'M12 3v18 M3 12h18 M12 7a5 5 0 100 10 5 5 0 000-10z',
+    izle:      'M2 7a2 2 0 012-2h11a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2z M17 10l5-3v10l-5-3z',
+    kilit:     'M7 11V8a5 5 0 0110 0 M5 11h14v10H5z',
+    karar:     'M12 3v4 M6 21v-4a3 3 0 013-3h6a3 3 0 013 3v4 M9 7h6v4H9z',
+    kutu:      'M3 7l9-4 9 4v10l-9 4-9-4z M3 7l9 4 9-4 M12 11v10',
+    bilgi:     'M12 3a9 9 0 100 18 9 9 0 000-18z M12 10v6 M12 7h.01',
+    isi:       'M4 20V10 M10 20V4 M16 20v-8 M22 20V7',
+    saat:      'M12 3a9 9 0 100 18 9 9 0 000-18z M12 7v5l3 2',
+    kupa:      'M7 4h10v5a5 5 0 01-10 0z M5 5h2v3a2 2 0 01-2-2z M17 5h2a2 2 0 01-2 2z M9 20h6 M12 14v6',
+    saha:      'M3 5h18v14H3z M12 5v14 M12 9a3 3 0 100 6 3 3 0 000-6',
+    sinyal:    'M4 18a12 12 0 0116 0 M7 15a8 8 0 019 0 M11 12a3 3 0 012 0 M12 20h.01',
+  };
+  function Ikon({ ad, size=16, stroke=1.6 }) {
+    const d = IKON_YOL[ad];
+    if (!d) return null;
+    return h('svg',{width:size, height:size, viewBox:'0 0 24 24', fill:'none',
+      stroke:'currentColor', strokeWidth:stroke, strokeLinecap:'round',
+      strokeLinejoin:'round', 'aria-hidden':'true', style:{display:'block', flexShrink:0}},
+      d.split(' M').map((seg,i)=>h('path',{key:i, d:(i?'M':'')+seg})));
+  }
+
   function Kpi({label, value, sub, chip, chipClass='neu', accent=false}) {
     // Detect text-like values (long strings, non-numeric) and scale font down
     const v = value == null ? '–' : value;
@@ -196,7 +228,7 @@ window.C = (function(){
             )
           )
         ),
-        hover.isPeak && h('div',{className:'hm-tt-footer'}, '★ Dönemin peak ayı')
+        hover.isPeak && h('div',{className:'hm-tt-footer'}, 'Dönemin peak ayı')
       )
     );
   }
@@ -577,7 +609,7 @@ window.C = (function(){
         h('div',{className:'info-overlay', onClick:()=>setOpen(false)},
           h('div',{className:'info-modal', onClick:e=>e.stopPropagation()},
             h('div',{className:'info-modal-head'},
-              h('span',{className:'info-modal-icon'},'ⓘ'),
+              h('span',{className:'info-modal-icon'}, h(Ikon,{ad:'bilgi', size:15})),
               h('span',{className:'info-modal-title'}, title),
               h('button',{className:'info-modal-close', onClick:()=>setOpen(false), 'aria-label':'Kapat'}, '×')
             ),
@@ -592,7 +624,7 @@ window.C = (function(){
   // === Expandable explainer ===
   // `icon` prop takes priority over `emoji` (emoji kept for backward compat);
   // pass a React SVG node via `icon` for distinctive visuals
-  function Explainer({title, sub, emoji='📊', icon, children, defaultOpen=false}) {
+  function Explainer({title, sub, emoji='', icon, children, defaultOpen=false}) {
     const [open, setOpen] = React.useState(() => {
       const saved = localStorage.getItem(`${BRAND_SLUG}.explainer.open`);
       return saved == null ? defaultOpen : saved === '1';
@@ -600,9 +632,9 @@ window.C = (function(){
     React.useEffect(() => { localStorage.setItem(`${BRAND_SLUG}.explainer.open`, open ? '1':'0'); }, [open]);
     return h('div',{className:'explainer'+(open?' open':'')},
       h('button',{className:'explainer-head', onClick:()=>setOpen(o=>!o)},
-        icon
-          ? h('span',{className:'explainer-icon'}, icon)
-          : h('span',{className:'emoji'}, emoji),
+        h('span',{className:'exp-icon'},
+          typeof icon === 'string' && IKON_YOL[icon] ? h(Ikon,{ad:icon, size:16})
+            : (icon || h(Ikon,{ad:'bilgi', size:16}))),
         h('div',{className:'title-part'},
           h('div',{className:'main-title'}, title),
           sub && h('div',{className:'sub-title'}, sub)
@@ -738,7 +770,8 @@ window.C = (function(){
                         accent;
     return h('div',{className:'section-header'},
       h('div',{className:'sh-bar', style:{background:`linear-gradient(180deg, ${accentColor} 0%, color-mix(in srgb, ${accentColor} 60%, transparent) 100%)`}}),
-      icon && h('div',{className:'sh-icon', style:{background:`color-mix(in srgb, ${accentColor} 14%, transparent)`, color: accentColor}}, icon),
+      icon && h('div',{className:'sh-icon', style:{background:`color-mix(in srgb, ${accentColor} 12%, transparent)`, color: accentColor}},
+        typeof icon === 'string' ? h(Ikon,{ad:icon, size:17}) : icon),
       h('div',{className:'sh-text'},
         h('h2',{className:'sh-title'}, title),
         desc && h('div',{className:'sh-desc'}, desc)
@@ -913,7 +946,7 @@ window.C = (function(){
         // Center label
         h('text',{x:cx, y:cy-8, textAnchor:'middle', style:{fontSize:11,fontFamily:'Outfit',fill:'var(--ink-3)',textTransform:'uppercase',letterSpacing:'.06em',fontWeight:600}}, monthsLabels[activeI]),
         h('text',{x:cx, y:cy+12, textAnchor:'middle', style:{fontSize:18,fontFamily:'Bricolage Grotesque',fontWeight:700,fill:'var(--ink)'}}, fmtNum(activeV)),
-        h('text',{x:cx, y:cy+28, textAnchor:'middle', style:{fontSize:10,fontFamily:'Outfit',fill:'var(--ink-3)'}}, activeI === peakIdx ? '★ Peak ayı' : `${((activeV/total)*100).toFixed(1).replace('.',',')}%`)
+        h('text',{x:cx, y:cy+28, textAnchor:'middle', style:{fontSize:10,fontFamily:'Outfit',fill:'var(--ink-3)'}}, activeI === peakIdx ? 'Peak ayı' : `${((activeV/total)*100).toFixed(1).replace('.',',')}%`)
       )
     );
   }
@@ -991,7 +1024,7 @@ window.C = (function(){
         onClick: (e) => { e.stopPropagation(); copyTable(); },
         style:{position:'relative'}
       },
-        copied === 'table' && h('span',{className:'copied'}, '✓ Kopyalandı'),
+        copied === 'table' && h('span',{className:'copied'}, 'Kopyalandı'),
         h('svg',{width:13,height:13,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:2,strokeLinecap:'round',strokeLinejoin:'round'},
           h('rect',{x:9,y:9,width:13,height:13,rx:2}),
           h('path',{d:'M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'})
@@ -1003,7 +1036,7 @@ window.C = (function(){
         onClick: (e) => { e.stopPropagation(); share(); },
         style:{position:'relative'}
       },
-        copied === 'share' && h('span',{className:'copied'}, '✓ Link kopyalandı'),
+        copied === 'share' && h('span',{className:'copied'}, 'Link kopyalandı'),
         h('svg',{width:13,height:13,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:2,strokeLinecap:'round',strokeLinejoin:'round'},
           h('circle',{cx:18,cy:5,r:3}),h('circle',{cx:6,cy:12,r:3}),h('circle',{cx:18,cy:19,r:3}),
           h('line',{x1:8.59,y1:13.51,x2:15.42,y2:17.49}),h('line',{x1:15.41,y1:6.51,x2:8.59,y2:10.49})
@@ -1234,9 +1267,9 @@ window.C = (function(){
         transition: 'background .18s, color .18s, border-color .18s'
       }
     },
-      copied ? '✓ Kopyalandı' : (h('span', null, '📋 ', title))
+      copied ? 'Kopyalandı' : (h('span', null, '', title))
     );
   }
 
-  return { Kpi, YoYPill, Sparkline, Heatmap, ShareBars, QStack, Modal, LineChart, BarChart, Donut, InfoIcon, Explainer, MultiSelect, SectionHeader, SmallMultiples, PolarPeak, EmptyState, Skeleton, ChartActions, BumpChart, StreamGraph, Zoomable, CopyButton };
+  return { Kpi, YoYPill, Sparkline, Heatmap, ShareBars, QStack, Modal, LineChart, BarChart, Donut, InfoIcon, Explainer, MultiSelect, SectionHeader, SmallMultiples, PolarPeak, EmptyState, Skeleton, ChartActions, BumpChart, StreamGraph, Zoomable, CopyButton, Ikon };
 })();

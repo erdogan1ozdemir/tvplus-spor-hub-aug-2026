@@ -1594,3 +1594,87 @@ button.action-card:hover { border-color: currentColor; transform: translateY(-1p
 .tbl tbody tr:hover{ background:color-mix(in srgb, var(--accent) 9%, transparent); }
 .heatmap .hm-cell{ border-bottom:1px solid var(--bg-card); }
 .matrix-scroll .hm-row-label{ border-bottom:1px solid var(--line); }
+
+
+/* ═══════ Premium revizyon ═══════ */
+
+/* Topbar: siyahtan sarıya (yatay ters gradient) */
+.topbar{
+  background: linear-gradient(100deg, #12100C 0%, #1E1A10 34%, #6B5A08 68%, #FAD604 100%) !important;
+}
+/* Sağ taraf sarı zemin: Inbound bloğu koyu kutuya, wordmark beyaz kalır */
+.topbar .inbound-logo-wrap{ background:#12100C !important; }
+.topbar .inbound-logo-wrap img{ filter:brightness(0) invert(1) !important; }
+.topbar .inbound-logo-wrap div{ color:rgba(255,255,255,.72) !important; }
+.topbar .inbound-ctrl{
+  background:rgba(18,16,12,.10); border-color:rgba(18,16,12,.22); color:#12100C;
+}
+.topbar .inbound-ctrl:hover{ background:rgba(18,16,12,.18); }
+
+/* Sekme seçimi: alt çizgi yerine yumuşak hap */
+.tabs{ border-bottom:1px solid var(--line); gap:2px; padding-bottom:0; }
+.tabs .tab{
+  border:0 !important; border-radius:var(--r-sm) var(--r-sm) 0 0; position:relative;
+  padding:10px 15px; color:var(--ink-3); font-weight:500; background:transparent;
+  transition:background .16s, color .16s;
+}
+.tabs .tab:hover{ background:color-mix(in srgb, var(--ink) 5%, transparent); color:var(--ink); }
+.tabs .tab.active{
+  background:var(--bg-card); color:var(--ink); font-weight:600;
+  box-shadow:0 -1px 0 var(--line), 1px 0 0 var(--line), -1px 0 0 var(--line);
+}
+.tabs .tab.active::after{
+  content:''; position:absolute; left:0; right:0; bottom:-1px; height:1px; background:var(--bg-card);
+}
+.tabs .tab.active .badge{ background:var(--accent-wash); color:var(--ink); }
+
+/* Insight: sol sarı çizgi yerine yumuşak gradient zemin */
+.insight-bar{
+  border-left:0 !important;
+  background:linear-gradient(96deg,
+    color-mix(in srgb, var(--accent) 16%, var(--bg-card)) 0%,
+    var(--bg-card) 62%) !important;
+  border:1px solid color-mix(in srgb, var(--accent) 28%, var(--line)) !important;
+  border-radius:var(--r-md) !important;
+}
+.insight-arrow{ display:none; }
+
+/* SectionHeader: sol gradient çubuk yerine ikon kutusu öne çıkar */
+.section-header .sh-bar{ display:none; }
+.section-header{ padding-left:0; gap:12px; align-items:center; }
+.sh-icon{ width:34px; height:34px; border-radius:9px; display:grid; place-items:center; }
+.sh-title{ font-size:19px; }
+.sh-desc{ font-size:12px; margin-top:1px; }
+
+/* Explainer ikonu */
+.explainer .exp-icon{ display:grid; place-items:center; width:26px; height:26px;
+  border-radius:7px; background:color-mix(in srgb, var(--accent) 14%, transparent);
+  color:var(--accent-deep); flex:none; }
+
+/* Small multiples: başlıklara sol boşluk */
+.sm-item{ padding:12px 14px !important; }
+.sm-header{ gap:8px; padding-left:2px; }
+.sm-label{ padding-left:0; }
+.sm-footer{ padding-left:2px; padding-right:2px; }
+
+/* Kart başlığı satırı: başlık üstte, meta sağda */
+.card-title-row{ display:flex; align-items:flex-start; gap:10px; margin-bottom:10px; }
+.card-title-row h3{ margin:0; line-height:1.25; }
+.card-title-row .meta-sag{ margin-left:auto; text-align:right; font-size:10.5px;
+  color:var(--ink-3); line-height:1.5; }
+
+/* Chart kartı: grafiği ortala */
+.chart-orta{ display:grid; place-items:center; }
+.chart-orta > *{ width:100%; max-width:760px; }
+
+/* Sezonsallık başlığındaki bilgi ikonu, ana başlıkla aynı ölçekte */
+.sh-actions .info-icon{ width:22px; height:22px; font-size:13px; }
+.section-header .info-icon{ width:22px; height:22px; font-size:13px; margin-left:6px; }
+
+/* Filtre paneli: etiket kaldırıldığı için sol boşluk sadeleşti */
+.filter-panel{ align-items:flex-end; }
+
+.explainer-head .exp-icon{ display:grid; place-items:center; width:28px; height:28px;
+  border-radius:8px; background:color-mix(in srgb, var(--accent) 15%, transparent);
+  color:var(--accent-deep); flex:none; }
+.explainer-head .emoji{ display:none; }

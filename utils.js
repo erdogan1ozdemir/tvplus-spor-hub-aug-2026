@@ -254,8 +254,12 @@ window.U = (function(){
       const out=[];
       if(g.cal24 && g.cal24.some(v=>v)) out.push({name:'2024', color:'#9C9C9C', values:g.cal24});
       if(g.cal25 && g.cal25.some(v=>v)) out.push({name:'2025', color:'#4E79A7', values:g.cal25});
-      if(g.cal26 && g.cal26.some(v=>v)) out.push({name:'2026', color:'#FAD604',
-        values: g.cal26.concat(new Array(Math.max(0,12-g.cal26.length)).fill(null))});
+      if(g.cal26 && g.cal26.some(v=>v)){
+        // Kısmi yıl: veri olmayan aylar null bırakılır ki çizgi sıfıra düşmesin
+        const kacAy = (window.DATA.months2026||[]).length;
+        const v26 = g.cal26.slice(0, kacAy).concat(new Array(Math.max(0,12-kacAy)).fill(null));
+        out.push({name:'2026', color:'#FAD604', values:v26});
+      }
       return {series:out, labels:TR_MONTHS};
     }
     return {series:[
@@ -264,12 +268,33 @@ window.U = (function(){
     ], labels:ROLLING_LABELS};
   }
 
+  // Görünüm moduna göre YoY: rolling = Son 12 Ay / Önceki 12 Ay, calendar = son iki tam takvim yılı
+  function yoyFor(o, viewMode){
+    if(!o) return null;
+    return viewMode==='calendar' ? (o.yoy ?? null) : (o.ryoy ?? null);
+  }
+  function yoyEtiketFor(viewMode){
+    const y = (window.DATA.meta.yillar)||[];
+    return viewMode==='calendar'
+      ? `Takvim YoY (${y[0]||''} → ${y[1]||''})`
+      : `Rolling YoY (Son 12 Ay / Önceki 12 Ay)`;
+  }
+  function hacimFor(o, viewMode){
+    if(!o) return 0;
+    return viewMode==='calendar' ? (o.tot25 ?? o.r12 ?? 0) : (o.r12 ?? 0);
+  }
+  function oncekiHacimFor(o, viewMode){
+    if(!o) return 0;
+    return viewMode==='calendar' ? (o.tot24 ?? o.p12 ?? 0) : (o.p12 ?? 0);
+  }
+
   const SEZ_RENK = {Evergreen:'#2E7D32', Seasonal:'#F5A623', Spike:'#D32F2F', 'Veri Yok':'#8A8A8A'};
   const HAK_RENK = {'TV+ Var':'#2E7D32','TV+ Yok':'#D32F2F','Doğrulanacak':'#F5A623','Kısmi':'#B07AA1'};
 
   return {
     TR_MONTHS, TR_MONTHS_LONG,
     FACET_ETIKET, SEVIYELER, applyFacets, groupBy, seriesFor, SEZ_RENK, HAK_RENK,
+    yoyFor, yoyEtiketFor, hacimFor, oncekiHacimFor,
     ROLLING_LABELS, P12_LABELS, ymLabel,
     ROLLING_Q_LABELS, QUARTER_OPTIONS, qLabel, quarterSums, peakQuarterIdx,
     fmtNum, fmtFull, fmtPct, serialToMonthIdx, serialToRollingLabel, trendClass,

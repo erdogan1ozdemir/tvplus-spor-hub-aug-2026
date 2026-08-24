@@ -253,3 +253,14 @@ Kullanıcı geri bildirimi: görselleştirme, dinamizm ve YoY açısından eksik
 - **Drill başlığı üst kırılımlı:** organizasyon detayı açıldığında başlık artık "Futbol" eyebrow'u üstünde "Süper Lig" olarak gösteriliyor.
 - **Grup Detayları tablosu Özdilek düzenine geçirildi:** `tbl tbl-kat-detay` sınıfı, renk noktası + `.kw-cell` (grup adı) + `.cat-cell` (üst kırılım), `.pill q1-q4` çeyrek rozetleri, `.col-hide-sm` responsive kolonlar, satır ayraçları ve renklendirme referansla aynı.
 - Yüzde ondalık ayırıcıları Türkçe virgüle çevrildi.
+
+### İkinci geri bildirim turu
+- **Vercel 404 çözüldü:** `vercel.json` içinde `framework: null`, `buildCommand: null`, `outputDirectory: "."` eksikti. Vercel `package.json`'daki build script'i nedeniyle framework algılamaya çalışıp çıktı dizini bulamıyordu. Özdilek'in yapılandırması alındı.
+- **Matris satır etiketi üst kırılımlı:** "Süper Lig" başlığının altında artık "Futbol · 2,23B" yazıyor.
+- **Satır ayraçları belirginleştirildi:** tablo satırlarına 1px kenarlık, çift satırlara zebra arka plan, hover vurgusu; ısı matrisi satırlarına ayraç.
+- **Rolling / Takvim YoY ayrıştırıldı:** `yoyFor(obj, viewMode)` eklendi. Görünüm değiştiğinde YoY, hacim, önceki dönem, sparkline, tablo başlıkları, KPI etiketleri ve bar grafikleri hepsi ilgili moda geçiyor. Ölçülen fark: Futbol rolling +%5,7, takvim +%14,7.
+- **Keyword listesi Özdilek desenine geçirildi:** toolbar (arama + sayaç + Kopyala + CSV), 4'lü KPI şeridi (Filtrelenen KW / Toplam Hacim / Yükselen / Düşen), `card flush` + `table.tbl`, kolonlar Keyword · Spor Dalı (renk noktalı) · Organizasyon · Sayfa Tipi · Önceki 12 Ay · Son 12 Ay · YoY · 12 Ay Trend · Peak Ay (pill) · Peak Ç. (pill q1-q4) · Bucket (cat-pill), sayfa başına 50 kayıt.
+- **Keyword modalı yeniden düzenlendi:** üstteki büyük KPI kartları kompakt `kpi-mini` şeridine indirildi (6 metrik). Öznitelikler 5 gruplu hizalı tabloya alındı (Sınıflandırma / Organizasyon Özellikleri / Kapsam / TV+ & Kaynak / Sorgu Özellikleri); her keyword'de aynı satır seti görünür, boş alanlar "–" ile işaretlenir. Modal başlığında üst kırılım ("Futbol / Süper Lig") yer alıyor.
+- **Karar Ağacı kovaları tanımlandı ve tıklanabilir yapıldı:** Hub, Landing, Etkinlik Ölçekli, Veri Sayfası ve Şimdilik Değil kartlarının üzerine gelince ne anlama geldikleri görünüyor; tıklanınca tanım metni ve o kovaya düşen organizasyonların tam tablosu açılıyor.
+- **Spor dalı pazar payı listesi kaydırılabilir** yapıldı, ilk 9 yerine 20 spor dalının tamamı listeleniyor.
+- **Takvim yılı grafiğinde 2026 çizgisi** veri olmayan aylarda sıfıra düşmek yerine kesiliyor (null).

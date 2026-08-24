@@ -1549,3 +1549,48 @@ button.action-card:hover { border-color: currentColor; transform: translateY(-1p
 .matrix-scroll::-webkit-scrollbar{ width:10px; height:10px; }
 .matrix-scroll::-webkit-scrollbar-thumb{ background:var(--line); border-radius:99px; }
 .sm-item .sm-label{ cursor:help; }
+
+
+/* ——— Kaydırılabilir pay listesi ——— */
+.pay-scroll{ max-height:290px; overflow-y:auto; padding-right:6px; }
+.pay-scroll::-webkit-scrollbar{ width:8px; }
+.pay-scroll::-webkit-scrollbar-thumb{ background:var(--line); border-radius:99px; }
+
+/* ——— Karar kovası kartları ——— */
+.kova-kpi{ position:relative; background:var(--bg-card); border-radius:var(--r-md);
+  padding:14px 16px; box-shadow:var(--shadow-card); transition:box-shadow .15s, border-color .15s; }
+.kova-kpi:hover{ box-shadow:var(--shadow-card-hover); }
+.kova-kpi.acik{ box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent); }
+.kova-i{ font-size:11px; color:var(--ink-3); cursor:help; }
+
+/* ——— Modal: kompakt KPI şeridi ——— */
+.kpi-mini-row{ display:grid; grid-template-columns:repeat(auto-fit,minmax(112px,1fr)); gap:8px; }
+.kpi-mini{ background:var(--bg-sunk,var(--line-soft)); border:1px solid var(--line-soft);
+  border-radius:var(--r-sm); padding:8px 10px; }
+.kpi-mini-label{ font-size:9.5px; text-transform:uppercase; letter-spacing:.06em;
+  color:var(--ink-3); font-weight:600; }
+.kpi-mini-value{ font-family:'Bricolage Grotesque'; font-size:16px; font-weight:700;
+  letter-spacing:-.02em; margin-top:2px; line-height:1.15; }
+.kpi-mini-sub{ font-size:9.5px; color:var(--ink-3); margin-top:1px; }
+
+/* ——— Modal: öznitelik tablosu ——— */
+.faset-tablo{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px; }
+.faset-grup{ border:1px solid var(--line); border-radius:var(--r-sm); overflow:hidden; }
+.faset-grup-baslik{ background:var(--line-soft); padding:6px 10px; font-size:10.5px;
+  font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-2); }
+.faset-liste{ display:grid; grid-template-columns:auto 1fr; gap:0; margin:0; }
+.faset-liste dt{ font-size:11px; color:var(--ink-3); padding:5px 10px;
+  border-top:1px solid var(--line-soft); white-space:nowrap; }
+.faset-liste dd{ font-size:11.5px; margin:0; padding:5px 10px; text-align:right;
+  border-top:1px solid var(--line-soft); font-weight:500; overflow:hidden;
+  text-overflow:ellipsis; }
+.faset-liste dt:first-of-type, .faset-liste dd:first-of-type{ border-top:0; }
+.faset-liste dd.bos{ color:var(--ink-3); font-weight:400; }
+
+/* ——— Satır ayraçlarını belirginleştir ——— */
+.tbl tbody tr{ border-bottom:1px solid var(--line); }
+.tbl tbody tr:last-child{ border-bottom:0; }
+.tbl tbody tr:nth-child(even){ background:color-mix(in srgb, var(--line-soft) 45%, transparent); }
+.tbl tbody tr:hover{ background:color-mix(in srgb, var(--accent) 9%, transparent); }
+.heatmap .hm-cell{ border-bottom:1px solid var(--bg-card); }
+.matrix-scroll .hm-row-label{ border-bottom:1px solid var(--line); }

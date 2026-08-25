@@ -35,6 +35,17 @@
 - `faset_duzelt.py` ilk çalıştırmada `hacim_organizasyon.csv` dosyasını boşalttı: `open(d,"w")` dosyayı kesiyor, sonraki `writerows` hata verince yalnızca başlık satırı kalıyordu. Dosya git geçmişinden geri alındı (633 satır, 541'i veri içeriyor). Her iki denetim betiği atomik yazıma çevrildi: geçici dosyaya yazılıp yalnızca hatasız tamamlanınca yerine taşınıyor.
 - Artifact görüntüleyicisi sayfanın kendi başlattığı indirmeleri engelliyor; CSV export butonları artifact üzerinde çalışmıyor, Vercel ve yerel sürümde çalışıyor.
 
+### Basketbol ve voleybol kadroları (aynı gün, ikinci oturum)
+
+- **Mackolik kullanılmadı.** Sitenin robots.txt dosyası `anthropic-ai` için `Disallow: /` tanımlıyor; NBA.com da `anthropic-ai` ve `ClaudeBot` için aynı kısıtı taşıyor. Her ikisinden de çekim yapılmadı. İzin veren kaynaklar kullanıldı: Wikipedia makale yolu (`/wiki/`), TVF, Basketball-Reference, EuroLeague, TBF.
+- Kulüp listesi denetlendi, 41 hatalı kayıt ayrıldı: 9 NCAA üniversite takımı, 11 EuroLeague kulübü NBA altında etiketlenmiş, 9 varyant üretiminden bozulmuş ad ("los lakers", "san spurs"), 5 Unrivaled basketbol takımı voleybol altında, 3 feshedilmiş kulüp, 2 milli takım, 1 sorgu ("indiana pacers draft tarihi"), 1 futbol kulübü voleybol altında ("beşiktaş jk"). Bu satırlar `Ana Liste` katmanında olduğu için önceki mantık denetimi bunları kapsamamıştı.
+- Takma adlar kanonik kulüplere eşlendi (82 keyword → 62 kulüp), `scripts/kadro_wiki_basket.py` yazıldı.
+- **Sonuç: 61/62 kulüp, 971 oyuncu.** Yalnızca İstanbul Büyükşehir Belediyespor'un Wikipedia sayfasında güncel kadro tablosu bulunmuyor.
+- Transfermarkt futbol kadrolarıyla birleştirildi: `data/raw/_kadro_birlesik.json` · 185 kulüp · 4.580 kadro kaydı · 4.564 tekil oyuncu.
+- Veri setinde bulunmayan **3.120 yeni oyuncu** tespit edildi (`_yeni_oyuncular.json`). Hacim çekimi yaklaşık 12.480 keyword, 13 DataForSEO isteği anlamına geliyor. **Kullanıcı onayı beklemede.**
+
+**Ayrıştırıcıda çözülen sorunlar:** başlık satırından sütun indeksi okuma, "Ad-Soyad / Soyadı - Adı / SOYADI - İSMİ" başlık türevleri, "Soyad, Ad" ve soyad-önce sıra çevirimi, veri satırlarında `<th>` hücrelerinin sayılmaması (sütun kayması), hücredeki ilk bağlantının bayrak ikonu olması, başlıksız kadro tabloları için yedek yol.
+
 **Güncel veri:** 14.302 keyword · Son 12 Ay 3,63B · YoY +%5,2 · dashboard.js 9,94 MB · artifact 10,32 MB
 
 ## 2026-08-24

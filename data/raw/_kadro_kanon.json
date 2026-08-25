@@ -1,0 +1,744 @@
+{
+ "Anadolu Efes S.K.": {
+  "wiki": "Anadolu Efes S.K.",
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "anadolu efes"
+  ],
+  "adaylar": [
+   "Anadolu Efes S.K.",
+   "Anadolu Efes Spor Kulübü"
+  ]
+ },
+ "Arkas Spor": {
+  "wiki": "Arkas Spor",
+  "org": "Efeler Ligi",
+  "spor": "Voleybol",
+  "kw": [
+   "arkas spor"
+  ],
+  "adaylar": [
+   "Arkasspor",
+   "Arkas Spor",
+   "Arkas (erkek voleybol takımı)",
+   "Arkas Spor Kulübü",
+   "Arkas Spor"
+  ]
+ },
+ "ASVEL Basket": {
+  "wiki": "ASVEL Basket",
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "asvel"
+  ],
+  "adaylar": [
+   "ASVEL Basket",
+   "LDLC ASVEL"
+  ]
+ },
+ "Atlanta Hawks": {
+  "wiki": "Atlanta Hawks",
+  "org": "NBA",
+  "spor": "Basketbol",
+  "kw": [
+   "atlanta hawks"
+  ],
+  "adaylar": [
+   "Atlanta Hawks"
+  ]
+ },
+ "Aydın Büyükşehir Belediyespor": {
+  "wiki": "Aydın Büyükşehir Belediyespor",
+  "org": "Sultanlar Ligi",
+  "spor": "Voleybol",
+  "kw": [
+   "aydın büyükşehir"
+  ],
+  "adaylar": [
+   "Aydın Büyükşehir Belediyespor (kadın voleybol takımı)",
+   "Aydın Büyükşehir Belediyespor",
+   "Aydın Büyükşehir Belediyespor",
+   "Aydın Büyükşehir Belediye Spor Kulübü"
+  ]
+ },
+ "FC Barcelona Bàsquet": {
+  "wiki": "FC Barcelona Bàsquet",
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "barcelona basketbol"
+  ],
+  "adaylar": [
+   "FC Barcelona Bàsquet"
+  ]
+ },
+ "FC Bayern Munich (basketball)": {
+  "wiki": "FC Bayern Munich (basketball)",
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "bayern münih basketbol"
+  ],
+  "adaylar": [
+   "FC Bayern Munich (basketball)"
+  ]
+ },
+ "BC Zenit Saint Petersburg": {
+  "wiki": "BC Zenit Saint Petersburg",
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "bc petersburg"
+  ],
+  "adaylar": [
+   "BC Zenit Saint Petersburg"
+  ]
+ },
+ "Beşiktaş J.K. (basketball)": {
+  "wiki": "Beşiktaş J.K. (basketball)",
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "beşiktaş basketbol"
+  ],
+  "adaylar": [
+   "Beşiktaş J.K. (basketball)",
+   "Beşiktaş Erkek Basketbol Takımı"
+  ]
+ },
+ "Beşiktaş J.K. (women's volleyball)": {
+  "wiki": "Beşiktaş J.K. (women's volleyball)",
+  "org": "Sultanlar Ligi",
+  "spor": "Voleybol",
+  "kw": [
+   "beşiktaş voleybol"
+  ],
+  "adaylar": [
+   "Beşiktaş (kadın voleybol takımı)",
+   "Beşiktaş Kadın Voleybol Takımı",
+   "Beşiktaş Spor Kulübü (voleybol)"
+  ]
+ },
+ "Portland Trail Blazers": {
+  "wiki": "Portland Trail Blazers",
+  "org": "NBA",
+  "spor": "Basketbol",
+  "kw": [
+   "blazers",
+   "portland trail blazers"
+  ],
+  "adaylar": [
+   "Portland Trail Blazers"
+  ]
+ },
+ "Boston Celtics": {
+  "wiki": "Boston Celtics",
+  "org": "NBA",
+  "spor": "Basketbol",
+  "kw": [
+   "boston celtics",
+   "celtics"
+  ],
+  "adaylar": [
+   "Boston Celtics"
+  ]
+ },
+ "Brooklyn Nets": {
+  "wiki": "Brooklyn Nets",
+  "org": "NBA",
+  "spor": "Basketbol",
+  "kw": [
+   "brooklyn nets"
+  ],
+  "adaylar": [
+   "Brooklyn Nets"
+  ]
+ },
+ "Bursa Büyükşehir Belediyespor": {
+  "wiki": "Bursa Büyükşehir Belediyespor",
+  "org": "Efeler Ligi",
+  "spor": "Voleybol",
+  "kw": [
+   "bursa belediyespor",
+   "bursa büyükşehir belediyespor"
+  ],
+  "adaylar": [
+   "Bursa Büyükşehir Belediyespor (erkek voleybol takımı)",
+   "Bursa Büyükşehir Belediyespor"
+  ]
+ },
+ "Cleveland Cavaliers": {
+  "wiki": "Cleveland Cavaliers",
+  "org": "NBA",
+  "spor": "Basketbol",
+  "kw": [
+   "cavaliers",
+   "cleveland cavaliers"
+  ],
+  "adaylar": [
+   "Cleveland Cavaliers"
+  ]
+ },
+ "Charlotte Hornets": {
+  "wiki": "Charlotte Hornets",
+  "org": "NBA",
+  "spor": "Basketbol",
+  "kw": [
+   "charlotte hornets",
+   "hornets"
+  ],
+  "adaylar": [
+   "Charlotte Hornets"
+  ]
+ },
+ "Chicago Bulls": {
+  "wiki": "Chicago Bulls",
+  "org": "NBA",
+  "spor": "Basketbol",
+  "kw": [
+   "chicago bulls"
+  ],
+  "adaylar": [
+   "Chicago Bulls"
+  ]
+ },
+ "Cizre Belediyespor": {
+  "wiki": "Cizre Belediyespor",
+  "org": "Efeler Ligi",
+  "spor": "Voleybol",
+  "kw": [
+   "cizre belediyespor"
+  ],
+  "adaylar": [
+   "Cizre Belediyespor",
+   "Cizre Belediyespor (erkek voleybol takımı)",
+   "Cizre Belediyespor"
+  ]
+ },
+ "Los Angeles Clippers": {
+  "wiki": "Los Angeles Clippers",
+  "org": "NBA",
+  "spor": "Basketbol",
+  "kw": [
+   "clippers",
+   "los angeles clippers"
+  ],
+  "adaylar": [
+   "Los Angeles Clippers"
+  ]
+ },
+ "KK Crvena zvezda": {
+  "wiki": "KK Crvena zvezda",
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "crvena zvezda"
+  ],
+  "adaylar": [
+   "KK Crvena zvezda"
+  ]
+ },
+ "Dallas Mavericks": {
+  "wiki": "Dallas Mavericks",
+  "org": "NBA",
+  "spor": "Basketbol",
+  "kw": [
+   "dallas mavericks",
+   "mavericks"
+  ],
+  "adaylar": [
+   "Dallas Mavericks"
+  ]
+ },
+ "Denver Nuggets": {
+  "wiki": "Denver Nuggets",
+  "org": "NBA",
+  "spor": "Basketbol",
+  "kw": [
+   "denver nuggets",
+   "nuggets"
+  ],
+  "adaylar": [
+   "Denver Nuggets"
+  ]
+ },
+ "Detroit Pistons": {
+  "wiki": "Detroit Pistons",
+  "org": "NBA",
+  "spor": "Basketbol",
+  "kw": [
+   "detroit pistons",
+   "pistons"
+  ],
+  "adaylar": [
+   "Detroit Pistons"
+  ]
+ },
+ "Dubai Basketball": {
+  "wiki": "Dubai Basketball",
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "dubai basketball"
+  ],
+  "adaylar": [
+   "Dubai Basketball"
+  ]
+ },
+ "Eczacıbaşı S.K. (women's volleyball)": {
+  "wiki": "Eczacıbaşı S.K. (women's volleyball)",
+  "org": "Sultanlar Ligi",
+  "spor": "Voleybol",
+  "kw": [
+   "eczacıbaşı"
+  ],
+  "adaylar": [
+   "Eczacıbaşı (kadın voleybol takımı)",
+   "Eczacıbaşı Spor Kulübü",
+   "Eczacıbaşı Dynavit"
+  ]
+ },
+ "Fenerbahçe Men's Basketball": {
+  "wiki": "Fenerbahçe Men's Basketball",
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "fenerbahçe beko"
+  ],
+  "adaylar": [
+   "Fenerbahçe Men's Basketball",
+   "Fenerbahçe Erkek Basketbol Takımı"
+  ]
+ },
+ "Fenerbahçe Women's Volleyball": {
+  "wiki": "Fenerbahçe Women's Volleyball",
+  "org": "Sultanlar Ligi",
+  "spor": "Voleybol",
+  "kw": [
+   "fenerbahçe opet"
+  ],
+  "adaylar": [
+   "Fenerbahçe (kadın voleybol takımı)",
+   "Fenerbahçe Kadın Voleybol Takımı",
+   "Fenerbahçe Opet"
+  ]
+ },
+ "Fenerbahçe Men's Volleyball": {
+  "wiki": "Fenerbahçe Men's Volleyball",
+  "org": "Efeler Ligi",
+  "spor": "Voleybol",
+  "kw": [
+   "fenerbahçe voleybol"
+  ],
+  "adaylar": [
+   "Fenerbahçe (erkek voleybol takımı)",
+   "Fenerbahçe Erkek Voleybol Takımı",
+   "Fenerbahçe Voleybol"
+  ]
+ },
+ "Galatasaray S.K. (women's volleyball)": {
+  "wiki": "Galatasaray S.K. (women's volleyball)",
+  "org": "Sultanlar Ligi",
+  "spor": "Voleybol",
+  "kw": [
+   "galatasaray daikin"
+  ],
+  "adaylar": [
+   "Galatasaray (kadın voleybol takımı)",
+   "Galatasaray Kadın Voleybol Takımı",
+   "Galatasaray Daikin"
+  ]
+ },
+ "Galatasaray S.K. (men's volleyball)": {
+  "wiki": "Galatasaray S.K. (men's volleyball)",
+  "org": "Efeler Ligi",
+  "spor": "Voleybol",
+  "kw": [
+   "galatasaray voleybol"
+  ],
+  "adaylar": [
+   "Galatasaray (erkek voleybol takımı)",
+   "Galatasaray Erkek Voleybol Takımı",
+   "Galatasaray HDI Sigorta"
+  ]
+ },
+ "Golden State Warriors": {
+  "wiki": "Golden State Warriors",
+  "org": "NBA",
+  "spor": "Basketbol",
+  "kw": [
+   "golden state warriors",
+   "warriors"
+  ],
+  "adaylar": [
+   "Golden State Warriors"
+  ]
+ },
+ "Memphis Grizzlies": {
+  "wiki": "Memphis Grizzlies",
+  "org": "NBA",
+  "spor": "Basketbol",
+  "kw": [
+   "grizzlies",
+   "memphis grizzlies"
+  ],
+  "adaylar": [
+   "Memphis Grizzlies"
+  ]
+ },
+ "Halkbank S.K. (volleyball)": {
+  "wiki": "Halkbank S.K. (volleyball)",
+  "org": "Efeler Ligi",
+  "spor": "Voleybol",
+  "kw": [
+   "halkbank voleybol"
+  ],
+  "adaylar": [
+   "Halkbank (erkek voleybol takımı)",
+   "Halkbank Spor Kulübü",
+   "Halkbank Erkek Voleybol Takımı"
+  ]
+ },
+ "Houston Rockets": {
+  "wiki": "Houston Rockets",
+  "org": "NBA",
+  "spor": "Basketbol",
+  "kw": [
+   "houston rockets",
+   "rockets"
+  ],
+  "adaylar": [
+   "Houston Rockets"
+  ]
+ },
+ "Indiana Pacers": {
+  "wiki": "Indiana Pacers",
+  "org": "NBA",
+  "spor": "Basketbol",
+  "kw": [
+   "indiana pacers",
+   "pacers"
+  ],
+  "adaylar": [
+   "Indiana Pacers"
+  ]
+ },
+ "İstanbul Büyükşehir Belediyespor": {
+  "wiki": "İstanbul Büyükşehir Belediyespor",
+  "org": "Efeler Ligi",
+  "spor": "Voleybol",
+  "kw": [
+   "istanbul büyükşehir belediyespor"
+  ],
+  "adaylar": [
+   "İstanbul Büyükşehir Belediyespor (erkek voleybol takımı)",
+   "İstanbul Büyükşehir Belediyespor"
+  ]
+ },
+ "New York Knicks": {
+  "wiki": "New York Knicks",
+  "org": "NBA",
+  "spor": "Basketbol",
+  "kw": [
+   "knicks",
+   "new york knicks"
+  ],
+  "adaylar": [
+   "New York Knicks"
+  ]
+ },
+ "Kuzeyboru S.K.": {
+  "wiki": "Kuzeyboru S.K.",
+  "org": "Sultanlar Ligi",
+  "spor": "Voleybol",
+  "kw": [
+   "kuzeyboru"
+  ],
+  "adaylar": [
+   "Kuzeyboru GSK",
+   "Kuzeyboru Spor Kulübü",
+   "Aksaray Belediyesi Kuzeyboru"
+  ]
+ },
+ "Los Angeles Lakers": {
+  "wiki": "Los Angeles Lakers",
+  "org": "NBA",
+  "spor": "Basketbol",
+  "kw": [
+   "lakers",
+   "los angeles lakers"
+  ],
+  "adaylar": [
+   "Los Angeles Lakers"
+  ]
+ },
+ "Miami Heat": {
+  "wiki": "Miami Heat",
+  "org": "NBA",
+  "spor": "Basketbol",
+  "kw": [
+   "miami heat"
+  ],
+  "adaylar": [
+   "Miami Heat"
+  ]
+ },
+ "Milwaukee Bucks": {
+  "wiki": "Milwaukee Bucks",
+  "org": "NBA",
+  "spor": "Basketbol",
+  "kw": [
+   "milwaukee bucks"
+  ],
+  "adaylar": [
+   "Milwaukee Bucks"
+  ]
+ },
+ "Minnesota Timberwolves": {
+  "wiki": "Minnesota Timberwolves",
+  "org": "NBA",
+  "spor": "Basketbol",
+  "kw": [
+   "minnesota timberwolves",
+   "timberwolves"
+  ],
+  "adaylar": [
+   "Minnesota Timberwolves"
+  ]
+ },
+ "New Orleans Pelicans": {
+  "wiki": "New Orleans Pelicans",
+  "org": "NBA",
+  "spor": "Basketbol",
+  "kw": [
+   "new orleans pelicans",
+   "pelicans"
+  ],
+  "adaylar": [
+   "New Orleans Pelicans"
+  ]
+ },
+ "Nilüfer Belediyespor": {
+  "wiki": "Nilüfer Belediyespor",
+  "org": "Sultanlar Ligi",
+  "spor": "Voleybol",
+  "kw": [
+   "nilüfer belediyespor"
+  ],
+  "adaylar": [
+   "Nilüfer Belediyespor (kadın voleybol takımı)",
+   "Nilüfer Belediyespor"
+  ]
+ },
+ "Oklahoma City Thunder": {
+  "wiki": "Oklahoma City Thunder",
+  "org": "NBA",
+  "spor": "Basketbol",
+  "kw": [
+   "oklahoma city thunder",
+   "thunder"
+  ],
+  "adaylar": [
+   "Oklahoma City Thunder"
+  ]
+ },
+ "Olimpia Milano": {
+  "wiki": "Olimpia Milano",
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "olimpia milano"
+  ],
+  "adaylar": [
+   "Olimpia Milano"
+  ]
+ },
+ "Orlando Magic": {
+  "wiki": "Orlando Magic",
+  "org": "NBA",
+  "spor": "Basketbol",
+  "kw": [
+   "orlando magic"
+  ],
+  "adaylar": [
+   "Orlando Magic"
+  ]
+ },
+ "Paris Basketball": {
+  "wiki": "Paris Basketball",
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "paris basketball"
+  ],
+  "adaylar": [
+   "Paris Basketball"
+  ]
+ },
+ "Philadelphia 76ers": {
+  "wiki": "Philadelphia 76ers",
+  "org": "NBA",
+  "spor": "Basketbol",
+  "kw": [
+   "philadelphia 76ers"
+  ],
+  "adaylar": [
+   "Philadelphia 76ers"
+  ]
+ },
+ "Phoenix Suns": {
+  "wiki": "Phoenix Suns",
+  "org": "NBA",
+  "spor": "Basketbol",
+  "kw": [
+   "phoenix suns"
+  ],
+  "adaylar": [
+   "Phoenix Suns"
+  ]
+ },
+ "Toronto Raptors": {
+  "wiki": "Toronto Raptors",
+  "org": "NBA",
+  "spor": "Basketbol",
+  "kw": [
+   "raptors",
+   "toronto raptors"
+  ],
+  "adaylar": [
+   "Toronto Raptors"
+  ]
+ },
+ "Real Madrid Baloncesto": {
+  "wiki": "Real Madrid Baloncesto",
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "real madrid basketbol"
+  ],
+  "adaylar": [
+   "Real Madrid Baloncesto"
+  ]
+ },
+ "Sacramento Kings": {
+  "wiki": "Sacramento Kings",
+  "org": "NBA",
+  "spor": "Basketbol",
+  "kw": [
+   "sacramento kings"
+  ],
+  "adaylar": [
+   "Sacramento Kings"
+  ]
+ },
+ "San Antonio Spurs": {
+  "wiki": "San Antonio Spurs",
+  "org": "NBA",
+  "spor": "Basketbol",
+  "kw": [
+   "san antonio spurs"
+  ],
+  "adaylar": [
+   "San Antonio Spurs"
+  ]
+ },
+ "Turkish Airlines S.K. (women's volleyball)": {
+  "wiki": "Turkish Airlines S.K. (women's volleyball)",
+  "org": "Sultanlar Ligi",
+  "spor": "Voleybol",
+  "kw": [
+   "türk hava yolları voleybol"
+  ],
+  "adaylar": [
+   "Türk Hava Yolları (kadın voleybol takımı)",
+   "Türk Hava Yolları Spor Kulübü",
+   "Türk Hava Yolları Kadın Voleybol Takımı"
+  ]
+ },
+ "Utah Jazz": {
+  "wiki": "Utah Jazz",
+  "org": "NBA",
+  "spor": "Basketbol",
+  "kw": [
+   "utah jazz"
+  ],
+  "adaylar": [
+   "Utah Jazz"
+  ]
+ },
+ "VakıfBank S.K. (women's volleyball)": {
+  "wiki": "VakıfBank S.K. (women's volleyball)",
+  "org": "Sultanlar Ligi",
+  "spor": "Voleybol",
+  "kw": [
+   "vakıfbank"
+  ],
+  "adaylar": [
+   "VakıfBank SK",
+   "VakıfBank Spor Kulübü",
+   "VakıfBank Kadın Voleybol Takımı"
+  ]
+ },
+ "Valencia Basket": {
+  "wiki": "Valencia Basket",
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "valencia basket"
+  ],
+  "adaylar": [
+   "Valencia Basket"
+  ]
+ },
+ "Virtus Bologna": {
+  "wiki": "Virtus Bologna",
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "virtus bologna"
+  ],
+  "adaylar": [
+   "Virtus Bologna"
+  ]
+ },
+ "Washington Wizards": {
+  "wiki": "Washington Wizards",
+  "org": "NBA",
+  "spor": "Basketbol",
+  "kw": [
+   "washington wizards",
+   "wizards"
+  ],
+  "adaylar": [
+   "Washington Wizards"
+  ]
+ },
+ "Zeren Spor Kulübü": {
+  "wiki": "Zeren Spor Kulübü",
+  "org": "Sultanlar Ligi",
+  "spor": "Voleybol",
+  "kw": [
+   "zeren spor"
+  ],
+  "adaylar": [
+   "Zeren SK",
+   "Zeren Spor Kulübü",
+   "Nilüfer Belediyespor"
+  ]
+ },
+ "Ziraat Bankkart S.K.": {
+  "wiki": "Ziraat Bankkart S.K.",
+  "org": "Efeler Ligi",
+  "spor": "Voleybol",
+  "kw": [
+   "ziraat bankkart"
+  ],
+  "adaylar": [
+   "Ziraat Bankası (erkek voleybol takımı)",
+   "Ziraat Bankkart Spor Kulübü",
+   "Ziraat Bankkart"
+  ]
+ }
+}

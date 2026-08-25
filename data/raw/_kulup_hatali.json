@@ -1,0 +1,59 @@
+{
+ "Milli takım, kulüp değil": [
+  "porto riko",
+  "united states"
+ ],
+ "Varyant üretiminden bozulmuş ad": [
+  "los clippers",
+  "new nets",
+  "san spurs",
+  "new knicks",
+  "portland blazers",
+  "los lakers",
+  "golden warriors",
+  "oklahoma thunder",
+  "new pelicans"
+ ],
+ "NCAA üniversite takımı, profesyonel kulüp değil": [
+  "hartford hawks men's basketball",
+  "hawaii rainbow warriors basketball",
+  "virginia cavaliers men's basketball",
+  "buffalo bulls men's basketball",
+  "elizabeth city state vikings",
+  "butler grizzlies",
+  "montana grizzlies basketball",
+  "uab blazers men's basketball",
+  "toledo rockets men's basketball"
+ ],
+ "EuroLeague/diğer kulüp NBA altında": [
+  "pallacanestro roma",
+  "fenerbahçe basketball",
+  "real madrid baloncesto",
+  "hapoel bc",
+  "hapoel jerusalem bc",
+  "bc zalgiris",
+  "bc zenit saint petersburg",
+  "bc rytas",
+  "stockton kings",
+  "virtus roma",
+  "bc kyiv"
+ ],
+ "Feshedilmiş/ad değiştirmiş kulüp": [
+  "pallacanestro virtus roma",
+  "new jersey nets",
+  "bc khimki"
+ ],
+ "Sorgu, kulüp adı değil": [
+  "indiana pacers draft tarihi"
+ ],
+ "Futbol kulübü voleybol altında": [
+  "beşiktaş jk"
+ ],
+ "Basketbol kulübü voleybol altında (Unrivaled)": [
+  "mist bc",
+  "breeze bc",
+  "lunar bc",
+  "lunar owls bc",
+  "hive bc"
+ ]
+}

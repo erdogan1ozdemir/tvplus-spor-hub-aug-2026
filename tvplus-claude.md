@@ -66,7 +66,16 @@ Paralelde bağımsız bir code review çalıştırıldı. Doğrulanan ve düzelt
 - **Transfermarkt eşleme hatası bulundu ve düzeltildi.** Panathinaikos, Olympiakos, Maccabi Tel Aviv, Žalgiris, Partizan, Baskonia, Hapoel Tel Aviv ve Tokat Belediye Plevne kulüpleri için Transfermarkt futbol kadrosunu döndürmüş, oyuncular basketbol ve voleybol olarak etiketlenmişti. 914 satır futbola taşındı ve `faset_notu` ile işaretlendi. Bu kulüplerin gerçek basketbol kadroları Wikipedia'dan alındı (7 kulüp, 111 oyuncu); hacim çekimi için 428 keyword bekliyor.
 - `kadro_wiki_basket.py` tek kulüple çalıştırıldığında çıktı dosyasının tamamını o kulüple değiştiriyordu. Betik birleştirmeli ve atomik yazıma çevrildi.
 
-**Güncel veri:** 17.823 keyword · Son 12 Ay 3,71B · YoY +%5,4 · dashboard.js 12,35 MB · artifact 12,72 MB
+### Açık kalan review bulguları kapatıldı
+
+- **Peak çeyrek tek yönteme indirildi.** Konumsal çeyrek (`rpq`) takvim etiketiyle basıldığı için filtre ile tablo satırların %90'ında çelişiyordu. Çeyrek artık seçili pencerenin çeyreğidir ve gerçek aylarıyla etiketlenir: rolling görünümde "Ağu-Eki 25 · Kas 25-Oca 26 · Şub-Nis 26 · May-Tem 26", takvim görünümünde "Q1 25 (Oca-Mar)" biçiminde. İki yıla yayılan kova sorunu da böylece ortadan kalktı. `quarterSums` ve `peakQuarterIdx` aynı tanıma bağlandı, grup seviyesine `peakQCal` eklendi.
+- **Sezonsallık penceresi eşitlendi.** Keyword sınıfı tüm seri (2024-01 →) üzerinden hesaplanırken grup sınıfı 12 ay kullanıyordu; keywordlerin %30'u iki temelde farklı sınıfa düşüyordu. Grup hesabı tüm seriye çekildi, açıklama metni de gerçeği anlatacak şekilde düzeltildi.
+- **Isı haritası peak işareti düzeltildi.** Takvim görünümü `cal25` dizisini çiziyor ama rolling indeksi kullanılıyordu; 20 spor grubunun 19'unda işaret yanlış sütundaydı. `peakIdxCal` eklendi.
+- **Takım kümeleme çok katmanlı ek kırpıyor.** Tek geçişte tek sonek indiği için "galatasaray maçı ne zaman" ayrı küme oluyordu. Kuyruk listesi genişletildi, döngüye alındı, resmî ad ekleri ("real madrid cf") de indiriliyor. **268 hayalet küme birleşti** (1.175 → 907).
+
+Tüm sekmeler iki görünüm kipinde de duman testinden geçti (18/18).
+
+**Güncel veri:** 17.819 keyword · Son 12 Ay 3,71B · YoY +%5,4 · dashboard.js 12,35 MB · artifact 12,72 MB
 
 ## 2026-08-24
 

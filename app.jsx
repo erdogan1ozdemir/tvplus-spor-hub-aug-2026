@@ -98,7 +98,10 @@
       }
       if(peakCeyrek.length){
         const s=new Set(peakCeyrek);
-        r = r.filter(k=>s.has(qLabel((k.rpq||[]).indexOf(1))));
+        // Rolling görünümde pencere çeyreği (rpq), takvim görünümünde
+        // takvim çeyreği (pq) esas alınır.
+        r = r.filter(k=>{ const dizi = viewMode==='calendar' ? k.pq : k.rpq;
+          return s.has(qLabel((dizi||[]).indexOf(1), viewMode)); });
       }
       if(mevsim.length){ const s=new Set(mevsim); r=r.filter(k=>s.has(k.sinif)); }
       if(bucket.length){ const s=new Set(bucket); r=r.filter(k=>s.has(k.bucket)); }
@@ -168,7 +171,7 @@
           h('div',{className:'filter-panel-label'}, h('span',{className:'txt-3'},'EK FİLTRE')),
           h(C.MultiSelect,{label:'Peak Ay', options:ROLLING_LABELS, selected:peakAy,
             onChange:setPeakAy, width:155}),
-          h(C.MultiSelect,{label:'Peak Çeyrek', options:[0,1,2,3].map(qLabel), selected:peakCeyrek,
+          h(C.MultiSelect,{label:'Peak Çeyrek', options:U.quarterOptions(viewMode), selected:peakCeyrek,
             onChange:setPeakCeyrek, width:150}),
           h(C.MultiSelect,{label:'Mevsim Tipi', options:D.facetDegerleri.sinif||[], selected:mevsim,
             onChange:setMevsim, width:160}),

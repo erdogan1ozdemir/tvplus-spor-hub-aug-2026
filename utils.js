@@ -58,37 +58,51 @@ window.U = (function(){
     if (a.length < 24) return null;
     return a.slice(-24, -12);
   }
-  // Calendar month index (0-11) of a rolling-window position (0-11)
-  function rollingIdxToCalMonth(i) {
-    const ym = (_D.monthsR12 || [])[i];
-    return ym ? Number(String(ym).split('-')[1]) - 1 : i;
+  // ————————————————————————————————— Çeyrek tanımı (tek kaynak)
+  // Çeyrek, seçili pencerenin çeyreğidir. Rolling görünümde pencere Ağustos'ta
+  // başladığı için çeyrekler takvim çeyreğiyle örtüşmez; bu yüzden takvim
+  // etiketi ("Q1 26") yerine pencerenin gerçek ayları yazılır ("Ağu-Eki 25").
+  // Takvim görünümünde çeyrekler gerçek takvim çeyrekleridir.
+  function _ayKisa(ym){
+    const [y, m] = String(ym).split('-');
+    return TR_MONTHS[Number(m) - 1] + ' ' + String(y).slice(2);
   }
-  // Rolling pencere tam 4 takvim çeyreğini kapsar; her çeyrek tek bir yıla düşer.
-  // Index = takvim çeyreği (0=Q1 … 3=Q4), değer = yıl ekli etiket ("Q3 25", "Q1 26").
   const ROLLING_Q_LABELS = (() => {
-    const out = ['Q1', 'Q2', 'Q3', 'Q4'];
-    for (const ym of (_D.monthsR12 || [])) {
-      const [y, m] = String(ym).split('-');
-      const qi = Math.floor((Number(m) - 1) / 3);
-      out[qi] = 'Q' + (qi + 1) + ' ' + String(y).slice(2);
-    }
-    return out;
+    const ay = _D.monthsR12 || [];
+    if (ay.length < 12) return ['Ç1', 'Ç2', 'Ç3', 'Ç4'];
+    return [0, 1, 2, 3].map(i => {
+      const bas = _ayKisa(ay[i*3]), son = _ayKisa(ay[i*3 + 2]);
+      const [b, by] = bas.split(' '), [sn, sy] = son.split(' ');
+      return by === sy ? `${b}-${sn} ${sy}` : `${b} ${by}-${sn} ${sy}`;
+    });
   })();
-  // qIdx: 0-based takvim çeyreği → "Q3 25"
-  function qLabel(qIdx) { return ROLLING_Q_LABELS[qIdx] || ('Q' + (qIdx + 1)); }
+  const CALENDAR_Q_LABELS = (() => {
+    const yil = String((_D.meta && _D.meta.yillar && _D.meta.yillar[1]) || '').slice(2);
+    return ['Q1', 'Q2', 'Q3', 'Q4'].map(q => yil ? `${q} ${yil}` : q);
+  })();
   const Q_MONTH_SPANS = ['Oca-Mar', 'Nis-Haz', 'Tem-Eyl', 'Eki-Ara'];
-  // Global "Peak Çeyrek" filtresi seçenekleri — app.jsx ve tabs.jsx ortak kullanır
-  const QUARTER_OPTIONS = ROLLING_Q_LABELS.map((l, i) => `${l} (${Q_MONTH_SPANS[i]})`);
-  // Rolling penceredeki çeyrek toplamları (index = takvim çeyreği)
-  function quarterSums(roll) {
+  // qIdx: pencere içindeki çeyrek sırası (0-3)
+  function qLabel(qIdx, viewMode) {
+    if (qIdx == null || qIdx < 0) return '–';
+    return viewMode === 'calendar'
+      ? (CALENDAR_Q_LABELS[qIdx] || ('Q' + (qIdx + 1)))
+      : (ROLLING_Q_LABELS[qIdx] || ('Ç' + (qIdx + 1)));
+  }
+  function quarterOptions(viewMode) {
+    return viewMode === 'calendar'
+      ? CALENDAR_Q_LABELS.map((l, i) => `${l} (${Q_MONTH_SPANS[i]})`)
+      : ROLLING_Q_LABELS.slice();
+  }
+  // Pencere dizisinin çeyrek toplamları — build-data.js'teki rpq ile aynı tanım
+  function quarterSums(seri) {
     const q = [0, 0, 0, 0];
-    for (let i = 0; i < 12; i++) q[Math.floor(rollingIdxToCalMonth(i) / 3)] += (roll[i] || 0);
+    for (let i = 0; i < 12; i++) q[Math.floor(i / 3)] += (seri && seri[i]) || 0;
     return q;
   }
-  // Son 12 ayda en yüksek hacimli takvim çeyreği (0-based)
-  function peakQuarterIdx(roll) {
-    const q = quarterSums(roll || []);
-    return q.indexOf(Math.max(...q));
+  function peakQuarterIdx(seri) {
+    const q = quarterSums(seri || []);
+    const mx = Math.max(...q);
+    return mx > 0 ? q.indexOf(mx) : -1;
   }
 
   // Build monthly totals aggregation for a set of keywords
@@ -233,18 +247,27 @@ window.U = (function(){
       const cal25 = aggregateMonthly(g.rows,'m25');
       const cal24 = aggregateMonthly(g.rows,'m24');
       const cal26 = aggregateMonthly(g.rows,'m26');
-      const nz = roll.filter(v=>v>0);
-      const mean = roll.reduce((a,b)=>a+b,0)/(roll.length||1);
-      const cv = mean ? Math.sqrt(roll.reduce((a,b)=>a+(b-mean)**2,0)/roll.length)/mean : 0;
-      const pdr = nz.length ? Math.max(...roll)/Math.max(Math.min(...nz),1) : 0;
+      // Mevsim tipi, keyword seviyesindekiyle aynı temele oturmalı: sınıf
+      // build-data.js'te tüm seri (2024-01 →) üzerinden hesaplanıyor. Grup
+      // seviyesinde 12 ay kullanılınca aynı ekranda iki farklı sınıf çıkıyordu.
+      const tumSeri = [...cal24, ...cal25, ...cal26];
+      const nz = tumSeri.filter(v=>v>0);
+      const mean = tumSeri.reduce((a,b)=>a+b,0)/(tumSeri.length||1);
+      const cv = mean ? Math.sqrt(tumSeri.reduce((a,b)=>a+(b-mean)**2,0)/tumSeri.length)/mean : 0;
+      const pdr = nz.length ? Math.max(...tumSeri)/Math.max(Math.min(...nz),1) : 0;
       const pIdx = roll.indexOf(Math.max(...roll));
       return {...g, roll, prev, cal24, cal25, cal26,
         ryoy: g.p12>0 ? (g.r12-g.p12)/g.p12 : null,
         yoy:  g.tot24>0 ? (g.tot25-g.tot24)/g.tot24 : null,
         share: g.r12/toplamR12,
         peakIdx: pIdx, peakLabel: ROLLING_LABELS[pIdx] || '–',
+        // Takvim görünümü cal25 dizisini çizer; rolling indeksi oraya
+        // uygulanınca peak işareti yanlış aya düşüyordu.
+        peakIdxCal: (Math.max(...cal25) > 0) ? cal25.indexOf(Math.max(...cal25)) : null,
         peakQ: peakQuarterIdx(roll),
-        sezType: cv<0.35 ? 'Evergreen' : (pdr>=20||cv>=1.0) ? 'Spike' : 'Seasonal',
+        peakQCal: peakQuarterIdx(cal25),
+        sezType: !nz.length ? 'Veri Yok'
+          : cv<0.35 ? 'Evergreen' : (pdr>=20||cv>=1.0) ? 'Spike' : 'Seasonal',
         cv:+cv.toFixed(3), pdRatio:+pdr.toFixed(1),
         rising: g.rows.filter(k=>k.trend==='Yükselen').length,
         falling: g.rows.filter(k=>k.trend==='Düşen').length,
@@ -300,9 +323,10 @@ window.U = (function(){
     FACET_ETIKET, SEVIYELER, applyFacets, groupBy, seriesFor, SEZ_RENK, HAK_RENK,
     yoyFor, yoyEtiketFor, hacimFor, oncekiHacimFor,
     ROLLING_LABELS, P12_LABELS, ymLabel,
-    ROLLING_Q_LABELS, QUARTER_OPTIONS, qLabel, quarterSums, peakQuarterIdx,
+    ROLLING_Q_LABELS, CALENDAR_Q_LABELS, quarterOptions, qLabel,
+    quarterSums, peakQuarterIdx,
     fmtNum, fmtFull, fmtPct, serialToMonthIdx, serialToRollingLabel, trendClass,
-    aggregateMonthly, aggregateRolling, rollingOf, prevRollingOf, rollingIdxToCalMonth,
+    aggregateMonthly, aggregateRolling, rollingOf, prevRollingOf,
     hmColor, hmText,
     toCSV, downloadCSV, debounce, sparkPath, quarterName,
   };

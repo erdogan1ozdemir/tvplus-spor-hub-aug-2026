@@ -147,6 +147,18 @@ Salt-okunur, dosya değiştirmeyen, DFS çağırmayan altı ajan başlatıldı: 
 
 Canlıda değişiklik yapılmadı. Dört varyant ayrı bir HTML'de tıklanabilir mockup olarak hazırlandı: varlık seçicisinin global filtreye bağlanması, eksen yazıcısının tekilleştirilmesi, filtre çubuğunun tek düğmeye inmesi, kırılım satırının menüye inmesi. Ölçüm: Gruplar sayfasında bugün 52 görünür kontrol var, dördü birlikte uygulanırsa 16'ya iniyor.
 
+### Denetim sonuçları · 5/6 ajan tamamlandı
+
+Tüm bulgular `data/bulgular/keyword_denetimi_2026-08.md` dosyasında toplandı. Ajan rakamları ham CSV satırları üzerindendi; hepsi dashboard üzerinde yeniden doğrulandı ve farklı çıkanlar düzeltildi (ör. NBA ajanda 17.516 keyword görünüyordu, dashboard'da 4.721).
+
+**Öncelik 1 bulgular:** Süper Lig küme düşmeleri uygulanmamış (Antalyaspor, Kayserispor, Karagümrük hâlâ Süper Lig, 41 keyword / 24,2M) · yurt dışındaki Türk sporcularda `turk_baglantisi` işareti hiç yok (Arda Güler 11,6M dahil) · `musabaka_tipi=Lig` + `lig_seviyesi=Kıta Üstü` imkânsız kombinasyonu 412 keyword / 45,9M · Avrupa eleme kovalarında şehir, hakem, stadyum ve oyuncu adları takım sayılıyor · kaynak dağılımı ters: İngiliz amatör futboluna 255 keyword, 15 kat fazla hacim taşıyan TFF 2./3. Lig'e 6 keyword.
+
+**Ölü fasetler:** `marka_tipi` tüm satırlarda `Jenerik` (rakip marka hacmi hiç ölçülmemiş), `kulup_dogrulama` kolonu hiçbir dosyada yok, `varyant_denetim` tek değerli. Üçü de arayüzde çalışır görünüp hiçbir şeyi daraltamıyor.
+
+**Kapsam boşlukları:** ilk 11, sakatlık, hakem, stadyum, gol kralı, teknik direktör, kaç kaç, tekrar izle, abonelik/paket aileleri sıfır keyword. Toprak Razgatlıoğlu, Zeynep Sönmez, Mete Gazoz hiç yok; bireysel sporcu katmanı kurulmamış. Basketbol Süper Ligi'nin 16 kulübünün 13'ü evrende yok. İzleme intent'i evrenin yalnızca %1,8'i, oysa TV+'ın tık aldığı tek katman o.
+
+**Bekleyen çekim:** dört kalem, tekilleştirilmiş ~3.600 keyword, 6 istek, ~$0,54. Sanitizer düzeltildiği için artık güvenli. Onay bekliyor.
+
 **Güncel veri:** 17.819 keyword · Son 12 Ay 3,71B · YoY +%5,4 · dashboard.js 12,35 MB · artifact 12,72 MB
 
 ## 2026-08-24

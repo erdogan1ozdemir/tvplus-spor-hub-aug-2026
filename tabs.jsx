@@ -415,12 +415,16 @@ window.TABS = (function(){
       h(Kaynak,{}));
   }
 
-  // ══════════════════════════════════════════ KEYWORD TABLOSU (Özdilek deseni)
-  function KeywordTablosu({rows, setKeywordModal, viewMode='rolling', sayfaBoyu=50, kompakt}){
+  // ══════════════════════════════════════════ KEYWORD TABLOSU
+  function KeywordTablosu({rows, setKeywordModal, viewMode='rolling', sayfaBoyu=50, kompakt,
+                            peakGizli, setPeakGizli}){
     const [sayfa, setSayfa] = React.useState(0);
     const [sira, setSira] = React.useState({k:'r12', d:-1});
+    const [iPeak, iPeakSet] = React.useState(false);
+    const gizli = peakGizli !== undefined ? peakGizli : iPeak;
+    const setGizli = setPeakGizli || iPeakSet;
     React.useEffect(()=>setSayfa(0), [rows]);
-    const takvim = viewMode==='calendar';
+    const M = D().meta, yil = M.yillar;
     const veri = React.useMemo(()=>{
       const a=[...rows];
       a.sort((x,y)=>{ const xv=x[sira.k], yv=y[sira.k];
@@ -430,36 +434,42 @@ window.TABS = (function(){
     },[rows, sira]);
     const sayfaSayisi = Math.max(1, Math.ceil(veri.length/sayfaBoyu));
     const dilim = veri.slice(sayfa*sayfaBoyu, (sayfa+1)*sayfaBoyu);
-    const th=(lab,k,num)=>h('th',{key:k, className:num?'num':'',
+    const th=(lab,k,num,ipucu)=>h('th',{key:k, className:num?'num':'', title:ipucu,
       style:{cursor:'pointer', userSelect:'none'},
       onClick:()=>setSira(x=>({k, d: x.k===k ? -x.d : -1}))},
       lab, sira.k===k ? (sira.d>0?' ↑':' ↓') : '');
-    const kolSayisi = kompakt ? 8 : 12;
 
     return h('div',{className:'card flush'},
+      h('div',{className:'tbl-ust'},
+        h('span',{className:'txt-3', style:{fontSize:11}},
+          'Hacimler aylık ortalamadır. YoY sütunları takvim yılı karşılaştırmasıdır.'),
+        h('button',{className:'chip-btn'+(gizli?'':' active'), style:{marginLeft:'auto'},
+          onClick:()=>setGizli(g=>!g)}, gizli ? 'Peak sütunlarını göster' : 'Peak sütunlarını gizle')),
       h('div',{className:'tbl-wrap'},
         h('table',{className:'tbl'},
           h('thead',null,h('tr',null,
             th('Keyword','kw'),
             !kompakt && th('Spor Dalı','spor'),
             !kompakt && th('Organizasyon','org'),
-            !kompakt && th('Sayfa Tipi','st'),
+            !kompakt && th('Takım','kulup', false, 'Oyuncu satırlarında oyuncunun kulübü'),
             !kompakt && th('Varlık','ent'),
-            th(takvim ? (D().meta.yillar[0]||'Önceki Yıl') : 'Önceki 12 Ay', takvim?'_p':'p12', true),
-            th(takvim ? (D().meta.yillar[1]||'Son Yıl') : 'Son 12 Ay', takvim?'_r':'r12', true),
-            th('YoY', takvim?'yoy':'ryoy', true),
-            h('th',{key:'trend'},'12 Ay Trend'),
-            h('th',{key:'pa'},'Peak Ay'),
-            h('th',{key:'pq'},'Peak Ç.'),
-            !kompakt && h('th',{key:'bk'},'Bucket'))),
+            th(yil[0]+' Ort.','a24', true, yil[0]+' aylık ortalama arama hacmi'),
+            th(yil[1]+' Ort.','a25', true, yil[1]+' aylık ortalama arama hacmi'),
+            th(yil[0].slice(2)+'–'+yil[1].slice(2)+' YoY','yoy', true,
+              yil[0]+' → '+yil[1]+' takvim yılı değişimi'),
+            th(yil[2]+' YTD Ort.','a26', true,
+              yil[2]+' ilk '+(D().months2026||[]).length+' ayın ortalaması'),
+            th('YTD YoY','ytd', true, yil[2]+' YTD / '+yil[1]+' aynı dönem'),
+            h('th',{key:'trend'},'Trend'),
+            !gizli && h('th',{key:'pa'},'Peak Ay'),
+            !gizli && h('th',{key:'pq'},'Peak Ç.'),
+            !kompakt && th('Bucket','bucket'))),
           h('tbody',null,
-            dilim.length===0 && h('tr',null,h('td',{colSpan:kolSayisi, className:'empty'},'Sonuç bulunamadı')),
-            dilim.map((r,i)=>{
-              const seri = takvim ? (r.m25||[]) : U.rollingOf(r);
-              const pi = seri.indexOf(Math.max(...seri));
-              const pq = U.peakQuarterIdx(U.rollingOf(r)) + 1;
-              const onceki = takvim ? (r.m24||[]).reduce((a,b)=>a+(b||0),0) : r.p12;
-              const son    = takvim ? (r.m25||[]).reduce((a,b)=>a+(b||0),0) : r.r12;
+            dilim.length===0 && h('tr',null,h('td',{colSpan:14, className:'empty'},'Sonuç bulunamadı')),
+            dilim.map(function(r){
+              const roll = U.rollingOf(r);
+              const pi = roll.indexOf(Math.max(...roll));
+              const pq = U.peakQuarterIdx(roll) + 1;
               return h('tr',{key:r.kw, className:'clickable', onClick:()=>setKeywordModal(r)},
                 h('td',{className:'kw-cell', style:{maxWidth:230}}, r.kw),
                 !kompakt && h('td',{style:{fontSize:12}},
@@ -468,16 +478,18 @@ window.TABS = (function(){
                       background:(window.SPOR_RENK||{})[r.spor]||'#BAB0AC'}}),
                     h('span',null, r.spor||'–'))),
                 !kompakt && h('td',{style:{fontSize:12,color:'var(--ink-2)'}}, r.org||'–'),
-                !kompakt && h('td',{style:{fontSize:12,color:'var(--ink-3)'}}, r.st||'–'),
-                !kompakt && h('td',null, r.ent ? h('span',{className:'cat-pill'}, r.ent) : '–'),
-                h('td',{className:'num'}, fmtFull(onceki)),
-                h('td',{className:'num'}, fmtFull(son)),
-                h('td',{className:'num'}, h(YoY,{v: yoyFor(r, viewMode), tip: yoyEtiketFor(viewMode)})),
-                h('td',{style:{width:110}}, h(C.Sparkline,{values:seri, w:100, h:26,
+                !kompakt && h('td',{style:{fontSize:12,color:'var(--ink-2)'}},
+                  r.kulup ? h('span',{className:'cat-pill'}, r.kulup) : '–'),
+                !kompakt && h('td',{style:{fontSize:12,color:'var(--ink-3)'}}, r.ent||'–'),
+                h('td',{className:'num'}, fmtFull(r.a24)),
+                h('td',{className:'num'}, fmtFull(r.a25)),
+                h('td',{className:'num'}, h(YoY,{v:r.yoy, tip:yil[0]+' → '+yil[1]})),
+                h('td',{className:'num'}, fmtFull(r.a26)),
+                h('td',{className:'num'}, h(YoY,{v:r.ytd, tip:'YTD karşılaştırması'})),
+                h('td',{style:{width:110}}, h(C.Sparkline,{values:roll, w:100, h:26,
                   color: SEZ_RENK[r.sinif]||'var(--accent)'})),
-                h('td',null, h('span',{className:'pill neu'},
-                  takvim ? (U.TR_MONTHS[pi]||'–') : (ROLLING_LABELS[pi]||'–'))),
-                h('td',null, h('span',{className:'pill q'+pq,
+                !gizli && h('td',null, h('span',{className:'pill neu'}, ROLLING_LABELS[pi]||'–')),
+                !gizli && h('td',null, h('span',{className:'pill q'+pq,
                   title:'Son 12 ayın en yüksek hacimli çeyreği'}, qLabel(pq-1))),
                 !kompakt && h('td',null, h('span',{className:'cat-pill'}, r.bucket)));
             }))))
@@ -495,7 +507,9 @@ window.TABS = (function(){
   const KW_CSV = [
     {label:'Keyword',key:'kw'},{label:'Spor Dalı',key:'spor'},{label:'Organizasyon',key:'org'},
     {label:'Sayfa Tipi',key:'st'},{label:'Intent',key:'it'},{label:'Varlık Tipi',key:'ent'},
-    {label:'Yayın Hakkı',key:'hak'},{label:'Önceki 12 Ay',key:'p12'},{label:'Son 12 Ay',key:'r12'},
+    {label:'Takım',key:'kulup'},{label:'Yayın Hakkı',key:'hak'},
+    {label:'2024 Ort.',key:'a24'},{label:'2025 Ort.',key:'a25'},{label:'2026 YTD Ort.',key:'a26'},
+    {label:'Önceki 12 Ay',key:'p12'},{label:'Son 12 Ay',key:'r12'},
     {label:'YoY %',get:r=>r.ryoy==null?'':(r.ryoy*100).toFixed(1)},
     {label:'Takvim YoY %',get:r=>r.yoy==null?'':(r.yoy*100).toFixed(1)},
     {label:'Mevsim Tipi',key:'sinif'},{label:'Bucket',key:'bucket'},{label:'Trend',key:'trend'},
@@ -503,10 +517,9 @@ window.TABS = (function(){
   ];
 
   // ══════════════════════════════════════════ GRUPLAR
-  function GruplarTab({rows, viewMode, secili, setSecili, setKeywordModal, onSelectGroup, onNavigateKw}){
-    const [seviye, setSeviye] = React.useState('org');
+  function GruplarTab({rows, viewMode, secili, setSecili, setKeywordModal, onSelectGroup,
+                        onNavigateKw, seviye, setSeviye, entFiltre, setEntFiltre, peakGizli, setPeakGizli}){
     const [altSeviye, setAltSeviye] = React.useState('');
-    const [entFiltre, setEntFiltre] = React.useState('');
     // Varlık filtresi hem sezonsallık matrisini hem alttaki grup tablosunu daraltır
     const rowsF = entFiltre ? rows.filter(r=>r.ent===entFiltre) : rows;
     const gruplar = React.useMemo(()=>groupBy(rowsF, seviye, altSeviye||null),
@@ -580,14 +593,17 @@ window.TABS = (function(){
   }
 
   // ══════════════════════════════════════════ KEYWORD
-  function KeywordTab({rows, viewMode, setKeywordModal}){
+  function KeywordTab({rows, viewMode, setKeywordModal, entFiltre, setEntFiltre,
+                        peakGizli, setPeakGizli}){
     const [q, setQ] = React.useState('');
-    const [entHizli, setEntHizli] = React.useState('');
+    const entHizli = entFiltre || '';
+    const setEntHizli = setEntFiltre || (()=>{});
     const veri = React.useMemo(()=>{
       const qq=q.trim().toLowerCase();
       let r = entHizli ? rows.filter(x=>x.ent===entHizli) : rows;
       return qq ? r.filter(x=>x.kw.includes(qq)) : r;
     },[rows,q,entHizli]);
+
     const takvim = viewMode==='calendar';
     const son = veri.reduce((a,k)=>a+(takvim?(k.m25||[]).reduce((x,y)=>x+(y||0),0):(k.r12||0)),0);
     const onc = veri.reduce((a,k)=>a+(takvim?(k.m24||[]).reduce((x,y)=>x+(y||0),0):(k.p12||0)),0);
@@ -623,7 +639,8 @@ window.TABS = (function(){
           sub: takvim ? (D().meta.yillar[1]+' toplam') : 'Son 12 Ay toplam'}),
         h(C.Kpi,{label:'Yükselen', value:fmtNum(yuk), chip:'↑', chipClass:'pos', sub:'görünen içinde'}),
         h(C.Kpi,{label:'Düşen', value:fmtNum(dus), chip:'↓', chipClass:'neg', sub:'görünen içinde'})),
-      h(KeywordTablosu,{rows:veri, setKeywordModal, viewMode, sayfaBoyu:50}),
+      h(KeywordTablosu,{rows:veri, setKeywordModal, viewMode, sayfaBoyu:50,
+        peakGizli, setPeakGizli}),
       h(Kaynak,{}));
   }
 
@@ -713,30 +730,173 @@ window.TABS = (function(){
   }
 
   // ══════════════════════════════════════════ TAKIM & OYUNCU
-  function EntityTab({rows, viewMode, setKeywordModal, onSelectGroup, onNavigateKw}){
-    const tipler = [...new Set(rows.map(k=>k.ent).filter(Boolean))];
-    const [tip, setTip] = React.useState(tipler.includes('Takım')?'Takım':tipler[0]);
-    const veri = rows.filter(k=>k.ent===tip);
-    const ktmG = groupBy(veri,'ktm'), orgG = groupBy(veri,'org');
+  // Takım kümesi: bir takımın kendi aramaları ile o takımın oyuncularının
+  // aramaları tek çatı altında toplanır. Sayfa açma kararı bu toplama bakar.
+  function takimKumeleri(rows){
+    const m = new Map();
+    for(const k of rows){
+      let takim = null;
+      if(k.ent==='Takım') takim = (k.kulup || k.kw.split(' ')[0] && k.kw) && k.kw;
+      if(k.ent==='Takım') takim = k.kw;
+      else if(k.ent==='Oyuncu' && k.kulup) takim = k.kulup;
+      if(!takim) continue;
+      // takım satırlarında varyantları ana ada indir ("galatasaray maçları" -> "galatasaray")
+      if(k.ent==='Takım'){
+        for(const suf of [' maçları',' maçı',' fikstür',' puan durumu',' kadrosu',
+                          ' canlı izle',' transfer',' oyuncuları',' kadro']){
+          if(takim.endsWith(suf)){ takim = takim.slice(0, -suf.length); break; }
+        }
+      }
+      if(!m.has(takim)) m.set(takim, {label:takim, takimRows:[], oyuncuRows:[], org:k.org, spor:k.spor});
+      const g = m.get(takim);
+      (k.ent==='Takım' ? g.takimRows : g.oyuncuRows).push(k);
+      if(!g.org && k.org) g.org = k.org;
+      if(!g.spor && k.spor) g.spor = k.spor;
+    }
+    const n = (D().meta.aylar||[]).length;
+    return [...m.values()].map(function(g){
+      const hepsi = g.takimRows.concat(g.oyuncuRows);
+      const tv = topR12(g.takimRows), ov = topR12(g.oyuncuRows);
+      const roll = aggregateRolling(hepsi,'last'), prev = aggregateRolling(hepsi,'prev');
+      const p12 = topP12(hepsi);
+      const pIdx = roll.indexOf(Math.max(...roll));
+      return {...g, rows:hepsi, alan:'takim', ust:g.label,
+        takimVol:tv, oyuncuVol:ov, r12:tv+ov, p12,
+        ryoy: p12>0 ? ((tv+ov)-p12)/p12 : null,
+        takimKw:g.takimRows.length, oyuncuKw:g.oyuncuRows.length,
+        kwCount: hepsi.length, roll, prev,
+        cal24: aggregateMonthly(hepsi,'m24'), cal25: aggregateMonthly(hepsi,'m25'),
+        cal26: aggregateMonthly(hepsi,'m26'),
+        peakIdx:pIdx, peakLabel: ROLLING_LABELS[pIdx]||'–',
+        peakQ: U.peakQuarterIdx(roll), share:0,
+        sezType: U.siniflandir ? '' : ''};
+    }).sort((a,b)=>b.r12-a.r12);
+  }
+
+  function EntityTab({rows, viewMode, setKeywordModal, onSelectGroup, onNavigateKw,
+                       entFiltre, setEntFiltre, peakGizli, setPeakGizli}){
+    const [gorunum, setGorunum] = React.useState('kume');   // kume | liste
+    const [kapsam, setKapsam] = React.useState('hepsi');    // hepsi | takim | oyuncu
+    const varlik = rows.filter(k=>k.ent==='Takım'||k.ent==='Oyuncu');
+    const kapsamli = kapsam==='takim' ? varlik.filter(k=>k.ent==='Takım')
+                   : kapsam==='oyuncu' ? varlik.filter(k=>k.ent==='Oyuncu') : varlik;
+    const kumeler = React.useMemo(()=>takimKumeleri(varlik), [varlik]);
+    const toplam = kumeler.reduce((a,g)=>a+g.r12,0) || 1;
+    kumeler.forEach(g=>{ g.share = g.r12/toplam; });
+    const tkTop = topR12(varlik.filter(k=>k.ent==='Takım'));
+    const oyTop = topR12(varlik.filter(k=>k.ent==='Oyuncu'));
+
     return h('div',{className:'tab-content-anim'},
       h('div',{className:'filter-panel', style:{marginBottom:14}},
-        h('div',{className:'filter-panel-label'}, h('strong',null,'Varlık tipi')),
-        h('div',{className:'segmented'}, tipler.map(t=>h('button',{key:t,
-          className: tip===t?'active':'', onClick:()=>setTip(t)}, t,
-          h('span',{className:'badge', style:{marginLeft:5}},
-            fmtNum(rows.filter(k=>k.ent===t).length))))),
+        h('div',{className:'segmented'},
+          [['kume','Takım Kümesi'],['liste','Keyword Listesi']].map(function(g){
+            return h('button',{key:g[0], className: gorunum===g[0]?'active':'',
+              onClick:()=>setGorunum(g[0])}, g[1]);
+          })),
+        h('div',{className:'segmented', title:'Kümede hangi aramalar sayılsın'},
+          [['hepsi','Takım + Oyuncu'],['takim','Yalnız Takım'],['oyuncu','Yalnız Oyuncu']]
+            .map(function(g){
+              return h('button',{key:g[0], className: kapsam===g[0]?'active':'',
+                onClick:()=>setKapsam(g[0])}, g[1]);
+            })),
         h('div',{style:{marginLeft:'auto', fontSize:12.5}},
-          h('strong',null, fmtNum(topR12(veri))), ' Son 12 Ay')),
-      ktmG.length>1 && h('div',{className:'card', style:{marginBottom:16}},
-        h('h3',{style:{fontSize:14, marginBottom:10}},'Katman dağılımı'),
-        h(C.ShareBars,{rows:ktmG.map(g=>({label:g.label, value:g.r12, share:g.share, yoy:g.ryoy, title:grupAciklama(g)}))})),
-      h(SezonTakvimi,{rows:veri, viewMode, onSelectGroup, baslik:tip+' sezonsallığı'}),
-      h(C.SectionHeader,{icon:'saha', title:tip+' · organizasyon kırılımı'}),
-      h(GrupTablosu,{gruplar:orgG, seviye:'org', onSelectGroup, viewMode}),
-      h(C.SectionHeader,{icon:'karne', title:tip+' talebi',
-        actions: h('button',{className:'chip-btn',
-          onClick:()=>downloadCSV(`tvplus-${tip.toLowerCase()}.csv`, toCSV(veri, KW_CSV))},'↓ CSV')}),
-      h(KeywordTablosu,{rows:veri, setKeywordModal, viewMode, sayfaBoyu:25}),
+          h('strong',null, fmtNum(topR12(kapsamli))), ' Son 12 Ay · ',
+          h('strong',null, fmtNum(kapsamli.length)), ' keyword')),
+
+      h('div',{className:'grid grid-kpi kpi-4'},
+        h(C.Kpi,{label:'Takım Kümesi', value:fmtNum(kumeler.length), accent:true,
+          sub:'takım + oyuncularının aramaları birlikte'}),
+        h(C.Kpi,{label:'Takım Araması', value:fmtNum(tkTop),
+          sub:varlik.filter(k=>k.ent==='Takım').length.toLocaleString('tr-TR')+' keyword'}),
+        h(C.Kpi,{label:'Oyuncu Araması', value:fmtNum(oyTop),
+          sub:varlik.filter(k=>k.ent==='Oyuncu').length.toLocaleString('tr-TR')+' keyword'}),
+        h(C.Kpi,{label:'Oyuncu Payı',
+          value:'%'+(100*oyTop/((tkTop+oyTop)||1)).toFixed(1).replace('.',','),
+          sub:'kümedeki oyuncu katkısı'})),
+
+      gorunum==='kume' ? h(React.Fragment,null,
+        h(C.SectionHeader,{icon:'karne', title:'Takım Kümesi Dağılımı',
+          desc:'her kart bir takımın kendi aramaları ile oyuncularının aramalarını birlikte gösterir'}),
+        h('div',{className:'card'},
+          h(C.SmallMultiples,{yScale:'independent', toplamEtiket:'Son 12 Ay',
+            monthsLabels:ROLLING_LABELS,
+            items: kumeler.slice(0,16).map(function(g){
+              return {label:g.label, values:g.roll, prevValues:g.prev, yoy:g.ryoy,
+                color:(window.SPOR_RENK||{})[g.spor]||'#BAB0AC',
+                title:[g.label, (g.org?g.org+' · ':'')+(g.spor||''),
+                  'Takım araması: '+fmtFull(g.takimVol)+' ('+g.takimKw+' kw)',
+                  'Oyuncu araması: '+fmtFull(g.oyuncuVol)+' ('+g.oyuncuKw+' kw)',
+                  'Toplam: '+fmtFull(g.r12)].join('\n')};
+            }),
+            onClick: it => onSelectGroup('org', (kumeler.find(x=>x.label===it.label)||{}).org)})),
+        h(C.SectionHeader,{icon:'takvim', title:'Takım Kümesi Sezonsallığı',
+          desc:'satır = takım kümesi, sütun = ay'}),
+        h('div',{className:'card'},
+          h('div',{className:'matrix-scroll'},
+            h(C.Heatmap,{monthsLabels: viewMode==='calendar'?U.TR_MONTHS:ROLLING_LABELS,
+              showValues:true, showYoY:true,
+              rows: kumeler.slice(0,25).map(function(g){
+                return {label:g.label,
+                  sub:(g.org?g.org+' · ':'')+fmtNum(g.r12),
+                  values: viewMode==='calendar'?g.cal25:g.roll,
+                  prevValues: viewMode==='calendar'?g.cal24:g.prev,
+                  peakIdx:g.peakIdx,
+                  title:[g.label,'Takım: '+fmtFull(g.takimVol),'Oyuncu: '+fmtFull(g.oyuncuVol),
+                    'Toplam: '+fmtFull(g.r12)].join('\n')};
+              })})),
+          h('div',{className:'txt-3', style:{fontSize:10.5, marginTop:8}},
+            kumeler.length.toLocaleString('tr-TR')+' takım kümesi · tablo kendi içinde kaydırılabilir')),
+        h(C.SectionHeader,{icon:'liste', title:'Takım Kümesi Tablosu',
+          desc:'takım araması ve oyuncu araması ayrı kolonlarda',
+          actions: h('button',{className:'chip-btn', style:{padding:'6px 12px',borderRadius:999},
+            onClick:()=>downloadCSV('tvplus-takim-kumesi.csv', toCSV(kumeler,[
+              {label:'Takım',key:'label'},{label:'Organizasyon',key:'org'},
+              {label:'Spor Dalı',key:'spor'},
+              {label:'Takım Araması',key:'takimVol'},{label:'Takım KW',key:'takimKw'},
+              {label:'Oyuncu Araması',key:'oyuncuVol'},{label:'Oyuncu KW',key:'oyuncuKw'},
+              {label:'Toplam Son 12 Ay',key:'r12'},{label:'Önceki 12 Ay',key:'p12'},
+              {label:'YoY %',get:r=>r.ryoy==null?'':(r.ryoy*100).toFixed(1)},
+              {label:'Peak Ay',key:'peakLabel'}]))},'↓ CSV')}),
+        h('div',{className:'card flush'},
+          h('div',{className:'tbl-wrap'},
+            h('table',{className:'tbl'},
+              h('thead',null,h('tr',null,
+                h('th',null,'Takım'), h('th',null,'Organizasyon'),
+                h('th',{className:'num'},'Takım Araması'),
+                h('th',{className:'num'},'Oyuncu Araması'),
+                h('th',{className:'num'},'Toplam'),
+                h('th',{className:'num'},'Oyuncu Payı'),
+                h('th',{className:'num'},'YoY'),
+                h('th',null,'Trend'), h('th',null,'Peak Ay'))),
+              h('tbody',null, kumeler.slice(0,200).map(function(g){
+                const pay = g.r12 ? g.oyuncuVol/g.r12 : 0;
+                return h('tr',{key:g.label, className:'clickable',
+                  onClick:()=>onNavigateKw({alan:'kulup', deger:g.label})},
+                  h('td',{className:'kw-cell'},
+                    h('div',{style:{display:'flex',alignItems:'center',gap:7}},
+                      h('div',{style:{width:8,height:8,borderRadius:2,flexShrink:0,
+                        background:(window.SPOR_RENK||{})[g.spor]||'#BAB0AC'}}),
+                      h('div',{style:{minWidth:0}},
+                        h('div',null, g.label),
+                        h('div',{className:'cat-cell'}, g.spor||'')))),
+                  h('td',{style:{fontSize:12,color:'var(--ink-2)'}}, g.org||'–'),
+                  h('td',{className:'num'}, fmtFull(g.takimVol),
+                    h('span',{className:'txt-3', style:{fontSize:10, marginLeft:5}}, g.takimKw+' kw')),
+                  h('td',{className:'num'}, fmtFull(g.oyuncuVol),
+                    h('span',{className:'txt-3', style:{fontSize:10, marginLeft:5}}, g.oyuncuKw+' kw')),
+                  h('td',{className:'num'}, h('strong',null, fmtFull(g.r12))),
+                  h('td',{className:'num'}, '%'+(pay*100).toFixed(1).replace('.',',')),
+                  h('td',{className:'num'}, h(YoY,{v:g.ryoy})),
+                  h('td',{style:{width:110}}, h(C.Sparkline,{values:g.roll, w:100, h:26})),
+                  h('td',null, h('span',{className:'pill neu'}, g.peakLabel)));
+              })))))
+      ) : h(React.Fragment,null,
+        h(C.SectionHeader,{icon:'liste', title:'Varlık Keyword Listesi',
+          desc:'takım ve oyuncu keyword\'lerinin tamamı',
+          actions: h('button',{className:'chip-btn', style:{padding:'6px 12px',borderRadius:999},
+            onClick:()=>downloadCSV('tvplus-varlik.csv', toCSV(kapsamli, KW_CSV))},'↓ CSV')}),
+        h(KeywordTablosu,{rows:kapsamli, setKeywordModal, viewMode, sayfaBoyu:50,
+          peakGizli, setPeakGizli})),
       h(Kaynak,{}));
   }
 

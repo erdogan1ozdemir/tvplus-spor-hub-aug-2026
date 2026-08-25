@@ -135,6 +135,7 @@ for(const o of kwMap.values()){
 
   const a24 = m24.length ? Math.round(ort(m24)) : null;
   const a25 = m25.length ? Math.round(ort(m25)) : null;
+  const a26 = m26.length ? Math.round(ort(m26)) : null;   // kısmi yıl: YTD ortalaması
   const yoy = oran(toplam(m25), toplam(m24));
   const ryoy = p12!=null ? oran(r12, p12) : null;
   // YTD: kısmi son yıl ile önceki yılın aynı ay sayısı
@@ -150,7 +151,7 @@ for(const o of kwMap.values()){
   const dipI = nz.length ? tum.indexOf(Math.min(...nz)) : -1;
 
   const k = { kw:o.kw, sv:o.sv, m24, m25, m26,
-    a24, a25, yoy, r12, p12, ryoy, ytd,
+    a24, a25, a26, yoy, r12, p12, ryoy, ytd,
     pq, rpq: rC.pq,
     peakSerial: peakI25>=0 ? serial(months2025[peakI25]) : null,
     rpeakSerial: peakIR>=0 ? serial(monthsR12[peakIR]) : null,

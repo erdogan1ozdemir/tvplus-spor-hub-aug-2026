@@ -184,7 +184,8 @@ window.U = (function(){
     cins:'Cinsiyet', km:'Kulüp/Milli', tb:'Takım/Bireysel', cog:'Coğrafya', yer:'Yerlilik',
     turk:'Türk Bağlantısı', per:'Periyodiklik', tak:'Takvim Tipi', marka:'Marka Tipi',
     dil:'Dil', uzn:'Sorgu Uzunluğu', ktm:'Katman', kurum:'Kurum Sorgusu',
-    sinif:'Mevsim Tipi', bucket:'Hacim Aralığı', trend:'Trend', kulup:'Kulüp',
+    sinif:'Mevsim Tipi', bucket:'Hacim Aralığı', trend:'Trend', kulup:'Takım',
+    a24:'2024 Ort.', a25:'2025 Ort.', a26:'2026 YTD Ort.',
   };
   // Kırılım hiyerarşisi: seviye 1 → 2 → 3 (Özdilek'teki Kat 1/2/3 karşılığı)
   const SEVIYELER = [

@@ -1678,3 +1678,24 @@ button.action-card:hover { border-color: currentColor; transform: translateY(-1p
   border-radius:8px; background:color-mix(in srgb, var(--accent) 15%, transparent);
   color:var(--accent-deep); flex:none; }
 .explainer-head .emoji{ display:none; }
+
+
+/* ——— Sezonsallık satır etiketleri: hücre içinde ortalanır ——— */
+.heatmap .hm-row-label{
+  align-items:center; justify-content:center; text-align:center;
+  padding:6px 12px; gap:1px;
+}
+.heatmap .hm-row-label > span{ width:100%; text-align:center; }
+.matrix-scroll .hm-row-label{ padding-left:14px; padding-right:14px; }
+
+/* ——— Tablo üst şeridi (peak sütun anahtarı) ——— */
+.tbl-ust{
+  display:flex; align-items:center; gap:10px; padding:10px 14px;
+  border-bottom:1px solid var(--line); flex-wrap:wrap;
+}
+
+/* Takım rozeti oyuncu satırlarında */
+.cat-pill{ display:inline-block; padding:1px 7px; border-radius:var(--r-pill);
+  background:var(--line-soft); color:var(--ink-2); font-size:10.5px; font-weight:500;
+  max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  vertical-align:middle; }

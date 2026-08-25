@@ -10,14 +10,14 @@
   const SEKMELER = [
     {id:'ozet',    label:'Özet',                Comp:T.OzetTab},
     {id:'gruplar', label:'Gruplar',             Comp:T.GruplarTab},
-    {id:'keyword', label:'Keyword',             Comp:T.KeywordTab, rozet:r=>fmtNum(r.length)},
-    {id:'trendler',label:'Trendler',            Comp:T.TrendlerTab},
-    {id:'sayfa',   label:'Sayfa Tipi & Intent', Comp:T.SayfaTipiTab},
     {id:'entity',  label:'Takım & Oyuncu',      Comp:T.EntityTab,
       rozet:r=>fmtNum(r.filter(k=>k.ent==='Takım'||k.ent==='Oyuncu').length)},
+    {id:'keyword', label:'Keyword',             Comp:T.KeywordTab, rozet:r=>fmtNum(r.length)},
+    {id:'karar',   label:'Karar Ağacı',         Comp:T.KararTab},
+    {id:'sayfa',   label:'Sayfa Tipi & Intent', Comp:T.SayfaTipiTab},
+    {id:'trendler',label:'Trendler',            Comp:T.TrendlerTab},
     {id:'hakdisi', label:'Yayın Hakkı Dışı',    Comp:T.HakDisiTab,
       rozet:r=>fmtNum(r.filter(k=>k.hak==='TV+ Yok').length)},
-    {id:'karar',   label:'Karar Ağacı',         Comp:T.KararTab},
     {id:'master',  label:'Master Liste',        Comp:T.MasterTab},
   ];
 
@@ -45,6 +45,11 @@
       localStorage.getItem(K('viewMode'))==='calendar' ? 'calendar' : 'rolling');
     const [ekAcik, setEkAcik] = React.useState(false);
     const [secili, setSecili] = React.useState(null);
+    // Sekmeler arası akan görünüm state'i: bir sekmede seçilen kırılım ve
+    // varlık daralması diğer sekmelerde de geçerli olur.
+    const [seviye, setSeviye] = React.useState('org');
+    const [entFiltre, setEntFiltre] = React.useState('');
+    const [peakGizli, setPeakGizli] = React.useState(false);
     const [keywordModal, setKeywordModal] = React.useState(null);
     const [scrolled, setScrolled] = React.useState(false);
     // Rapor nötr palette açılır; yalnızca açık/koyu tema seçilebilir.
@@ -106,6 +111,7 @@
 
     const onSelectGroup = (alan, deger) => {
       setSecili({alan, deger});
+      setSeviye(alan);
       setFiltre(f=>({...f,[alan]:[deger]}));
       setTab('gruplar'); window.scrollTo({top:0, behavior:'smooth'});
     };
@@ -115,7 +121,9 @@
     };
 
     const S = SEKMELER.find(s=>s.id===tab) || SEKMELER[0];
-    const ortak = { rows, viewMode, setKeywordModal, onSelectGroup, onNavigateKw, secili, setSecili };
+    const ortak = { rows, viewMode, setKeywordModal, onSelectGroup, onNavigateKw,
+      secili, setSecili, seviye, setSeviye, entFiltre, setEntFiltre,
+      peakGizli, setPeakGizli };
 
     return h('div',{className:'app'},
       h('div',{className:'topbar'},

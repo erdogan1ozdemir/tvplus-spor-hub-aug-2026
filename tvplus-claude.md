@@ -305,3 +305,27 @@ Kullanıcı geri bildirimi: görselleştirme, dinamizm ve YoY açısından eksik
 - Veri en baştan eksiksizdi; sorun keşfedilebilirlikti. Varsayılan sıralama hacme göre olduğu için ligler ve büyük kulüpler listenin tepesini dolduruyor, oyuncu satırları çok aşağıda kalıyordu.
 - Keyword sekmesi toolbar'ına sayaçlı hızlı varlık seçici eklendi: Tümü 10,4K · Takım 2,4K · Oyuncu 6,3K · Maç 937 · Lig 622.
 - Doğrulandı: Oyuncu seçildiğinde 6,3K keyword / 223,3M talep; liste Arda Güler 12,1M, Kerem Aktürkoğlu 6,9M, Kenan Yıldız 4,5M ile açılıyor. Arama kutusundan "arda güler" arandığında dört satır (jenerik, istatistik, hangi takımda, kimdir) hacimleriyle geliyor.
+
+### Oyuncu evreni temizlendi ve arama formlarıyla genişletildi
+- **Tespit 1:** Wikipedia kadro tablolarından pozisyon adları ve federasyon isimleri sızmıştı (goalkeeper, defender, forward, "Iraq Football Association", "birleşik arap emirlikleri"). `scripts/oyuncu_temizle_genislet.py` ile 136 girdi ayıklandı; 5.113 temiz oyuncu kaldı.
+- **Tespit 2 (asıl sorun):** Oyuncu adları Wikipedia'nın aksanlı kanonik yazımıyla geliyordu ("vinícius júnior" = 18.640), oysa arama aksansız ve kısaltmalı yapılıyor ("vinicius jr"). Her oyuncu için aksansız tam ad, soyad ve "jr" kısaltması varyantları üretildi. Keyword sayısı 21.016 → 35.996.
+- `kulup` alanı zaten tüm oyuncu satırlarında doluydu; keyword tablosuna **Takım** kolonu olarak eklendi.
+
+### Sekme sırası ve sekmeler arası akan state
+- Yeni sıra: Özet · Gruplar · Takım & Oyuncu · Keyword · Karar Ağacı · Sayfa Tipi & Intent · Trendler · Yayın Hakkı Dışı · Master Liste.
+- Kırılım seviyesi, varlık filtresi ve peak sütun tercihi `App` state'ine taşındı; bir sekmede yapılan seçim diğer sekmelerde de geçerli. Grup detayına gidildiğinde kırılım ekseni de o alana ayarlanıyor.
+
+### Takım & Oyuncu sekmesi yeniden kuruldu
+- **Takım kümesi** kavramı eklendi: bir takımın kendi aramaları ile o takımın oyuncularının aramaları tek çatı altında toplanıyor (`kulup` alanı üzerinden). Sayfa açma kararı bu toplama bakabiliyor.
+- Kapsam seçici: Takım + Oyuncu / Yalnız Takım / Yalnız Oyuncu.
+- Görünüm seçici: Takım Kümesi (small multiples + sezonsallık matrisi + tablo) / Keyword Listesi.
+- Küme tablosu kolonları: Takım · Organizasyon · Takım Araması · Oyuncu Araması · Toplam · Oyuncu Payı · YoY · Trend · Peak Ay.
+- Ölçülen: 1.100+ takım kümesi, takım araması 2,15B, oyuncu araması 223,3M, oyuncu payı %9,4. Galatasaray kümesi 619M takım + 33M oyuncu = 652M.
+
+### Keyword tablosu yeniden düzenlendi
+- Toplam hacim yerine **aylık ortalama** kolonları: 2024 Ort. · 2025 Ort. · **24–25 YoY** · 2026 YTD Ort. · YTD YoY.
+- **Peak sütunları gizlenebilir** hale getirildi; tercih sekmeler arasında korunuyor.
+- Takım ve Varlık kolonları eklendi.
+
+### Sezonsallık satır etiketleri
+- Hücre içinde ortalandı, sola dayalı görünüm giderildi.

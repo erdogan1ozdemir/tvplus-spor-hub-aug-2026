@@ -265,3 +265,112 @@ Yeniden denetlenmesine gerek yok:
 - `veri_var` ↔ `search_volume` tutarlılığı tam
 - Ana yazım kaymaları yok: organizasyon, spor_dali, sayfa_tipi, entity_tipi ve
   12 faset daha normalize çakışma içermiyor
+
+---
+
+## Oyuncu listesi denetimi (altıncı ajan)
+
+### Kadro kaynağında bulunup düzeltilen hatalar
+
+Denetim, bu oturumda ürettiğim kadro verisinde üç yapısal hata buldu. Üçü de
+doğrulandı ve **düzeltildi**:
+
+| Sorun | Etkilenen | Kök neden |
+|---|---|---|
+| Kadro yerine teknik ekip | 5 voleybol kulübü | Ayrıştırıcı, forma numarası sütunu taşıyan teknik ekip tablosunu kadro sanıyordu |
+| Kadro yerine emekli forma numaraları | Boston Celtics | Aynı neden; Cousy, Sharman, Heinsohn, Maravich listelenmişti |
+| Wikipedia dipnot ve kaptan rozeti adda kalıyordu | tüm kulüpler | `Arina Fedorovtseva[a]`, `Simge Aköz (K)` |
+
+Ayrıştırıcıya bölüm başlığı denetimi eklendi: tablonun üstündeki başlık "teknik",
+"emekli", "retired", "onur", "yönetim" gibi bir sözcük taşıyorsa tablo kadro
+sayılmıyor. Altı kulüp yeniden çekildi.
+
+Düzeltme sonrası Fenerbahçe kadın voleybol kadrosu **Gizem Örge, Hande Baladın,
+Alessia Orro, Arina Fedorovtseva** ile geliyor — denetimin "eksik yüksek değerli
+oyuncular" listesinde saydığı isimlerin çoğu. Boston Celtics kadrosu Mike Conley Jr.,
+Paul George, Luka Garza ile güncel hale geldi.
+
+### Düzeltilmeyi bekleyen bulgular
+
+**Tek kelimelik varyantlar · 3.432 keyword · 145,1M**
+
+Üretimde tam adın yanına soyadı varyantı da eklenmiş. Bunlar gerçek arama
+davranışını yansıtmıyor, alakasız hacmi veriye taşıyor:
+
+| Keyword | Hacim | Bağlandığı oyuncu |
+|---|---|---|
+| washington | 1.465.700 | kermit washington |
+| erdoğan | 1.396.500 | doğan erdoğan |
+| karadeniz | 1.278.000 | bekir karadeniz |
+| ferrari | 1.233.500 | francesco ferrari |
+| sports | 1.213.000 | nbc sports |
+| pictures | 1.042.500 | universal pictures |
+| yıldız | 1.006.500 | uğur kaan yıldız |
+
+Gerçek mononim oyuncular (ederson, rodri, pedri, gavi, raphinha, talisca) bu
+temizlikten ayrı tutulmalı.
+
+**Oyuncu olmayan kayıtlar · 240 kayıt**
+
+Kulüp adları (borussia dortmund, eintracht frankfurt, real betis), NCAA üniversite
+takımları (~140 kayıt, "… men's basketball"), medya markaları (nbc sports,
+universal pictures, sky sports), salon adları ve ülke adları oyuncu olarak
+etiketlenmiş.
+
+**Emekli oyuncular ve teknik adamlar · doğrulanmış 25 isim**
+
+| Ad | Hacim | Durum |
+|---|---|---|
+| sergen yalçın | 4.595.490 | 2008'de bıraktı, teknik direktör |
+| arda turan | 2.148.100 | Shakhtar Donetsk teknik direktörü |
+| michael jordan | 543.400 | 2003'te bıraktı; Hornets'ta oyuncu değil eski sahip |
+| mehmet okur | 134.660 | 2012'de bıraktı |
+| nando de colo | — | 22 Haziran 2026'da bıraktı |
+| sarunas jasikevicius | — | Fenerbahçe Beko baş antrenörü |
+
+Ayrıca vefat etmiş oyuncular listede: frank ramsey, jack nichols, cozell mcqueen,
+goo kennedy.
+
+**NBA kulüplerinde tüm zamanlar kadrosu**
+
+Altı kulüpte (Celtics, Nets, Rockets, Pistons, Grizzlies, Magic) liste güncel kadro
+yerine franchise tarihindeki oyuncuların dökümü: 2.825 isim kayıtlı, gerçek kadro
+538. Boston Celtics bu oturumda düzeltildi, kalan beşi bekliyor.
+
+**Kulüp ataması bir transfer geride · doğrulanmış 25 + 16 düzeltme**
+
+Ademola Lookman (Atalanta → Atletico Madrid), Erling Haaland (cremonese → Manchester
+City), Bernardo Silva (Manchester City → Real Madrid), Cenk Tosun (Kasımpaşa →
+Fatih Karagümrük), Robert Lewandowski (Barcelona → Chicago Fire), LeBron James
+(Lakers → Philadelphia 76ers), Cedi Osman (San Antonio → PAOK), Eda Erdem
+(vakıfbank → Fenerbahçe Medicana).
+
+Haaland ve Sørloth'un `cremonese`, Szoboszlai ve Kerkez'in `pisa` olarak kaydedilmesi
+bayatlama değil: bu oyuncuların o kulüplerle hiçbir bağı yok. Serie A kadro
+listelemesinde satır kayması olasılığı var.
+
+**`mohamed salah` / `trabzonspor` kaydı doğru.** Şüphelendiğim bu kayıt gerçek bir
+transfer: Salah 6 Ağustos 2026'da Trabzonspor ile 2 yıllık sözleşme imzaladı,
+23 Ağustos'ta Başakşehir maçında iki gol attı. Buradaki gerçek sorun mükerrer yazım:
+`mohamed salah` ve `muhammed salah` ayrı kayıtlar, birlikte 411.460 hacim.
+
+**Mükerrer yazımlar · 6 çift · ~217K hacim çift sayım**
+
+muhammed salah / mohamed salah · arseni batagov / arseniy batagov · saud abdulhamid /
+suud abdülhamid · ruslan malinovski / ruslan malinovskyi · darius carutasu /
+darius karutasu · chris woods / chris wood
+
+**Kadrosu bulunmayan kulüpler · 628 kulüp · 7,8M hacim**
+
+En yüksek hacimliler: istanbulspor (220.000, TFF 1. Lig), benfica (201.000),
+fcsb (165.000), royale union saint-gilloise (165.000), rangers (121.000),
+celtic ve górnik zabrze (74.000). Avrupa kupası eleme rakiplerinde 18.000 hacim
+üstü 24 kulüpte kadro yok, toplam ~1,42M.
+
+### Doğrulanamayanlar
+
+Ezgi Çağlar'ın 2026/27 kulübü · Derya Çayırgan'ın aktiflik durumu · Zehra Güneş ve
+Tuğba Şenoğlu'nun kulüpleri · Wade Baldwin'in kulübü · Tarık Biberoviç'in
+Dallas Mavericks ataması · Messi, Ronaldo, Neymar, Benzema, Son Heung-min, Merih
+Demiral gibi kapsam dışı isimlerin aktiflik durumu · Dominik Livaković'in Barcelona
+transferi (1 Eylül sonrası kontrol edilmeli).

@@ -159,6 +159,20 @@ Tüm bulgular `data/bulgular/keyword_denetimi_2026-08.md` dosyasında toplandı.
 
 **Bekleyen çekim:** dört kalem, tekilleştirilmiş ~3.600 keyword, 6 istek, ~$0,54. Sanitizer düzeltildiği için artık güvenli. Onay bekliyor.
 
+### Oyuncu denetimi ve kadro düzeltmeleri (altıncı ajan tamamlandı)
+
+Denetim, bu oturumda ürettiğim kadro verisinde üç yapısal hata buldu; üçü de doğrulandı ve düzeltildi:
+
+- **Beş voleybol kulübünde kadro yerine teknik ekip vardı** (Fenerbahçe'de Abbondanza, Eczacıbaşı'nda Bregoli, Halkbank'ta Kolakovic baş antrenör olarak "oyuncu" kaydedilmişti)
+- **Boston Celtics kadrosu emekli forma numaraları listesiydi**: Cousy, Sharman, Heinsohn, Maravich
+- Wikipedia dipnotları ve kaptan rozetleri adda kalıyordu (`Arina Fedorovtseva[a]`, `Simge Aköz (K)`)
+
+Kök neden: yedek ayrıştırıcı forma numarası sütunu taşıyan her tabloyu kadro sanıyordu. Bölüm başlığı denetimi eklendi; başlık "teknik", "emekli", "retired", "onur", "yönetim" gibi bir sözcük taşıyorsa tablo kadro sayılmıyor. Altı kulüp yeniden çekildi, hepsi düzgün geldi. Düzeltme sonrası Fenerbahçe voleybol kadrosu Gizem Örge, Hande Baladın, Alessia Orro, Arina Fedorovtseva ile geliyor — denetimin "eksik" saydığı isimlerin çoğu zaten bu hatanın sonucuymuş.
+
+**Şüphem yanlış çıktı:** `mohamed salah` / `trabzonspor` kaydı doğru. Salah 6 Ağustos 2026'da Trabzonspor'a imzaladı. Oradaki gerçek sorun mükerrer yazım: `mohamed salah` ve `muhammed salah` ayrı kayıtlar.
+
+**Düzeltilmeyi bekleyenler:** tek kelimelik varyantlar (3.432 keyword, 145,1M · "washington" 1,47M, "erdoğan" 1,40M) · 240 oyuncu olmayan kayıt (kulüp adları, NCAA takımları, medya markaları) · beş NBA kulübünde tüm zamanlar kadrosu · 41 doğrulanmış kulüp transfer düzeltmesi · 6 mükerrer yazım çifti · kadrosu olmayan 628 kulüp.
+
 **Güncel veri:** 17.819 keyword · Son 12 Ay 3,71B · YoY +%5,4 · dashboard.js 12,35 MB · artifact 12,72 MB
 
 ## 2026-08-24

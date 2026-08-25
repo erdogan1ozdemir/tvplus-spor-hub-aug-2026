@@ -52,11 +52,26 @@ SAYI = re.compile(r"^\s*(?:<[^>]+>\s*)*\d{1,2}\s*(?:<|$)")
 def _temiz(x):
     return re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", x)).strip()
 
+# Tablonun hemen üstündeki bölüm başlığı. Teknik ekip, emekli forma numarası
+# ve onur listesi tabloları da forma numarası sütunu taşıdığı için yalnızca
+# tablo yapısına bakmak yetmiyordu; bölüm başlığıyla eleniyorlar.
+BOLUM_DISI = re.compile(
+    r"(teknik|antren[öo]r|staff|coach|y[öo]netim|ba[şs]kan|emekli|retired|"
+    r"onur|honou?r|efsane|legend|hall of fame|ba[şs]ar|honours|kadro d[ıi][şs]i)", re.I)
+
+def _bolum_basligi(h, konum):
+    """Verilen konumdan geriye doğru en yakın başlığı döndürür."""
+    onceki = h[max(0, konum - 4000):konum]
+    basliklar = re.findall(r"<h[2-4][^>]*>(.*?)</h[2-4]>", onceki, re.S)
+    return _temiz(basliklar[-1]) if basliklar else ""
+
 def kadro(baslik):
     """Kadro tablosunu başlık satırındaki oyuncu sütunundan okur."""
     h = cek(baslik)
     if not h: return []
-    for tablo in re.findall(r"<table[^>]*>.*?</table>", h, re.S):
+    for m_tab in re.finditer(r"<table[^>]*>.*?</table>", h, re.S):
+        tablo = m_tab.group(0)
+        if BOLUM_DISI.search(_bolum_basligi(h, m_tab.start())): continue
         satirlar = re.findall(r"<tr[^>]*>(.*?)</tr>", tablo, re.S)
         if len(satirlar) < 5: continue
 
@@ -95,6 +110,8 @@ def kadro(baslik):
                     ad = aday; break
             if not ad: ad = _temiz(re.sub(r"<a[^>]*>\s*<img[^>]*>\s*</a>", "", hucre[idx]))
             ad = re.sub(r"\s*\((basketball|footballer|volleyball|born[^)]*)\)$", "", ad, flags=re.I)
+            ad = re.sub(r"\[[a-z0-9]{1,3}\]", "", ad)      # Wikipedia dipnotu
+            ad = re.sub(r"\s*\((K|C|c)\)\s*$", "", ad)      # kaptan rozeti
             ad = re.sub(r"[*†‡§#]+$", "", ad).strip()
             # Türkçe sayfalar sıralanabilir "Soyad, Ad" biçimi kullanır
             if "," in ad:
@@ -112,7 +129,9 @@ def kadro(baslik):
 
     # Yedek yol: başlık satırı olmayan kadro tabloları. Satır "forma numarası +
     # kişi adı" düzenindeyse ikinci hücre oyuncu adı kabul edilir.
-    for tablo in re.findall(r"<table[^>]*>.*?</table>", h, re.S):
+    for m_tab in re.finditer(r"<table[^>]*>.*?</table>", h, re.S):
+        tablo = m_tab.group(0)
+        if BOLUM_DISI.search(_bolum_basligi(h, m_tab.start())): continue
         satirlar = re.findall(r"<tr[^>]*>(.*?)</tr>", tablo, re.S)
         if len(satirlar) < 6: continue
         oyuncular, gorulen = [], set()

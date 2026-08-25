@@ -147,7 +147,7 @@ window.C = (function(){
   // tooltip'te dönem ipucu olarak kullanılır; legacy `year` prop'u da kabul edilir.
   // tipLabels/prevTipLabels: tooltip'te hücrenin kendi ayını yılıyla göstermek için
   // (ör. 'Tem 25' / 'Tem 24'), line chart tooltip'leriyle aynı okuma.
-  function Heatmap({rows, monthsLabels=TR_MONTHS, tipLabels=null, prevTipLabels=null, onClickCell, showPeakDot=true, showValues=true, year=null, periodLabel=null, prevLabel=null, showYoY=false}) {
+  function Heatmap({rows, monthsLabels=TR_MONTHS, tipLabels=null, prevTipLabels=null, onClickCell, showPeakDot=true, showValues=true, year=null, periodLabel=null, prevLabel=null, showYoY=false, rowAction=null}) {
     const [hover, setHover] = React.useState(null); // { ri, i, x, y, row, v, prev, yoy, isPeak }
     const hostRef = React.useRef(null);
     const grid = [];
@@ -165,9 +165,18 @@ window.C = (function(){
       const max = Math.max(...row.values);
       const min = Math.min(...row.values);
       const range = max - min || 1;
-      grid.push(h('div',{key:'l'+ri, className:'hm-row-label', 'data-tip':row.title||row.label},
-        h('span',{style:{fontWeight:500, lineHeight:1.2}}, row.label),
-        row.sub && h('span',{className:'txt-3', style:{fontSize:10, lineHeight:1.2, marginTop:2}}, row.sub)
+      grid.push(h('div',{key:'l'+ri,
+        className:'hm-row-label' + (onClickCell ? ' tiklanir' : ''),
+        'data-tip':row.title||row.label,
+        // Satır etiketi de hücreyle aynı eylemi tetikler; kullanıcı ada
+        // tıklamayı bekliyor, hücreye tıklamak zorunda kalmamalı
+        onClick: onClickCell ? () => onClickCell(row, null) : undefined},
+        h('span',{style:{minWidth:0}},
+          h('span',{style:{fontWeight:500, lineHeight:1.2, display:'block'}}, row.label),
+          row.sub && h('span',{className:'txt-3', style:{fontSize:10, lineHeight:1.2}}, row.sub)),
+        // Satır sonu eylemi: kırılımda inmek yerine grubu başka sekmede açar
+        rowAction && h('button',{className:'hm-row-action', 'data-tip':rowAction.ipucu,
+          onClick:(e)=>{ e.stopPropagation(); rowAction.onClick(row); }}, rowAction.simge||'→')
       ));
       row.values.forEach((v,i) => {
         const t = (v - min) / range;

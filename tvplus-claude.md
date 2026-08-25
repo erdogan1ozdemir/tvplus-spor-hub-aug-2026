@@ -89,6 +89,27 @@ Tüm sekmeler iki görünüm kipinde de duman testinden geçti (18/18).
 
 Özet sayfaları Python sabitleriyle değil SUMIF ve COUNTIF formülleriyle kuruldu; detay sayfasında filtre uygulandığında tutarlı kalıyor. Biçim Inbound Design System'in Excel katmanına uyuyor: başlık satırı `#434343` beyaz kalın, gövde Calibri + ink teal, değişim sütunlarında yalnızca yazı rengi (dolgu yok), durum sütununda dörtlü rozet paleti, not sayfasında kalın coral etiket + ince coral sol kenarlık. Denetim sayfasında öneri yalnızca ilk veri satırına yazıldı.
 
+### Özet'te kırılım yolu (drill-down)
+
+Özet'te bir gruba tıklandığında tablolar bir alt eksene iniyor, sayfadan çıkılmıyor. Önceki davranışta tıklama Gruplar sekmesine atlıyor ve kırılım ekseni aynı kaldığı için tablo tek satıra düşüyordu.
+
+**Zincir veriyle seçildi.** Aday eksenler her seviyede kaç grup ürettiğine ve hacmin ne kadarının boş kovaya düştüğüne bakılarak ölçüldü. `kulup` faseti elendi: Süper Lig içinde 22 grup veriyor ama hacmin %92'si "–" kovasına düşüyor, çünkü bu alan yalnızca oyuncu satırlarında dolu. Yerine takım kümesi fonksiyonu kullanıldı (takım aramalarını kendi oyuncularının aramalarıyla birleştiriyor): Süper Lig 47 küme %80,5 kapsam, Premier Lig 34 küme %72,6, EuroLeague 42 küme %60,5.
+
+Zincir: **Spor Dalı → Organizasyon → Takım → Sayfa Tipi**, iki atlama kuralıyla: bir seviye tek grup üretiyorsa atlanır, boş kova payı %60'ı geçiyorsa atlanır. At Yarışı'nda organizasyon ve takım seviyeleri otomatik atlanıp doğrudan Sayfa Tipi'ne iniliyor.
+
+**Başlıklar kapsam ve ekseni birlikte söylüyor:** "Süper Lig · Takım Ritmi", "galatasaray · Sayfa Tipi Karnesi", "Organizasyon Pazar Payı".
+
+**Diğer değişiklikler**
+- Özet'in tamamı (hero, chart, donut, pay listesi, sezon takvimi, karne, öne çıkan keywordler) aynı kapsamı gösteriyor
+- Üstte tıklanabilir iz şeridi: `Tüm portföy › Futbol › Süper Lig`, sağında kapsam hacmi ve bir üst kırılıma dönüş düğmesi
+- Satıra tıklama yerinde iner; satır sonundaki ok düğmesi mevcut davranışı korur ve grubu Gruplar sekmesinde filtreli açar
+- Kırılım yolu adres çubuğuna yazılıyor (`#ozet/Futbol|Süper Lig`), yenilemede ve paylaşımda korunuyor, tarayıcı geri tuşu çalışıyor
+- `groupBy` içindeki türetilmiş metrik hesabı `zenginlestir` olarak ayrıldı; takım kümeleri de aynı işlevi kullanıyor, böylece iki kırılım özdeş alanlara sahip
+- Isı haritası satır etiketi tıklanabilir hale getirildi, `rowAction` desteği eklendi
+- Yerel sunucuda `no-store` önbellek başlığı: geliştirme sırasında tarayıcı eski dosyayı gösteriyordu
+
+Doğrulama: Tüm portföy 3,71B → Futbol 3,29B (69 organizasyon) → Süper Lig 2,30B (47 takım) → galatasaray 676,5M (12 sayfa tipi) → iz şeridiyle geri dönüş. Tüm sekmeler iki görünüm kipinde duman testinden geçti (20/20).
+
 **Güncel veri:** 17.819 keyword · Son 12 Ay 3,71B · YoY +%5,4 · dashboard.js 12,35 MB · artifact 12,72 MB
 
 ## 2026-08-24

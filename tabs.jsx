@@ -17,7 +17,8 @@ window.TABS = (function(){
 
   // Bir grubun üst kırılımdaki karşılığı: "Süper Lig" -> "Futbol / Süper Lig"
   const UST_EKSEN = { org:'spor', st:'spor', ent:'spor', it:'st', mus:'spor',
-                      sev:'spor', kulup:'org', cins:'spor', ktm:'ent' };
+                      sev:'spor', kulup:'org', cins:'spor', ktm:'ent',
+                      takim:'org' };
   function ustDeger(g){
     const ust = UST_EKSEN[g.alan];
     if(!ust || !g.rows || !g.rows.length) return null;
@@ -85,7 +86,8 @@ window.TABS = (function(){
   // Özdilek'teki "Kat 1 Sezon Takvimi" karşılığı: seviye seçimi, sıralama,
   // hücre içi YoY rozeti, kopyala + CSV.
   function SezonTakvimi({rows, viewMode, onSelectGroup, baslik, aciklama,
-                          seviye:dSeviye, setSeviye:dSet, entFiltre:dEnt, setEntFiltre:dEntSet}){
+                          seviye:dSeviye, setSeviye:dSet, entFiltre:dEnt, setEntFiltre:dEntSet,
+                          gruplarDis, eksenDis, onGrupDetay}){
     const [iSeviye, iSet] = React.useState('spor');
     const [iEnt, iEntSet] = React.useState('');
     const seviye = dSeviye || iSeviye;
@@ -95,12 +97,13 @@ window.TABS = (function(){
     const rowsF = entFiltre ? rows.filter(r=>r.ent===entFiltre) : rows;
     const [sirala, setSirala] = React.useState('hacim');
     const gruplar = React.useMemo(()=>{
-      let g = groupBy(rowsF, seviye);
+      // Özet'te kırılım yolu ekseni belirler; gruplar dışarıdan hazır gelir.
+      let g = gruplarDis || groupBy(rowsF, seviye);
       if(sirala==='yoyUp')   g = [...g].sort((a,b)=>(b.ryoy??-9)-(a.ryoy??-9));
       else if(sirala==='yoyDown') g = [...g].sort((a,b)=>(a.ryoy??9)-(b.ryoy??9));
       else if(sirala==='az') g = [...g].sort((a,b)=>a.label.localeCompare(b.label,'tr'));
       return g;
-    },[rowsF, seviye, sirala]);
+    },[rowsF, seviye, sirala, gruplarDis]);
 
     const takvim = viewMode==='calendar';
     const etiketler = takvim ? TR_MONTHS : ROLLING_LABELS;
@@ -116,7 +119,7 @@ window.TABS = (function(){
     }));
 
     const csv = () => toCSV(gruplar, [
-      {label:FACET_ETIKET[seviye]||seviye, key:'label'},
+      {label: eksenDis ? (ZINCIR_ETIKET[eksenDis]||eksenDis) : (FACET_ETIKET[seviye]||seviye), key:'label'},
       {label:'Önceki 12 Ay', key:'p12'}, {label:'Son 12 Ay', key:'r12'},
       {label:'YoY %', get:r=>r.ryoy==null?'':(r.ryoy*100).toFixed(1)},
       {label:'Keyword', key:'kwCount'}, {label:'Pay %', get:r=>(r.share*100).toFixed(2)},
@@ -125,7 +128,8 @@ window.TABS = (function(){
       ...etiketler.map((m,i)=>({label:m, get:r=>(takvim?r.cal25:r.roll)[i]}))
     ]);
     const kopyaMetin = () => [
-      [FACET_ETIKET[seviye]||seviye, ...etiketler, 'Son 12 Ay', 'YoY%'].join('\t'),
+      [eksenDis ? (ZINCIR_ETIKET[eksenDis]||eksenDis) : (FACET_ETIKET[seviye]||seviye),
+       ...etiketler, 'Son 12 Ay', 'YoY%'].join('\t'),
       ...gruplar.map(g=>[g.label,
         ...(takvim?g.cal25:g.roll).map(v=>v||0), g.r12,
         g.ryoy==null?'':(g.ryoy*100).toFixed(1)].join('\t'))
@@ -139,13 +143,17 @@ window.TABS = (function(){
               ? `Takvim yılı görünümü · ${D().meta.yillar[1]} ayları, ${D().meta.yillar[0]} ile karşılaştırmalı`
               : `Rolling görünüm · Son 12 Ay (${ROLLING_LABELS[0]} – ${ROLLING_LABELS[11]}), Önceki 12 Ay ile karşılaştırmalı`))),
         h('div',{style:{display:'flex',gap:6,flexWrap:'wrap',alignItems:'center',marginLeft:'auto'}},
-          h('div',{className:'segmented'},
-            SEVIYELER.map(function(sv){
-              return h('button',{key:sv.id, className: seviye===sv.id?'active':'',
-                onClick:()=>setSeviye(sv.id)}, sv.label,
-                h('span',{className:'badge', style:{marginLeft:5}},
-                  new Set(rows.map(r=>r[sv.id]).filter(Boolean)).size));
-            })),
+          eksenDis
+            ? h('span',{className:'eksen-rozet'},
+                (ZINCIR_ETIKET[eksenDis]||eksenDis), ' kırılımı',
+                h('span',{className:'badge', style:{marginLeft:6}}, gruplar.length))
+            : h('div',{className:'segmented'},
+                SEVIYELER.map(function(sv){
+                  return h('button',{key:sv.id, className: seviye===sv.id?'active':'',
+                    onClick:()=>setSeviye(sv.id)}, sv.label,
+                    h('span',{className:'badge', style:{marginLeft:5}},
+                      new Set(rows.map(r=>r[sv.id]).filter(Boolean)).size));
+                })),
           h('div',{className:'segmented', title:'Varlık tipine göre daralt'},
             [['','Tümü'],['Takım','Takım'],['Oyuncu','Oyuncu'],['Maç','Maç'],
              ['Lig/Organizasyon','Lig']].map(function(e){
@@ -161,7 +169,11 @@ window.TABS = (function(){
       h('div',{className:'matrix-scroll'},
         h(C.Heatmap,{rows:hmRows, monthsLabels:etiketler, showValues:true, showYoY:true,
           showPeakDot:true,
-          onClickCell:(row)=>onSelectGroup && onSelectGroup(seviye, row._g.ust)})),
+          onClickCell:(row)=>onSelectGroup && onSelectGroup(seviye, row._g.ust),
+          rowAction: onGrupDetay
+            ? {ipucu:'Bu grubu Gruplar sekmesinde aç', simge:'→',
+               onClick:(row)=>onGrupDetay(row._g.ust)}
+            : null})),
       gruplar.length>12 && h('div',{className:'txt-3', style:{fontSize:10.5, marginTop:6}},
         gruplar.length.toLocaleString('tr-TR')+' satır · tablo kendi içinde kaydırılabilir'),
       h('div',{className:'txt-3', style:{fontSize:10.5, marginTop:10, lineHeight:1.5}},
@@ -237,10 +249,47 @@ window.TABS = (function(){
   }
 
   // ══════════════════════════════════════════ ÖZET (Pazar Özeti)
-  function OzetTab({rows, viewMode, setKeywordModal, onSelectGroup, onNavigateKw}){
+  // Kırılım yolunun iz şeridi. Her adım tıklanabilir; o adıma dönülür.
+  function IzSeridi({yol, setYol, eksen, kapsamHacim}){
+    if(!yol.length && !eksen) return null;
+    const adim = (etiket, i) => h('button',{key:i, className:'iz-adim',
+      onClick:()=>setYol(yol.slice(0, i))}, etiket);
+    return h('div',{className:'iz-seridi'},
+      adim('Tüm portföy', 0),
+      yol.map((a,i)=>h(React.Fragment,{key:'f'+i},
+        h('span',{className:'iz-ayrac'},'›'),
+        i===yol.length-1
+          ? h('span',{className:'iz-adim aktif'}, a.deger)
+          : adim(a.deger, i+1))),
+      eksen && h('span',{className:'iz-eksen'},
+        ZINCIR_ETIKET[eksen]+' kırılımı'),
+      h('span',{className:'iz-hacim'}, fmtNum(kapsamHacim)),
+      yol.length>0 && h('button',{className:'iz-geri',
+        onClick:()=>setYol(yol.slice(0,-1)), 'data-tip':'Bir üst kırılıma dön'},'↑ Üst kırılım'));
+  }
+
+  function OzetTab({rows:tumRows, viewMode, setKeywordModal, onSelectGroup, onNavigateKw,
+                    yol, setYol}){
     const M = D().meta;
     const takvim = viewMode==='calendar';
     const yilAd = D().meta.yillar;
+    // Kırılım yolu: Özet'in tamamı seçili kapsamı gösterir. Yol boşken tüm veri.
+    const izYolu = yol || [];
+    const rows   = React.useMemo(()=>yoluUygula(tumRows, izYolu), [tumRows, izYolu]);
+    const eksen  = React.useMemo(()=>aktifEksen(rows, izYolu), [rows, izYolu]);
+    const kapsamAdi = izYolu.length ? izYolu[izYolu.length-1].deger : 'Tüm portföy';
+    // Derin seviyelerde grup adı spor dalı olmadığından renk kapsamdan alınır
+    const kapsamSpor = React.useMemo(()=>{
+      const say = {};
+      for(const k of rows) if(k.spor) say[k.spor] = (say[k.spor]||0) + (k.r12||0);
+      const s = Object.entries(say).sort((a,b)=>b[1]-a[1]);
+      return s.length ? s[0][0] : null;
+    }, [rows]);
+    const renkAl = g => SPOR_RENK()[g.spor || g.ust] || SPOR_RENK()[kapsamSpor] || '#BAB0AC';
+    // Bir gruba tıklandığında yol bir adım uzar; yaprakta detay açılır
+    const in_ = (deger) => { if(!eksen) return;
+      setYol([...izYolu, {eksen, deger}]);
+      window.scrollTo({top:0, behavior:'smooth'}); };
     const r12 = takvim ? aggregateMonthly(rows,'m25').reduce((a,b)=>a+b,0) : topR12(rows);
     const p12 = takvim ? aggregateMonthly(rows,'m24').reduce((a,b)=>a+b,0) : topP12(rows);
     const ryoy = p12>0 ? (r12-p12)/p12 : null;
@@ -250,12 +299,13 @@ window.TABS = (function(){
     const dusen    = rows.filter(k=>k.trend==='Düşen');
     const izleme   = rows.filter(k=>k.it==='İzleme');
     const veriSayfa= rows.filter(k=>k.st==='Puan Durumu'||k.st==='Fikstür');
-    const sporG    = groupBy(rows,'spor');
+    const kirilim  = React.useMemo(()=>eksen ? kirilimGruplari(rows, eksen) : [],
+                                   [rows, eksen]);
     const {series, labels} = seriesFor({roll, prev, cal24:aggregateMonthly(rows,'m24'),
       cal25:aggregateMonthly(rows,'m25'), cal26:aggregateMonthly(rows,'m26')}, viewMode);
 
     // Çeyreklik peak dağılımı (stacked)
-    const ceyrekDag = sporG.slice(0,8).map(g=>{
+    const ceyrekDag = kirilim.slice(0,8).map(g=>{
       const q=U.quarterSums(g.roll), t=q.reduce((a,b)=>a+b,0)||1;
       return {label:g.label, q:q.map(v=>v/t)};
     });
@@ -284,6 +334,7 @@ window.TABS = (function(){
           h(YoY,{v:k.ryoy})))));
 
     return h('div',{className:'tab-content-anim'},
+      h(IzSeridi,{yol:izYolu, setYol, eksen, kapsamHacim:r12}),
       h(C.Explainer,{title:'Bu rapor ne anlatıyor?',
         sub:'veri kaynağı, dönem tanımı ve okuma notu', icon:'sinyal'},
         h('p',null,'Türkiye spor arama talebi ', h('strong',null, M.toplamKeyword.toLocaleString('tr-TR')),
@@ -342,8 +393,11 @@ window.TABS = (function(){
           'Peak dönem: ', h('strong',null, ROLLING_LABELS[pIdx]), '.')),
 
       // ——— Aylık ritim + pazar payı ———
-      h(C.SectionHeader,{icon:'saat', title:'Aylık Ritim & Spor Dalı Dağılımı',
-        desc:'12 aylık arama trendi ve pazar payının dağılımı'}),
+      h(C.SectionHeader,{icon:'saat',
+        title: eksen ? `${kapsamAdi} · Aylık Ritim & ${ZINCIR_ETIKET[eksen]} Dağılımı`
+                     : `${kapsamAdi} · Aylık Ritim`,
+        desc: eksen ? `12 aylık arama trendi ve ${kirilim.length} ${ZINCIR_ETIKET[eksen].toLowerCase()} arasındaki pay dağılımı`
+                    : '12 aylık arama trendi'}),
       h('div',{className:'grid grid-main'},
         h('div',{className:'card'},
           h('div',{className:'card-title-row'},
@@ -361,22 +415,27 @@ window.TABS = (function(){
             h(C.LineChart,{series, height:250, labels, yFormat:fmtNum, legend:true}))),
         h('div',{className:'card'},
           h('div',{className:'card-title-row'},
-            h('h3',{style:{fontSize:14}},'Spor Dalı Pazar Payı'),
+            h('h3',{style:{fontSize:14}}, (ZINCIR_ETIKET[eksen]||'Grup')+' Pazar Payı'),
             h('div',{className:'meta-sag'}, takvim ? (yilAd[1]+' toplamı') : 'Son 12 Ay toplamı')),
           h('div',{className:'chart-orta', style:{marginBottom:12}},
-            h(C.Donut,{size:190, data: sporG.slice(0,9).map(g=>({
-              label:g.label, value:hacimFor(g,viewMode), color:SPOR_RENK()[g.ust]||'#BAB0AC'})),
-              onSliceClick: d => onSelectGroup('spor', d.label)})),
+            h(C.Donut,{size:190, data: kirilim.slice(0,9).map(g=>({
+              label:g.label, value:hacimFor(g,viewMode), color:renkAl(g)})),
+              onSliceClick: d => in_(d.label)})),
           h('div',{className:'pay-scroll'},
-            h(C.ShareBars,{rows: sporG.map(g=>({
+            h(C.ShareBars,{rows: kirilim.map(g=>({
               label:g.label, value:hacimFor(g,viewMode), share:g.share, yoy:yoyFor(g,viewMode),
-              title:grupAciklama(g, viewMode), color:SPOR_RENK()[g.ust]||'#BAB0AC'}))})),
+              title:grupAciklama(g, viewMode), color:renkAl(g),
+              onClick: ()=>in_(g.label)}))})),
           h('div',{className:'txt-3', style:{fontSize:10.5, marginTop:8}},
-            sporG.length+' spor dalı · liste kendi içinde kaydırılabilir'))),
+            kirilim.length+' '+(ZINCIR_ETIKET[eksen]||'grup').toLowerCase()+
+            ' · satıra tıklayın, bir alt kırılıma iner'))),
 
       // ——— Sezonsallık matrisi ———
-      h(C.SectionHeader,{icon:'takvim', title:'Sezon Takvimi & Mevsimsel Ritim',
-        desc:'grupların aylık arama ritmi ve karşılaştırmalı peak dağılımı',
+      h(C.SectionHeader,{icon:'takvim',
+        title:`${kapsamAdi} · ${ZINCIR_ETIKET[eksen]||'Detay'} Ritmi`,
+        desc: eksen
+          ? `${kirilim.length} ${ZINCIR_ETIKET[eksen].toLowerCase()} · aylık arama ritmi ve karşılaştırmalı peak dağılımı`
+          : 'bu kapsamda daha alt kırılım bulunmuyor',
         actions: h(C.InfoIcon,{title:'Sezonsallık matrisi nasıl okunur?'},
           h('p',null,'Her hücrede üstte ilgili ayın arama hacmi, altında önceki dönemin aynı ayına ' +
             'kıyasla YoY değişimi yer alır.'),
@@ -385,20 +444,26 @@ window.TABS = (function(){
           h('p',null,'Seviye düğmeleriyle kırılım ekseni, sıralama düğmeleriyle satır sırası ' +
             'değiştirilebilir; varlık tipi düğmeleri matrisi takım, oyuncu, maç veya lig ' +
             'satırlarıyla sınırlar. Satıra tıklandığında o grubun detayı açılır.'))}),
-      h(SezonTakvimi,{rows, viewMode, onSelectGroup, baslik:'Sezonsallık'}),
+      eksen && h(SezonTakvimi,{rows, viewMode, baslik:'Sezonsallık',
+        gruplarDis: kirilim, eksenDis: eksen,
+        onSelectGroup: (_a, deger) => in_(deger),
+        onGrupDetay: deger => onSelectGroup(eksen==='takim' ? 'kulup' : eksen, deger)}),
 
       // ——— Karne (bağımsız ölçek) ———
-      h(C.SectionHeader,{icon:'karne', title:'Spor Dalı Karnesi',
-        desc:'her spor dalı kendi ölçeğinde · karta tıklayın, detayı açılır'}),
+      h(C.SectionHeader,{icon:'karne',
+        title:`${kapsamAdi} · ${ZINCIR_ETIKET[eksen]||'Detay'} Karnesi`,
+        desc: eksen
+          ? `her ${ZINCIR_ETIKET[eksen].toLowerCase()} kendi ölçeğinde · karta tıklayın, bir alt kırılıma iner`
+          : 'bu kapsamda daha alt kırılım bulunmuyor'}),
       h('div',{className:'card'},
         h(C.SmallMultiples,{yScale:'independent',
           toplamEtiket: takvim ? yilAd[1] : 'Son 12 Ay',
           monthsLabels: takvim ? U.TR_MONTHS : ROLLING_LABELS,
-          items: sporG.slice(0,14).map(g=>({label:g.label, color:SPOR_RENK()[g.ust]||'#BAB0AC',
+          items: kirilim.slice(0,14).map(g=>({label:g.label, color:renkAl(g),
             values: takvim?g.cal25:g.roll, prevValues: takvim?g.cal24:g.prev,
             yoy: yoyFor(g,viewMode), title:grupAciklama(g, viewMode),
             metrics: kartMetrikleri(g, viewMode)})),
-          onClick: it => onSelectGroup('spor', it.label)}),
+          onClick: it => in_(it.label)}),
         h('div',{className:'txt-3', style:{fontSize:10.5, marginTop:10, lineHeight:1.6}},
           'Kart başlığındaki yüzde rozeti ', h('strong',null,'YoY değişimdir'),
           ' (Son 12 Ay / Önceki 12 Ay). Sağ alttaki değer ', h('strong',null,'Son 12 Ay toplam arama hacmidir'),
@@ -413,9 +478,9 @@ window.TABS = (function(){
             h('h3',{style:{fontSize:14}},'Spor Dalı YoY · Kazanan & Kaybeden'),
             h('span',{className:'txt-3',style:{fontSize:10.5}},'Son 12 Ay / Önceki 12 Ay')),
           h(C.BarChart,{height:250, colorBy:'yoy', yFormat:v=>fmtPct(v,0),
-            data: sporG.filter(g=>yoyFor(g,viewMode)!=null).slice(0,12)
+            data: kirilim.filter(g=>yoyFor(g,viewMode)!=null).slice(0,12)
               .map(g=>({label:g.label, value:yoyFor(g,viewMode)})),
-            onBarClick: d => onSelectGroup('spor', d.label)})),
+            onBarClick: d => in_(d.label)})),
         h('div',{className:'card'},
           h('div',{className:'card-title-row'},
             h('h3',{style:{fontSize:14}},'Çeyreklik Peak Dağılımı'),
@@ -795,31 +860,69 @@ window.TABS = (function(){
       if(k.ent==='Takım') takim = kulupAnahtar(k.kw);
       else if(k.ent==='Oyuncu' && k.kulup) takim = k.kulup;
       if(!takim) continue;
-      if(!m.has(takim)) m.set(takim, {label:takim, takimRows:[], oyuncuRows:[], org:k.org, spor:k.spor});
+      if(!m.has(takim)) m.set(takim, {label:takim, ust:takim, alan:'takim',
+        rows:[], takimRows:[], oyuncuRows:[], r12:0, p12:0, kwCount:0,
+        org:k.org, spor:k.spor});
       const g = m.get(takim);
+      g.rows.push(k); g.kwCount++;
       (k.ent==='Takım' ? g.takimRows : g.oyuncuRows).push(k);
+      g.r12 += k.r12||0; g.p12 += k.p12||0;
       if(!g.org && k.org) g.org = k.org;
       if(!g.spor && k.spor) g.spor = k.spor;
     }
-    const n = (D().meta.aylar||[]).length;
-    return [...m.values()].map(function(g){
-      const hepsi = g.takimRows.concat(g.oyuncuRows);
-      const tv = topR12(g.takimRows), ov = topR12(g.oyuncuRows);
-      const roll = aggregateRolling(hepsi,'last'), prev = aggregateRolling(hepsi,'prev');
-      const p12 = topP12(hepsi);
-      const pIdx = roll.indexOf(Math.max(...roll));
-      const c24 = aggregateMonthly(hepsi,'m24'), c25 = aggregateMonthly(hepsi,'m25');
-      return {...g, rows:hepsi, alan:'takim', ust:g.label,
-        takimVol:tv, oyuncuVol:ov, r12:tv+ov, p12,
-        ryoy: p12>0 ? ((tv+ov)-p12)/p12 : null,
-        takimKw:g.takimRows.length, oyuncuKw:g.oyuncuRows.length,
-        kwCount: hepsi.length, roll, prev,
-        cal24: c24, cal25: c25, cal26: aggregateMonthly(hepsi,'m26'),
-        peakIdx:pIdx, peakLabel: ROLLING_LABELS[pIdx]||'–',
-        peakIdxCal: (Math.max(...c25) > 0) ? c25.indexOf(Math.max(...c25)) : null,
-        peakQ: U.peakQuarterIdx(roll), peakQCal: U.peakQuarterIdx(c25), share:0,
-        sezType: U.siniflandir ? '' : ''};
+    const toplamR12 = rows.reduce((a,k)=>a+(k.r12||0),0) || 1;
+    return [...m.values()].map(g => {
+      const z = U.zenginlestir(g, toplamR12);
+      z.takimVol  = topR12(g.takimRows);
+      z.oyuncuVol = topR12(g.oyuncuRows);
+      z.takimKw   = g.takimRows.length;
+      z.oyuncuKw  = g.oyuncuRows.length;
+      return z;
     }).sort((a,b)=>b.r12-a.r12);
+  }
+
+  // ————————————————————————————————— Kırılım zinciri
+  // Özet'te bir gruba tıklandığında tablolar bir alt eksene iner. Zincir
+  // varsayılandır; Kırılım seçicisiyle elle başka eksene geçilebilir.
+  const ZINCIR = ['spor','org','takim','st'];
+  const ZINCIR_ETIKET = {spor:'Spor Dalı', org:'Organizasyon',
+                         takim:'Takım', st:'Sayfa Tipi'};
+  const BOS_ESIK = 0.60;   // bu oranın üstünde boş kova varsa seviye atlanır
+
+  function kirilimGruplari(rows, eksen){
+    return eksen==='takim' ? takimKumeleri(rows) : groupBy(rows, eksen);
+  }
+
+  function eksenUygun(rows, eksen){
+    const toplam = rows.reduce((a,k)=>a+(k.r12||0),0);
+    const g = kirilimGruplari(rows, eksen);
+    if(g.length < 2) return false;                    // tek grup bilgi taşımaz
+    const kapsanan = g.reduce((a,x)=>a+(x.r12||0),0);
+    return toplam===0 || (toplam-kapsanan)/toplam < BOS_ESIK;
+  }
+
+  // yol: [{eksen,deger}] → şu an kırılım yapılacak eksen (yoksa null = yaprak)
+  function aktifEksen(rows, yol){
+    const sonEksen = yol.length ? yol[yol.length-1].eksen : null;
+    const baslangic = sonEksen ? ZINCIR.indexOf(sonEksen)+1 : 0;
+    for(let i=Math.max(0,baslangic); i<ZINCIR.length; i++){
+      if(eksenUygun(rows, ZINCIR[i])) return ZINCIR[i];
+    }
+    return null;
+  }
+
+  // Satırları kırılım yoluna göre daraltır
+  function yoluUygula(rows, yol){
+    let r = rows;
+    for(const adim of (yol||[])){
+      if(adim.eksen==='takim'){
+        const k = takimKumeleri(r).find(g=>g.label===adim.deger);
+        r = k ? k.rows : [];
+      } else {
+        r = r.filter(k => k[adim.eksen] === adim.deger);
+      }
+    }
+    return r;
   }
 
   function EntityTab({rows, viewMode, setKeywordModal, onSelectGroup, onNavigateKw,
@@ -1375,5 +1478,6 @@ window.TABS = (function(){
 
   return { OzetTab, GruplarTab, KeywordTab, TrendlerTab, SayfaTipiTab, EntityTab,
            HakDisiTab, KararTab, MasterTab, KeywordModal,
-           SezonTakvimi, GrupTablosu, KeywordTablosu };
+           SezonTakvimi, GrupTablosu, KeywordTablosu,
+           ZINCIR, ZINCIR_ETIKET, aktifEksen, yoluUygula, kirilimGruplari, takimKumeleri };
 })();

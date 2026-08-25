@@ -241,38 +241,44 @@ window.U = (function(){
       g.tot25 += (k.m25||[]).reduce((a,b)=>a+(b||0),0);
     }
     const toplamR12 = rows.reduce((a,k)=>a+(k.r12||0),0) || 1;
-    return [...m.values()].map(g=>{
-      const roll = aggregateRolling(g.rows,'last');
-      const prev = aggregateRolling(g.rows,'prev');
-      const cal25 = aggregateMonthly(g.rows,'m25');
-      const cal24 = aggregateMonthly(g.rows,'m24');
-      const cal26 = aggregateMonthly(g.rows,'m26');
-      // Mevsim tipi, keyword seviyesindekiyle aynı temele oturmalı: sınıf
-      // build-data.js'te tüm seri (2024-01 →) üzerinden hesaplanıyor. Grup
-      // seviyesinde 12 ay kullanılınca aynı ekranda iki farklı sınıf çıkıyordu.
-      const tumSeri = [...cal24, ...cal25, ...cal26];
-      const nz = tumSeri.filter(v=>v>0);
-      const mean = tumSeri.reduce((a,b)=>a+b,0)/(tumSeri.length||1);
-      const cv = mean ? Math.sqrt(tumSeri.reduce((a,b)=>a+(b-mean)**2,0)/tumSeri.length)/mean : 0;
-      const pdr = nz.length ? Math.max(...tumSeri)/Math.max(Math.min(...nz),1) : 0;
-      const pIdx = roll.indexOf(Math.max(...roll));
-      return {...g, roll, prev, cal24, cal25, cal26,
-        ryoy: g.p12>0 ? (g.r12-g.p12)/g.p12 : null,
-        yoy:  g.tot24>0 ? (g.tot25-g.tot24)/g.tot24 : null,
-        share: g.r12/toplamR12,
-        peakIdx: pIdx, peakLabel: ROLLING_LABELS[pIdx] || '–',
-        // Takvim görünümü cal25 dizisini çizer; rolling indeksi oraya
-        // uygulanınca peak işareti yanlış aya düşüyordu.
-        peakIdxCal: (Math.max(...cal25) > 0) ? cal25.indexOf(Math.max(...cal25)) : null,
-        peakQ: peakQuarterIdx(roll),
-        peakQCal: peakQuarterIdx(cal25),
-        sezType: !nz.length ? 'Veri Yok'
-          : cv<0.35 ? 'Evergreen' : (pdr>=20||cv>=1.0) ? 'Spike' : 'Seasonal',
-        cv:+cv.toFixed(3), pdRatio:+pdr.toFixed(1),
-        rising: g.rows.filter(k=>k.trend==='Yükselen').length,
-        falling: g.rows.filter(k=>k.trend==='Düşen').length,
-      };
-    }).sort((a,b)=>b.r12-a.r12);
+    return [...m.values()].map(g => zenginlestir(g, toplamR12)).sort((a,b)=>b.r12-a.r12);
+  }
+
+  // Grup nesnesine türetilmiş metrikleri ekler. groupBy ve takım kümeleri aynı
+  // işlevi kullanır; böylece iki kırılım da özdeş alanlara sahip olur ve
+  // aynı bileşenlere sorunsuz verilebilir.
+  function zenginlestir(g, toplamR12){
+    const roll  = aggregateRolling(g.rows,'last');
+    const prev  = aggregateRolling(g.rows,'prev');
+    const cal25 = aggregateMonthly(g.rows,'m25');
+    const cal24 = aggregateMonthly(g.rows,'m24');
+    const cal26 = aggregateMonthly(g.rows,'m26');
+    const tot24 = cal24.reduce((a,b)=>a+(b||0),0);
+    const tot25 = cal25.reduce((a,b)=>a+(b||0),0);
+    // Mevsim tipi, keyword seviyesindekiyle aynı temele oturmalı: sınıf
+    // build-data.js'te tüm seri (2024-01 →) üzerinden hesaplanıyor.
+    const tumSeri = [...cal24, ...cal25, ...cal26];
+    const nz = tumSeri.filter(v=>v>0);
+    const mean = tumSeri.reduce((a,b)=>a+b,0)/(tumSeri.length||1);
+    const cv = mean ? Math.sqrt(tumSeri.reduce((a,b)=>a+(b-mean)**2,0)/tumSeri.length)/mean : 0;
+    const pdr = nz.length ? Math.max(...tumSeri)/Math.max(Math.min(...nz),1) : 0;
+    const pIdx = (roll.length && Math.max(...roll) > 0) ? roll.indexOf(Math.max(...roll)) : -1;
+    return {...g, roll, prev, cal24, cal25, cal26, tot24, tot25,
+      ryoy: g.p12>0 ? (g.r12-g.p12)/g.p12 : null,
+      yoy:  tot24>0 ? (tot25-tot24)/tot24 : null,
+      share: g.r12/(toplamR12||1),
+      peakIdx: pIdx, peakLabel: ROLLING_LABELS[pIdx] || '–',
+      // Takvim görünümü cal25 dizisini çizer; rolling indeksi oraya
+      // uygulanınca peak işareti yanlış aya düşüyordu.
+      peakIdxCal: (Math.max(...cal25) > 0) ? cal25.indexOf(Math.max(...cal25)) : null,
+      peakQ: peakQuarterIdx(roll),
+      peakQCal: peakQuarterIdx(cal25),
+      sezType: !nz.length ? 'Veri Yok'
+        : cv<0.35 ? 'Evergreen' : (pdr>=20||cv>=1.0) ? 'Spike' : 'Seasonal',
+      cv:+cv.toFixed(3), pdRatio:+pdr.toFixed(1),
+      rising:  g.rows.filter(k=>k.trend==='Yükselen').length,
+      falling: g.rows.filter(k=>k.trend==='Düşen').length,
+    };
   }
 
   // Görünüm moduna göre seri + etiketler
@@ -384,7 +390,7 @@ window.U = (function(){
 
   return {
     TR_MONTHS, TR_MONTHS_LONG,
-    FACET_ETIKET, SEVIYELER, applyFacets, groupBy, seriesFor, SEZ_RENK, HAK_RENK,
+    FACET_ETIKET, SEVIYELER, applyFacets, groupBy, zenginlestir, seriesFor, SEZ_RENK, HAK_RENK,
     yoyFor, yoyEtiketFor, hacimFor, oncekiHacimFor,
     ROLLING_LABELS, P12_LABELS, ymLabel,
     ROLLING_Q_LABELS, CALENDAR_Q_LABELS, quarterOptions, qLabel,

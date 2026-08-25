@@ -52,13 +52,25 @@
     const [peakGizli, setPeakGizli] = React.useState(false);
     const [keywordModal, setKeywordModal] = React.useState(null);
     const [scrolled, setScrolled] = React.useState(false);
+    // Kırılım yolu: Özet'te hangi kapsamda olunduğunu tutar.
+    // Adres çubuğunda "#ozet/Futbol|Süper Lig" biçiminde saklanır ki
+    // görünüm paylaşılabilsin ve yenilemede korunsun.
+    const [yol, setYol] = React.useState(()=>{
+      const p = (location.hash.replace('#','').split('/')[1]||'');
+      if(!p) return [];
+      return decodeURIComponent(p).split('|').filter(Boolean)
+        .map((deger,i)=>({eksen:['spor','org','takim','st'][i]||'st', deger}));
+    });
+
     // Rapor nötr palette açılır; yalnızca açık/koyu tema seçilebilir.
     const [tema, setTema] = React.useState(()=>
       localStorage.getItem(K('tema'))==='dark' ? 'dark' : 'light');
 
     React.useEffect(()=>{ localStorage.setItem(K('tab'), tab);
-      if(location.hash.replace('#','')!==tab)
-        history.replaceState(null,'',location.pathname+location.search+'#'+tab); },[tab]);
+      const iz = yol.length ? '/'+encodeURIComponent(yol.map(a=>a.deger).join('|')) : '';
+      const hedef = tab + iz;
+      if(location.hash.replace('#','')!==hedef)
+        history.replaceState(null,'',location.pathname+location.search+'#'+hedef); },[tab, yol]);
     React.useEffect(()=>{ localStorage.setItem(K('filtre'), JSON.stringify(filtre)); },[filtre]);
     React.useEffect(()=>{ localStorage.setItem(K('viewMode'), viewMode); },[viewMode]);
     React.useEffect(()=>{
@@ -68,7 +80,12 @@
     React.useEffect(()=>{
       if(window.BRAND_ACCENT) document.documentElement.style.setProperty('--brand-accent', window.BRAND_ACCENT);
       const onS=()=>setScrolled(window.scrollY>150);
-      const onH=()=>setTab((location.hash.replace('#','').split('/')[0])||'ozet');
+      const onH=()=>{
+        const [t,p] = location.hash.replace('#','').split('/');
+        setTab(t||'ozet');
+        setYol(!p ? [] : decodeURIComponent(p).split('|').filter(Boolean)
+          .map((deger,i)=>({eksen:['spor','org','takim','st'][i]||'st', deger})));
+      };
       window.addEventListener('scroll',onS,{passive:true});
       window.addEventListener('hashchange',onH);
       return ()=>{window.removeEventListener('scroll',onS); window.removeEventListener('hashchange',onH);};
@@ -113,7 +130,7 @@
       + peakAy.length + peakCeyrek.length + mevsim.length + bucket.length
       + (trend?1:0) + (arama?1:0);
     const temizle = ()=>{ setFiltre({}); setArama(''); setPeakAy([]); setPeakCeyrek([]);
-      setMevsim([]); setBucket([]); setTrend(''); setSecili(null); };
+      setMevsim([]); setBucket([]); setTrend(''); setSecili(null); setYol([]); };
 
     const onSelectGroup = (alan, deger) => {
       setSecili({alan, deger});
@@ -129,7 +146,7 @@
     const S = SEKMELER.find(s=>s.id===tab) || SEKMELER[0];
     const ortak = { rows, viewMode, setKeywordModal, onSelectGroup, onNavigateKw,
       secili, setSecili, seviye, setSeviye, entFiltre, setEntFiltre,
-      peakGizli, setPeakGizli };
+      peakGizli, setPeakGizli, yol, setYol };
 
     return h('div',{className:'app'},
       h('div',{className:'topbar'},

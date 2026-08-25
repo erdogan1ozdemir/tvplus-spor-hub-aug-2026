@@ -50,6 +50,29 @@ window.TABS = (function(){
     ].filter(Boolean).join('\n');
   }
 
+
+  // Small multiples kartlarının alt metrik şeridi. Görünüm moduna göre değişir:
+  // Takvim yılı  -> 2025 aylık ort., 2025 toplam, 2026 YTD aylık ort.
+  // Rolling      -> Son 12 Ay aylık ort., Son 12 Ay toplam
+  function kartMetrikleri(g, viewMode){
+    const M = D().meta, yil = M.yillar;
+    const ort = a => { const v=(a||[]).filter(x=>x!=null); return v.length ? Math.round(v.reduce((x,y)=>x+y,0)/v.length) : 0; };
+    const top = a => (a||[]).reduce((x,y)=>x+(y||0),0);
+    if(viewMode==='calendar'){
+      const ay26 = (D().months2026||[]).length;
+      return [
+        {label:yil[1]+' Aylık Ort.', value:fmtNum(ort(g.cal25)), tip:fmtFull(ort(g.cal25))+' arama/ay'},
+        {label:yil[1]+' Toplam',     value:fmtNum(top(g.cal25)), tip:fmtFull(top(g.cal25))+' arama'},
+        {label:yil[2]+' YTD Ort.',   value:fmtNum(ort((g.cal26||[]).slice(0,ay26))),
+          tip:fmtFull(ort((g.cal26||[]).slice(0,ay26)))+' arama/ay · ilk '+ay26+' ay'},
+      ];
+    }
+    return [
+      {label:'Son 12 Ay Ort.',    value:fmtNum(ort(g.roll)), tip:fmtFull(ort(g.roll))+' arama/ay'},
+      {label:'Son 12 Ay Toplam',  value:fmtNum(top(g.roll)), tip:fmtFull(top(g.roll))+' arama'},
+    ];
+  }
+
   function Kaynak({not}){
     const M = D().meta;
     return h('div',{className:'txt-3', style:{fontSize:10.5, marginTop:10, lineHeight:1.5}},
@@ -373,7 +396,8 @@ window.TABS = (function(){
           monthsLabels: takvim ? U.TR_MONTHS : ROLLING_LABELS,
           items: sporG.slice(0,14).map(g=>({label:g.label, color:SPOR_RENK()[g.ust]||'#BAB0AC',
             values: takvim?g.cal25:g.roll, prevValues: takvim?g.cal24:g.prev,
-            yoy: yoyFor(g,viewMode), title:grupAciklama(g)})),
+            yoy: yoyFor(g,viewMode), title:grupAciklama(g),
+            metrics: kartMetrikleri(g, viewMode)})),
           onClick: it => onSelectGroup('spor', it.label)}),
         h('div',{className:'txt-3', style:{fontSize:10.5, marginTop:10, lineHeight:1.6}},
           'Kart başlığındaki yüzde rozeti ', h('strong',null,'YoY değişimdir'),
@@ -442,7 +466,7 @@ window.TABS = (function(){
     return h('div',{className:'card flush'},
       h('div',{className:'tbl-ust'},
         h('span',{className:'txt-3', style:{fontSize:11}},
-          'Hacimler aylık ortalamadır. YoY sütunları takvim yılı karşılaştırmasıdır.'),
+          'Hacimler aylık ortalamadır ve kısaltılmış gösterilir; hücrenin üzerine gelince tam değer görünür. CSV çıktısında tam değer yer alır. YoY sütunları takvim yılı karşılaştırmasıdır.'),
         h('button',{className:'chip-btn'+(gizli?'':' active'), style:{marginLeft:'auto'},
           onClick:()=>setGizli(g=>!g)}, gizli ? 'Peak sütunlarını göster' : 'Peak sütunlarını gizle')),
       h('div',{className:'tbl-wrap'},
@@ -481,10 +505,13 @@ window.TABS = (function(){
                 !kompakt && h('td',{style:{fontSize:12,color:'var(--ink-2)'}},
                   r.kulup ? h('span',{className:'cat-pill'}, r.kulup) : '–'),
                 !kompakt && h('td',{style:{fontSize:12,color:'var(--ink-3)'}}, r.ent||'–'),
-                h('td',{className:'num'}, fmtFull(r.a24)),
-                h('td',{className:'num'}, fmtFull(r.a25)),
+                h('td',{className:'num', title: r.a24==null?null:fmtFull(r.a24)+' arama/ay'},
+                  fmtNum(r.a24)),
+                h('td',{className:'num', title: r.a25==null?null:fmtFull(r.a25)+' arama/ay'},
+                  fmtNum(r.a25)),
                 h('td',{className:'num'}, h(YoY,{v:r.yoy, tip:yil[0]+' → '+yil[1]})),
-                h('td',{className:'num'}, fmtFull(r.a26)),
+                h('td',{className:'num', title: r.a26==null?null:fmtFull(r.a26)+' arama/ay'},
+                  fmtNum(r.a26)),
                 h('td',{className:'num'}, h(YoY,{v:r.ytd, tip:'YTD karşılaştırması'})),
                 h('td',{style:{width:110}}, h(C.Sparkline,{values:roll, w:100, h:26,
                   color: SEZ_RENK[r.sinif]||'var(--accent)'})),
@@ -712,8 +739,11 @@ window.TABS = (function(){
       h('div',{className:'card'},
         h(C.SmallMultiples,{yScale:'independent', monthsLabels:ROLLING_LABELS,
           toplamEtiket:'Son 12 Ay',
-          items: stG.slice(0,14).map(g=>({label:g.label, values:g.roll, prevValues:g.prev,
-            yoy:g.ryoy, title:grupAciklama(g)})),
+          items: stG.slice(0,14).map(g=>({label:g.label,
+            values: viewMode==='calendar'?g.cal25:g.roll,
+            prevValues: viewMode==='calendar'?g.cal24:g.prev,
+            yoy:yoyFor(g,viewMode), title:grupAciklama(g),
+            metrics: kartMetrikleri(g, viewMode)})),
           onClick: it=>onSelectGroup('st', it.label)}),
         h('div',{className:'txt-3', style:{fontSize:10.5, marginTop:10}},
           'Sağ alttaki değer Son 12 Ay toplam arama hacmidir.')),
@@ -780,11 +810,15 @@ window.TABS = (function(){
     const varlik = rows.filter(k=>k.ent==='Takım'||k.ent==='Oyuncu');
     const kapsamli = kapsam==='takim' ? varlik.filter(k=>k.ent==='Takım')
                    : kapsam==='oyuncu' ? varlik.filter(k=>k.ent==='Oyuncu') : varlik;
-    const kumeler = React.useMemo(()=>takimKumeleri(varlik), [varlik]);
+    // Kapsam seçimi kümelere de yansır: yalnız takım / yalnız oyuncu seçilince
+    // hacimler, chart'lar ve sezonsallık matrisi o kapsamla yeniden hesaplanır.
+    const kumeler = React.useMemo(()=>takimKumeleri(kapsamli), [kapsamli]);
     const toplam = kumeler.reduce((a,g)=>a+g.r12,0) || 1;
     kumeler.forEach(g=>{ g.share = g.r12/toplam; });
-    const tkTop = topR12(varlik.filter(k=>k.ent==='Takım'));
-    const oyTop = topR12(varlik.filter(k=>k.ent==='Oyuncu'));
+    // KPI'lar da kapsam seçimine uyar
+    const tkRows = kapsamli.filter(k=>k.ent==='Takım');
+    const oyRows = kapsamli.filter(k=>k.ent==='Oyuncu');
+    const tkTop = topR12(tkRows), oyTop = topR12(oyRows);
 
     return h('div',{className:'tab-content-anim'},
       h('div',{className:'filter-panel', style:{marginBottom:14}},
@@ -807,23 +841,29 @@ window.TABS = (function(){
         h(C.Kpi,{label:'Takım Kümesi', value:fmtNum(kumeler.length), accent:true,
           sub:'takım + oyuncularının aramaları birlikte'}),
         h(C.Kpi,{label:'Takım Araması', value:fmtNum(tkTop),
-          sub:varlik.filter(k=>k.ent==='Takım').length.toLocaleString('tr-TR')+' keyword'}),
+          sub:tkRows.length.toLocaleString('tr-TR')+' keyword'}),
         h(C.Kpi,{label:'Oyuncu Araması', value:fmtNum(oyTop),
-          sub:varlik.filter(k=>k.ent==='Oyuncu').length.toLocaleString('tr-TR')+' keyword'}),
+          sub:oyRows.length.toLocaleString('tr-TR')+' keyword'}),
         h(C.Kpi,{label:'Oyuncu Payı',
           value:'%'+(100*oyTop/((tkTop+oyTop)||1)).toFixed(1).replace('.',','),
           sub:'kümedeki oyuncu katkısı'})),
 
       gorunum==='kume' ? h(React.Fragment,null,
         h(C.SectionHeader,{icon:'karne', title:'Takım Kümesi Dağılımı',
-          desc:'her kart bir takımın kendi aramaları ile oyuncularının aramalarını birlikte gösterir'}),
+          desc: kapsam==='takim' ? 'yalnızca takımın kendi aramaları'
+              : kapsam==='oyuncu' ? 'yalnızca takımın oyuncularının aramaları'
+              : 'takımın kendi aramaları ile oyuncularının aramaları birlikte'}),
         h('div',{className:'card'},
           h(C.SmallMultiples,{yScale:'independent', toplamEtiket:'Son 12 Ay',
             monthsLabels:ROLLING_LABELS,
             items: kumeler.slice(0,16).map(function(g){
-              return {label:g.label, values:g.roll, prevValues:g.prev, yoy:g.ryoy,
+              return {label: g.label + '  ·  ' + (g.spor||''),
+                values: viewMode==='calendar'?g.cal25:g.roll,
+                prevValues: viewMode==='calendar'?g.cal24:g.prev,
+                yoy: yoyFor(g,viewMode),
+                metrics: kartMetrikleri(g, viewMode),
                 color:(window.SPOR_RENK||{})[g.spor]||'#BAB0AC',
-                title:[g.label, (g.org?g.org+' · ':'')+(g.spor||''),
+                title:[g.label + (g.spor?' · '+g.spor:''), g.org||'',
                   'Takım araması: '+fmtFull(g.takimVol)+' ('+g.takimKw+' kw)',
                   'Oyuncu araması: '+fmtFull(g.oyuncuVol)+' ('+g.oyuncuKw+' kw)',
                   'Toplam: '+fmtFull(g.r12)].join('\n')};
@@ -837,7 +877,7 @@ window.TABS = (function(){
               showValues:true, showYoY:true,
               rows: kumeler.slice(0,25).map(function(g){
                 return {label:g.label,
-                  sub:(g.org?g.org+' · ':'')+fmtNum(g.r12),
+                  sub:[g.spor, g.org, fmtNum(g.r12)].filter(Boolean).join(' · '),
                   values: viewMode==='calendar'?g.cal25:g.roll,
                   prevValues: viewMode==='calendar'?g.cal24:g.prev,
                   peakIdx:g.peakIdx,
@@ -877,8 +917,11 @@ window.TABS = (function(){
                       h('div',{style:{width:8,height:8,borderRadius:2,flexShrink:0,
                         background:(window.SPOR_RENK||{})[g.spor]||'#BAB0AC'}}),
                       h('div',{style:{minWidth:0}},
-                        h('div',null, g.label),
-                        h('div',{className:'cat-cell'}, g.spor||'')))),
+                        h('div',null, g.label,
+                          g.spor && h('span',{className:'tag-spor',
+                            style:{background:`color-mix(in srgb, ${(window.SPOR_RENK||{})[g.spor]||'#BAB0AC'} 18%, transparent)`,
+                              color:(window.SPOR_RENK||{})[g.spor]||'var(--ink-2)'}}, g.spor)),
+                        h('div',{className:'cat-cell'}, g.org||'')))),
                   h('td',{style:{fontSize:12,color:'var(--ink-2)'}}, g.org||'–'),
                   h('td',{className:'num'}, fmtFull(g.takimVol),
                     h('span',{className:'txt-3', style:{fontSize:10, marginLeft:5}}, g.takimKw+' kw')),
@@ -1227,7 +1270,7 @@ window.TABS = (function(){
     ['Organizasyon Özellikleri', ['mus','sev','pres','per','tak']],
     ['Kapsam',                   ['cins','km','tb','cog','yer','turk']],
     ['TV+ & Kaynak',             ['hak','marka','kurum','ktm','kulup']],
-    ['Veri Denetimi',            ['vden','anaAd','dog','odog']],
+    ['Veri Denetimi',            ['vden','mden','anaAd','dog','odog']],
     ['Sorgu Özellikleri',        ['dil','uzn','bucket','sinif','trend']],
   ];
 

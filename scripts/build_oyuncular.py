@@ -36,45 +36,48 @@ STOP_RE = re.compile(
     r"kadro|squad|antrenör|teknik|kural|rule|şampiyona|championship|kupa|cup|\bF\.?K\b|"
     r"\bS\.?K\b|\bFC\b|\bA\.?Ş\b|derbi|puan|sıralama)", re.I)
 
+POZISYON = {"kaleci","defans","stoper","bek","orta saha","forvet","kanat","santrafor",
+    "libero","pasör","smaçör","oyun kurucu","guard","pivot","teknik direktör","menajer",
+    "antrenör","kaptan","goalkeeper","defender","midfielder","forward","captain",
+    "sağ bek","sol bek","ön libero","orta saha oyuncusu"}
+
 def _oyuncular_html(html_):
-    """Render edilmis HTML'den oyuncu linklerini cikarir.
-    Kadro cogunlukla ayri sablon sayfasindan transclude edildigi icin wikitext yetmiyor."""
-    ln = re.findall(r'<a[^>]+href="/wiki/([^"#:]+)"[^>]*>', html_)
-    out = []
-    for l in ln:
-        ad = urllib.parse.unquote(l).replace("_", " ")
-        if re.match(r"^\d", ad) or STOP_RE.search(ad): continue
-        if ad.lower() in POZ: continue
-        if not (1 < len(ad.split()) < 5): continue
-        ad = re.sub(r"\s*\([^)]*\)", "", ad).strip()
-        if 4 < len(ad) < 40: out.append(ad)
-    return list(dict.fromkeys(out))
+    """Guncel kadro satirlarindan oyuncu adlarini cikarir.
+
+    Kritik sart: satirda forma numarasi bulunmalidir. Tarihi kadro listelerinde
+    numara sutunu yoktur; bu sart eski oyuncularin listeye sizmasini engeller.
+    """
+    oy = []
+    for tr in re.findall(r"<tr[^>]*>(.*?)</tr>", html_, re.S):
+        if not re.search(r">\s*\d{1,2}\s*<", tr):   # forma numarasi yoksa atla
+            continue
+        for l in re.findall(r'<a[^>]+href="/wiki/([^"#:]+)"', tr):
+            ad = urllib.parse.unquote(l).replace("_", " ")
+            ad = re.sub(r"\s*\([^)]*\)", "", ad).strip()
+            dl = ad.lower()
+            if dl in POZISYON or STOP_RE.search(ad): continue
+            if not (1 < len(ad.split()) < 5): continue
+            if not (4 < len(ad) < 40): continue
+            oy.append(ad)
+    return list(dict.fromkeys(oy))
 
 def kadro(kulup, lang="tr", ek="futbol takımı kadro"):
     d = api({"action":"query","list":"search","srsearch":f"{kulup} {ek}","srlimit":3}, lang)
-    hits = d.get("query",{}).get("search",[])
+    hits = d.get("query",{}).get("search", [])
     if not hits: return []
-    # oncelik sirasi onemli: "Oyuncular" bolumu cogu kulupte tarihi futbolculari icerir,
-    # guncel kadro icin "Kadro"/"Squad" bolumu hedeflenir
     hedefler = ["kadro","güncel kadro","a takım kadrosu","squad","current squad",
-                "first-team squad","first team squad","roster","current roster",
-                "oyuncular","players"]
+                "first-team squad","first team squad","roster","current roster"]
     for h in hits[:2]:
         t = h["title"]
         ds = api({"action":"parse","page":t,"prop":"sections","redirects":1}, lang)
         mevcut = {x["line"].strip().lower(): x for x in ds.get("parse",{}).get("sections",[])}
-        secs = [mevcut[hh] for hh in hedefler if hh in mevcut]
-        for x in secs:
-            # prop=text: transclude edilen sablon icerigi de gelir
+        for hh in hedefler:
+            x = mevcut.get(hh)
+            if not x: continue
             dt = api({"action":"parse","page":t,"prop":"text","section":x["index"],"redirects":1}, lang)
             oy = _oyuncular_html(dt.get("parse",{}).get("text",""))
-            if len(oy) >= 8:
+            if len(oy) >= 10:      # guncel kadro esigi
                 return oy
-    # son care: dogrudan kadro sablonu
-    for sab in (f"Şablon:{kulup} kadrosu", f"Template:{kulup} squad"):
-        dt = api({"action":"parse","page":sab,"prop":"text","redirects":1}, lang)
-        oy = _oyuncular_html(dt.get("parse",{}).get("text",""))
-        if len(oy) >= 8: return oy
     return []
 
 # cekirdek kulupler (seed_takimlar.csv'den, yalniz Takim Jenerik satirlari)

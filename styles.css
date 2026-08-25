@@ -1602,10 +1602,10 @@ button.action-card:hover { border-color: currentColor; transform: translateY(-1p
 .topbar{
   background: linear-gradient(100deg, #12100C 0%, #1E1A10 34%, #6B5A08 68%, #FAD604 100%) !important;
 }
-/* Sağ taraf sarı zemin: Inbound bloğu koyu kutuya, wordmark beyaz kalır */
-.topbar .inbound-logo-wrap{ background:#12100C !important; }
-.topbar .inbound-logo-wrap img{ filter:brightness(0) invert(1) !important; }
-.topbar .inbound-logo-wrap div{ color:rgba(255,255,255,.72) !important; }
+/* Sağ taraf sarı zemin: Inbound wordmark siyaha döner, kutu kalkar */
+.topbar .inbound-logo-wrap{ background:transparent !important; padding:6px 4px 5px !important; }
+.topbar .inbound-logo-wrap img{ filter:brightness(0) !important; }
+.topbar .inbound-logo-wrap div{ color:rgba(18,16,12,.62) !important; }
 .topbar .inbound-ctrl{
   background:rgba(18,16,12,.10); border-color:rgba(18,16,12,.22); color:#12100C;
 }
@@ -1699,3 +1699,18 @@ button.action-card:hover { border-color: currentColor; transform: translateY(-1p
   background:var(--line-soft); color:var(--ink-2); font-size:10.5px; font-weight:500;
   max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
   vertical-align:middle; }
+
+.tag-spor{ display:inline-block; margin-left:7px; padding:1px 7px; border-radius:var(--r-pill);
+  font-size:9.5px; font-weight:700; letter-spacing:.02em; vertical-align:middle;
+  text-transform:uppercase; }
+.sm-label{ display:flex; align-items:baseline; gap:0; }
+
+/* ——— Small multiples metrik şeridi ——— */
+.sm-metrics{ display:flex; flex-wrap:wrap; gap:4px 14px; margin-top:7px;
+  padding-top:7px; border-top:1px solid var(--line-soft); }
+.sm-metric{ display:flex; flex-direction:column; gap:1px; min-width:0; }
+.sm-metric-label{ font-size:9px; text-transform:uppercase; letter-spacing:.05em;
+  color:var(--ink-3); font-weight:600; white-space:nowrap; }
+.sm-metric-value{ font-family:'Bricolage Grotesque'; font-size:12.5px; font-weight:700;
+  letter-spacing:-.01em; color:var(--ink); }
+.sm-footer{ border-top:0 !important; padding-top:6px !important; }

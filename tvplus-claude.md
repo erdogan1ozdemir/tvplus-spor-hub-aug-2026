@@ -9,6 +9,34 @@
 
 ---
 
+## 2026-08-25
+
+**Talep:** Takım kümesi dağılımı chartlarının filtreye duyarlı çalışması, takımlara spor dalı etiketi, artifact yorumlarının tamamlanması, "sabah" gibi takım olmayan kayıtların bulunması ve tüm keyword listesinin mantık çerçevesinde denetlenmesi. Bu oturumda DFS çekimi öncesi her zaman onay istenmesi.
+
+**Yapılan işler**
+
+- `scripts/keyword_mantik_denetimi.py` yazıldı. Her satır varlık tipine göre kural setinden geçiriliyor, sonuç `mantik_denetim` kolonuna işleniyor. Denetim yıkıcı değil: işaretli satır veri setinde kalıyor, yalnızca jenerik toplamdan düşüyor. 14 satır işaretlendi:
+  - Genel kelime çakışması: "sabah", "viking"
+  - Şehir/ülke adı: "istanbul", "zagreb"
+  - Oyuncu adı kulüp sayılmış: "orkun kökçü", "mason greenwood", "rafa silva" ve 5 satır daha
+  - Doğrulanması gereken tek kelime: "talisca"
+- Çapraz faset denetimi yapıldı, `scripts/faset_duzelt.py` ile dört tutarsızlık giderildi:
+  - 515 kulüp satırı "Oyuncu Jenerik / Oyuncu Bilgi" sayfa tipinden alınıp takım sayfa tipine taşındı
+  - 24 basketbol ve voleybol kulübü sorgusu (fenerbahçe beko, beşiktaş basketbol, vakıfbank) Futbol'dan doğru spor dalına aktarıldı
+  - 21 lig geneli maç sorgusu ("championship maçları") takım sorgusu olmaktan çıkarıldı
+  - `katman` faseti 35.960 satırda boştu, kaynağa göre dolduruldu (Ana Liste / Genişletme / Uzun Kuyruk). "Çekirdek" etiketi İçerik Dili Rehberi'ndeki yasak kelime listesinde olduğu için "Ana Liste" ile değiştirildi
+- Takım kümesi dağılımı kapsam seçicisine bağlandı, kartlara spor dalı etiketi ve alt metrik şeridi eklendi
+- Artifact yorumlarındaki Inbound logosu talebi tamamlandı: sarı zeminde wordmark siyaha çevrildi, koyu kutu kaldırıldı
+- `mantik_denetim` faset olarak dashboard'a bağlandı, Veri Denetimi grubunda filtrelenebiliyor
+- Takım & Oyuncu sekmesindeki KPI kartları kapsam seçimine duyarlı hale getirildi
+
+**Dikkat edilmesi gereken**
+
+- `faset_duzelt.py` ilk çalıştırmada `hacim_organizasyon.csv` dosyasını boşalttı: `open(d,"w")` dosyayı kesiyor, sonraki `writerows` hata verince yalnızca başlık satırı kalıyordu. Dosya git geçmişinden geri alındı (633 satır, 541'i veri içeriyor). Her iki denetim betiği atomik yazıma çevrildi: geçici dosyaya yazılıp yalnızca hatasız tamamlanınca yerine taşınıyor.
+- Artifact görüntüleyicisi sayfanın kendi başlattığı indirmeleri engelliyor; CSV export butonları artifact üzerinde çalışmıyor, Vercel ve yerel sürümde çalışıyor.
+
+**Güncel veri:** 14.302 keyword · Son 12 Ay 3,63B · YoY +%5,2 · dashboard.js 9,94 MB · artifact 10,32 MB
+
 ## 2026-08-24
 
 ### Talep

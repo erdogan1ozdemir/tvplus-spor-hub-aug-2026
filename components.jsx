@@ -865,10 +865,13 @@ window.C = (function(){
               style:{fontSize:9.5, padding:'0 4px', marginLeft:5},
               title:`Önceki dönemin aynı ayı: ${fmtFull(it.prevValues[hoverI])}`}, fmtPct(d,0));
           })()
-        ),
-        h('span',{className:'sm-total', title:`${toplamEtiket} toplam arama hacmi`},
-          h('span',{style:{fontWeight:400, color:'var(--ink-3)', marginRight:4}}, toplamEtiket),
-          h('strong',null, fmtNum(total)))
+        )
+      ),
+      // Metrik şeridi: görünüm moduna göre ortalama ve toplam değerler
+      h('div',{className:'sm-metrics'},
+        (it.metrics || []).map((m,i) => h('span',{key:i, className:'sm-metric', title:m.tip||m.label},
+          h('span',{className:'sm-metric-label'}, m.label),
+          h('strong',{className:'sm-metric-value'}, m.value)))
       )
     );
   }

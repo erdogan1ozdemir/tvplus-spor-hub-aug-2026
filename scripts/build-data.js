@@ -83,7 +83,7 @@ const FACET = {
   entity_tipi:'ent', marka_tipi:'marka', dil:'dil', sorgu_uzunlugu:'uzn',
   varyant_kodu:'vk', katman:'ktm', kurum_sorgusu:'kurum',
   kulup_dogrulama:'dog', oyuncu_dogrulama:'odog', kulup:'kulup',
-  varyant_denetim:'vden', oyuncu_ana_ad:'anaAd',
+  varyant_denetim:'vden', oyuncu_ana_ad:'anaAd', mantik_denetim:'mden',
 };
 
 // ——————————————————————————————————————————— yükle
@@ -191,7 +191,8 @@ sporSirali.forEach((s,i)=>{ SPOR_RENK[s] = PALETTE[i%PALETTE.length]; });
 
 // Jenerik toplam: rakip markalı sorgular ve denetimde işaretlenen varyantlar hariç
 const jenerik = keywords.filter(k => (!k.marka || k.marka==='Jenerik')
-  && (!k.vden || k.vden==='Geçerli'));
+  && (!k.vden || k.vden==='Geçerli')
+  && (!k.mden || k.mden==='Geçerli'));
 const DATA = {
   meta: {
     olusturma: new Date().toISOString().slice(0,10),
@@ -200,6 +201,7 @@ const DATA = {
     toplamKeyword: keywords.length,
     gecerliKeyword: jenerik.length,
     isaretliVaryant: keywords.filter(k=>k.vden && k.vden!=='Geçerli').length,
+    isaretliMantik: keywords.filter(k=>k.mden && k.mden!=='Geçerli').length,
     toplamR12: jenerik.reduce((a,k)=>a+(k.r12||0),0),
     toplamP12: jenerik.reduce((a,k)=>a+(k.p12||0),0),
   },

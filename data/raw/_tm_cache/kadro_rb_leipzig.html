@@ -1,0 +1,2100 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    
+<script type="text/javascript" data-description="sourcepoint stub code">
+    !function () { var e = function () { var e, t = "__tcfapiLocator", a = [], n = window; for (; n;) { try { if (n.frames[t]) { e = n; break } } catch (e) { } if (n === window.top) break; n = n.parent } e || (!function e() { var a = n.document, r = !!n.frames[t]; if (!r) if (a.body) { var i = a.createElement("iframe"); i.style.cssText = "display:none", i.name = t, a.body.appendChild(i) } else setTimeout(e, 5); return !r }(), n.__tcfapi = function () { for (var e, t = arguments.length, n = new Array(t), r = 0; r < t; r++)n[r] = arguments[r]; if (!n.length) return a; if ("setGdprApplies" === n[0]) n.length > 3 && 2 === parseInt(n[1], 10) && "boolean" == typeof n[3] && (e = n[3], "function" == typeof n[2] && n[2]("set", !0)); else if ("ping" === n[0]) { var i = { gdprApplies: e, cmpLoaded: !1, cmpStatus: "stub" }; "function" == typeof n[2] && n[2](i) } else a.push(n) }, n.addEventListener("message", (function (e) { var t = "string" == typeof e.data, a = {}; try { a = t ? JSON.parse(e.data) : e.data } catch (e) { } var n = a.__tcfapiCall; n && window.__tcfapi(n.command, n.version, (function (a, r) { var i = { __tcfapiReturn: { returnValue: a, success: r, callId: n.callId } }; t && (i = JSON.stringify(i)), e.source.postMessage(i, "*") }), n.parameter) }), !1)) }; "undefined" != typeof module ? module.exports = e : e() }();
+</script>
+<script data-description="sourcepoint configuration">
+window._sp_ = {
+    config: {"accountId":1254,"propertyId":7428,"gdpr":{"consentLanguage":"tr","targetingParams":{"acps":"false"}},"baseEndpoint":"https://cdn.privacy-mgmt.com","isSPA":true,"cpPropertyId":"9607adc6"}}
+</script>
+<script src="https://cdn.privacy-mgmt.com/wrapperMessagingWithoutDetection.js" async></script>
+<script type="text/javascript" data-description="contentpass integration">
+    (function() {
+        var cpBaseUrl = 'https://cp.transfermarkt.com.tr';
+        var cpController = cpBaseUrl + '/now.js';
+        var cpPropertyId = '9607adc6';
+
+        !function(C,o,n,t,P,a,s){C['CPObject']=n;C[n]||(C[n]=function(){
+        (C[n].q=C[n].q||[]).push(arguments)});C[n].l=+new Date;a=o.createElement(t);
+        s=o.getElementsByTagName(t)[0];a.src=P;s.parentNode.insertBefore(a,s)}
+        (window,document,'cp','script',cpController);
+
+        !function(C,o,n,t,P){if(!C[n].patched){cp('extension','authenticate');P=C[n].q.push;
+        C[n].q.push=function(a){if(a[0]==='authenticate'){if((o['cookie']||'').indexOf('_cpauthhint=')===-1&&
+        !(C['localStorage']||{})['_cpuser']&&C.location.href.toLowerCase().indexOf('cpauthenticated')===-1){
+        t={isLoggedIn:function(){return false;},hasValidSubscription:function(){return false;}};
+        (typeof a[1]==='function'&&a[1](null,t));C[n].afp=true;P.apply(C[n].q,[['authenticate',null]]);
+        return t;}}P.apply(C[n].q,[a]);}}}
+        (window,document,'cp',false);
+
+        cp('create', cpPropertyId, {
+        baseUrl: cpBaseUrl
+        });
+
+        cp('render', {
+        onFullConsent: function() {
+            console.log('[DEMO] onFullConsent');
+        }
+        })
+    })()
+</script>
+
+<script type="text/javascript" data-description="contentpass sourcepoint fast path">
+(function () {
+    cp('authenticate', function(err, user) {
+        if (err || (!user.isLoggedIn() && !user.hasValidSubscription())) {
+        // console.log('[SPCP] Taking fast path');
+        (function spExecMsg() {
+            if (window._sp_ && window._sp_.executeMessaging) {
+            if (!window._sp_.config.isSPA) {
+                // console.warn('[SPCP] Sourcepoint not in SPA mode!');
+            } else if (window._sp_.version) {
+                // console.log('[SPCP] Sourcepoint already running');
+            } else {
+                // console.log('[SPCP] Starting Sourcepoint');
+                window._sp_.executeMessaging();
+            }
+            } else {
+            // console.log('[SPCP] Sourcepoint not loaded yet. Retrying.');
+            setTimeout(spExecMsg, 10);
+            }
+        })();
+        }
+    });
+    })();
+</script>
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="shortcut icon" sizes="192x192" href="/android-chrome-192x192.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=no" />
+<meta name="keywords" content="RB Leipzig,Almanya" />
+<meta name="description" content="Güncel sezonun toplam istatistiği sezonu Leipzig kadrosu (özet)." />
+<meta property="og:type" content="article" />
+<meta property="og:image" content="https://tmssl.akamaized.net/images/tm_logo.png" />
+<meta property="og:description" content="" />
+<meta property="og:title" content="RB Leipzig - Ayrıntılı kadro 26/27" />
+<meta property="twitter:title" content="RB Leipzig - Ayrıntılı kadro 26/27" />
+<meta property="og:url" content="https://www.transfermarkt.com.tr/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="de" rel="alternate" href="https://www.transfermarkt.de/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="de-LU" rel="alternate" href="https://www.transfermarkt.de/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="de-AT" rel="alternate" href="https://www.transfermarkt.at/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="de-CH" rel="alternate" href="https://www.transfermarkt.ch/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="tr" rel="alternate" href="https://www.transfermarkt.com.tr/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="it-CH" rel="alternate" href="https://www.transfermarkt.it/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="it" rel="alternate" href="https://www.transfermarkt.it/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="pl" rel="alternate" href="https://www.transfermarkt.pl/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="en-GB" rel="alternate" href="https://www.transfermarkt.co.uk/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="en-IE" rel="alternate" href="https://www.transfermarkt.co.uk/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="es" rel="alternate" href="https://www.transfermarkt.es/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="es-ES" rel="alternate" href="https://www.transfermarkt.es/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="es-CL" rel="alternate" href="https://www.transfermarkt.es/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="es-VE" rel="alternate" href="https://www.transfermarkt.es/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="es-EC" rel="alternate" href="https://www.transfermarkt.es/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="es-CU" rel="alternate" href="https://www.transfermarkt.es/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="nl" rel="alternate" href="https://www.transfermarkt.nl/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="pt" rel="alternate" href="https://www.transfermarkt.pt/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="ru" rel="alternate" href="https://www.transfermarkt.world/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="fr-CH" rel="alternate" href="https://www.transfermarkt.fr/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="fr" rel="alternate" href="https://www.transfermarkt.fr/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="fr-CA" rel="alternate" href="https://www.transfermarkt.fr/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="fr-CI" rel="alternate" href="https://www.transfermarkt.fr/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="fr-LU" rel="alternate" href="https://www.transfermarkt.fr/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="fr-BE" rel="alternate" href="https://www.transfermarkt.fr/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="pt-BR" rel="alternate" href="https://www.transfermarkt.com.br/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="en-US" rel="alternate" href="https://www.transfermarkt.us/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="en-CA" rel="alternate" href="https://www.transfermarkt.us/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="en-IN" rel="alternate" href="https://www.transfermarkt.co.in/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="en-ZA" rel="alternate" href="https://www.transfermarkt.co.za/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="x-default" rel="alternate" href="https://www.transfermarkt.com/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="en" rel="alternate" href="https://www.transfermarkt.com/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="nl-BE" rel="alternate" href="https://www.transfermarkt.be/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="ro" rel="alternate" href="https://www.transfermarkt.ro/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="el-GR" rel="alternate" href="https://www.transfermarkt.gr/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="ko-KR" rel="alternate" href="https://www.transfermarkt.co.kr/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="es-AR" rel="alternate" href="https://www.transfermarkt.com.ar/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="es-MX" rel="alternate" href="https://www.transfermarkt.mx/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="es-CO" rel="alternate" href="https://www.transfermarkt.co/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="es-PE" rel="alternate" href="https://www.transfermarkt.pe/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="ja" rel="alternate" href="https://www.transfermarkt.jp/rasenballsport-leipzig/kader/verein/23826" />
+<link hreflang="id" rel="alternate" href="https://www.transfermarkt.co.id/rasenballsport-leipzig/kader/verein/23826" />
+<link rel="stylesheet" type="text/css" href="https://tmssl.akamaized.net/styles/tm-main.min.css?lm=1787643308" />
+<link rel="stylesheet" type="text/css" href="https://tmssl.akamaized.net/css/stylesheets/main_desktop.css?lm=1787641531" />
+<link rel="stylesheet" type="text/css" href="https://tmssl.akamaized.net/styles/tm-discover.min.css?lm=1787643308" />
+<link rel="stylesheet" type="text/css" href="https://tmssl.akamaized.net/styles/tm-button-list.min.css?lm=1787643308" />
+<link rel="stylesheet" type="text/css" href="https://tmssl.akamaized.net/styles/tm-link-list.min.css?lm=1787643308" />
+<link rel="stylesheet" type="text/css" href="https://tmssl.akamaized.net/styles/tm-print.min.css?lm=1787643308" />
+<link rel="stylesheet" type="text/css" href="https://tmssl.akamaized.net/css/stylesheets/vereinsseite.css?lm=1787641531" />
+<link rel="stylesheet" type="text/css" href="https://tmssl.akamaized.net/styles/tm-statistics.min.css?lm=1787643308" />
+<link rel="stylesheet" type="text/css" href="https://tmssl.akamaized.net/styles/tm-game-report.min.css?lm=1787643308" />
+<link rel="stylesheet" type="text/css" href="https://tmssl.akamaized.net/styles/tm-chosen.min.css?lm=1787643308" />
+<link rel="stylesheet" type="text/css" href="https://tmssl.akamaized.net/css/stylesheets/main.css?lm=1787641531" />
+<link rel="stylesheet" type="text/css" href="https://tmssl.akamaized.net/styles/tm-club-profile.min.css?lm=1787643308" />
+<script type="text/javascript" src="https://tmssl.akamaized.net/js/vendor/jquery.min.js?lm=1787641531"></script>
+<script type="text/javascript" src="https://tmssl.akamaized.net/assets/b7c5571cf8957553f95f6d9069eaed67/jquery.ba-bbq.min.js?lm=1787641531"></script>
+<script type="text/javascript" src="https://tmssl.akamaized.net/js/main.js?lm=1787641531"></script>
+<script type="text/javascript" src="https://tmssl.akamaized.net/js/chosen.ajaxaddition.jquery.js?lm=1787641531"></script>
+<script type="text/javascript" src="https://tmssl.akamaized.net/js/functions.js?lm=1787641531"></script>
+<script type="text/javascript" src="https://tmssl.akamaized.net/js/main_desktop.js?lm=1787641531"></script>
+<script type="text/javascript" src="https://tmssl.akamaized.net/js/chosen.jquery.js?lm=1787641531"></script>
+<script type="text/javascript" src="https://tmsi.akamaized.net/js/svelte-components/consent/bundle.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+console.info("%c [TM-ADs] Initialize Ads on domain .tr (verein/kader)", "background: #282828; color: #bada55")
+console.info("%c [TM-ADs] Render slot rectangle1 (/78792240,58778164/Transfermarkt_Home_336x280_1/div-gpt-ad-2337006-1) for archon", "background: #282828; color: #bada55")
+console.info("%c [TM-ADs] Render slot rectangle2 (/78792240,58778164/Transfermarkt_RoS_336x280_2/div-gpt-ad-7564369-2) for archon", "background: #282828; color: #bada55")
+console.info("%c [TM-ADs] Render slot skyscraper (/78792240,58778164/Transfermarkt_RoS_336x600_1/div-gpt-ad-7564369-3) for archon", "background: #282828; color: #bada55")
+console.info("%c [TM-ADs] Render slot skyscraperbtf (/78792240,58778164/Transfermarkt_RoS_336x600_2/div-gpt-ad-7564369-4) for archon", "background: #282828; color: #bada55")
+console.info("%c [TM-ADs] Render slot billboard (/78792240,58778164/Transfermarkt_RoS_Masthead/div-gpt-ad-7564369-5) for archon", "background: #282828; color: #bada55")
+console.info("%c [TM-ADs] Render slot interstitial (/78792240,58778164/Transfermarkt_Pageskin/div-gpt-ad-1646721508756-0) for archon", "background: #282828; color: #bada55")
+console.info("%c [TM-ADs] Render slot fullsize_contentad (/78792240,58778164/Transfermarkt_RoS_Masthead_2/div-gpt-ad-7564369-6) for archon", "background: #282828; color: #bada55")
+    var oddsServe = function(placement,competition,match,node) {
+        if (!node){
+            var s=document.readyState==='loading'?document.getElementsByTagName('script'):[];
+            node=s.length?s[s.length-1].parentNode:null;
+        }
+        oddsServe.queue.push({contentUnitId:placement,competition:competition,match:match,node:node});
+    }
+    
+    oddsServe.onInit=function(callbacks){
+        if (typeof window.__tcfapi === 'function') {
+            __tcfapi('addEventListener', 2, function(tcdata, success) {
+                let tcf20compatibleString;
+                if(success) {
+                    if (tcdata.eventStatus === 'useractioncomplete') {
+                        tcf20compatibleString = tcdata.tcString;
+                    } else if (tcdata.eventStatus === 'tcloaded') {
+                        tcf20compatibleString = tcdata.tcString;
+                    }
+                    callbacks.setGdprOptions({
+                        gdpr:1,
+                        gdpr_pd:1,
+                        gdpr_consent:tcf20compatibleString,
+                    });
+                }
+            });
+        } else {
+            console.warn('E2: __tcfapi not found');
+        }
+    };
+    oddsServe.options={gdpr_wait:true};
+    oddsServe.queue=[];
+console.info("%c [TM-ADs] Add adslot configuration for 7 ad slots rectangle1 | rectangle2 | skyscraper | skyscraperbtf | billboard | interstitial | fullsize_contentad", "background: #282828; color: #bada55")
+console.info("%c [TM-ADs] Adslots without configuration: fireplace | skyscraper-left-bound | scrollad | richmedia | 1by1px", "background: #282828; color: #bada55")
+console.info("%c [TM-ADs] Register slots with JS vendor lib", "background: #282828; color: #bada55")
+window.addEventListener('load', () => {
+  const offset = window.matchMedia('(max-width: 768px)').matches ? 80 : 120;
+  document.querySelectorAll('[data-sticky]').forEach(node => {
+    const parent = node.parentElement;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) {
+        parent.style.position = 'sticky';
+        parent.style.top = `${offset}px`;
+        parent.style.zIndex = 12000000;
+        setTimeout(() => {
+          parent.style.removeProperty('position');
+          parent.style.removeProperty('top');
+          parent.style.removeProperty('z-index');
+        }, parseInt(node.dataset?.sticky) || 3000);
+        observer.unobserve(parent);
+      }
+    }, { rootMargin: `-${offset}px 0px 0px 0px`, threshold: 1 });
+    observer.observe(parent);
+  });
+});
+window.ID5EspConfig = {
+  partnerId: 1060
+};
+function generateUUID() {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
+    var r = (Math.random() * 16) | 0;
+    var v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+function getOrCreatePPID() {
+  let ppid = localStorage.getItem("ppid");
+  if (!ppid) {
+    ppid = generateUUID();
+    localStorage.setItem("ppid", ppid);
+  }
+  return ppid;
+}
+window.googletag = window.googletag || {cmd: []};
+googletag.cmd.push(() => {
+  var ppid = getOrCreatePPID();
+var mapping1 = googletag.sizeMapping().addSize([1730, 600], [[336, 600], [300, 600], [160, 600], [120, 600], [300, 250], [336, 280]])
+.addSize([1680, 600], [[300, 600], [300, 250], [160, 600], [120, 600]])
+.addSize([0, 0], [[160, 600], [120, 600]])
+.build()
+googletag.defineOutOfPageSlot(
+  "/78792240,58778164/Transfermarkt_Pageskin",
+  "div-gpt-ad-1646721508756-0"
+)
+.addService(googletag.pubads());
+  googletag.defineSlot(
+    "/78792240,58778164/Transfermarkt_RoS_Masthead",
+    [[970,250],[728,90],[970,90],"fluid"],
+    "div-gpt-ad-7564369-5"
+  ) 
+.addService(googletag.pubads());
+  googletag.defineSlot(
+    "/78792240,58778164/Transfermarkt_Home_336x280_1",
+    [[300,250],"fluid"],
+    "div-gpt-ad-2337006-1"
+  ) 
+.addService(googletag.pubads());
+  googletag.defineSlot(
+    "/78792240,58778164/Transfermarkt_RoS_336x280_2",
+    [[300,250],[336,280],"fluid"],
+    "div-gpt-ad-7564369-2"
+  ) 
+.addService(googletag.pubads());
+  googletag.defineSlot(
+    "/78792240,58778164/Transfermarkt_RoS_336x600_1",
+    [[120,600],[160,600],[300,250],[300,600],[336,280],[336,600],"fluid"],
+    "div-gpt-ad-7564369-3"
+  ) 
+.defineSizeMapping(mapping1)
+.addService(googletag.pubads());
+  googletag.defineSlot(
+    "/78792240,58778164/Transfermarkt_RoS_336x600_2",
+    [[120,600],[160,600],[300,250],[300,600],[336,280],[336,600],"fluid"],
+    "div-gpt-ad-7564369-4"
+  ) 
+.defineSizeMapping(mapping1)
+.addService(googletag.pubads());
+  googletag.defineSlot(
+    "/78792240,58778164/Transfermarkt_RoS_Masthead_2",
+    [[970,250],[728,90],[970,90],"fluid"],
+    "div-gpt-ad-7564369-6"
+  ) 
+.addService(googletag.pubads());
+  googletag.setConfig({
+    lazyLoad: {
+      fetchMarginPercent: 500,
+      renderMarginPercent: 200,
+      mobileScaling: 2.0
+    }
+  });
+  googletag.pubads().enableSingleRequest();
+  googletag.pubads().setTargeting("pagecategory", ["sports"]);
+  googletag.pubads().setTargeting("team", ["rb-leipzig"]);
+  googletag.pubads().setPublisherProvidedId(ppid);
+  googletag.enableServices();
+});
+
+console.info("%c [TM-ADs] Render ad slots js for archon", "background: #282828; color: #bada55")
+console.info("%c [TM-ADs] Added external ad script https://securepubads.g.doubleclick.net/tag/js/gpt.js for googleadvertising on wettbewerbe_1_liga", "background: #282828; color: #bada55")
+console.info("%c [TM-ADs] Added external ad script https://adxbid.info/pubId17210.js for googleadvertising on wettbewerbe_1_liga", "background: #282828; color: #bada55")
+/*]]>*/
+</script>
+<title>RB Leipzig - Ayrıntılı kadro 26/27 | Transfermarkt</title>
+    <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon-152x152.png">
+    
+<script type="text/javascript">
+   tmData = {
+       loggedIn : "0",
+       tmTraffic: "0",
+   };
+</script>
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    let utmVars = {
+        eVar1: urlParams.get('utm_campaign'),
+        eVar6: urlParams.get('utm_source'),
+        eVar24: urlParams.get('utm_medium')
+    };
+    Object.keys(utmVars).forEach((k) => utmVars[k] == null && delete utmVars[k]);
+
+    window.tmAnalyticsDataLayer = window.tmAnalyticsDataLayer || [];
+    window.tmAnalytics = {
+        dimensions: {
+            eVar7: 'RB Leipzig (23826)',
+			eVar8: 'Bundesliga (L1)',
+			eVar9: 'Germany',
+			eVar10: 'https://www.transfermarkt.com.tr/rasenballsport-leipzig/kader/verein/23826',
+			...utmVars,
+            evar19: window.location.href,
+            eVar35 : '',
+			eVar37 : '',
+                },
+    properties: {
+        prop2: 'statistik',
+		prop3: 'verein',
+		prop4: 'kader',
+		prop5: '23826',
+		prop14: 'statistik_verein_kader_23826',
+		prop9: window.location.hostname,
+        prop10: window.location.href,
+        prop1 : 'false',
+    },
+    pageDetails: {
+        pageViews: {
+            value: 1
+        },
+        isErrorPage: 'false',
+            isHomepage: 'false',
+            name: 'RB Leipzig - Ayrıntılı kadro 26/27 | Transfermarkt',
+            URL: window.location.href,
+            server: 'prod-tm-server-web-12136'
+    },
+    };
+
+function tmEventForLink(category, aTag, label) {
+    const url = new URL(aTag.href);
+    const link = url.pathname + url.search;
+    tmEvent(category, link, label);
+}
+
+function tmEvent(category, action, label, detail = '') {
+    if (typeof gtag === 'function') {
+        gtag('event',
+            action,
+            {
+                'event_category': category,
+                'event_label': label
+            }
+        );
+    }
+
+    const ev = {
+        event: 'tmEvent',
+        tmEvent: {
+            customDimensions: {
+                eVars: {
+                    ...tmAnalytics.dimensions
+                },
+                props: {
+                    prop6: category,
+                    prop7: action,
+                    prop8: label,
+                    prop17: detail,
+                    ...tmAnalytics.properties
+                }
+            },
+            event1to100: {
+                event7: {
+                    value: 1
+                },
+                event8: null,
+            },
+            session: {
+                web: {
+                    webInteraction: {
+                        linkClicks: {
+                            value: 1
+                        }
+                    },
+                    webPageDetails: {
+                        ...tmAnalytics.pageDetails,
+                        ...{
+                            pageViews: {
+                                value: null
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+     if (!window._satellite) {
+        once = false;
+        window._satellite = { _monitors: [{
+            ruleTriggered: (e) => {
+                if (once) {
+                    return;
+                }
+                once = true;
+                setTimeout(() => {
+                    tmAnalyticsDataLayer.push(ev);
+                    tmAnalyticsDataLayer.push(function (dl) {
+                        const state = dl.getState();
+                    });
+                }, 1);
+            }
+        }] };
+    } else {
+        tmAnalyticsDataLayer.push(ev);
+        tmAnalyticsDataLayer.push(function (dl) {
+            const state = dl.getState();
+        });
+    }
+}
+function tmTrackingAndAds() {
+    if (typeof gtag === 'function') {
+        gtag("event", "page_view", {
+            page_path: "/jsContent" + window.location.pathname
+        });
+    }
+
+    tmAnalyticsDataLayer.push({
+        event: 'tmTrackingAndAds',
+        tmTrackingAndAds: {
+            customDimensions: {
+                eVars: tmAnalytics.dimensions,
+                props: tmAnalytics.properties
+            },
+            event1to100: {
+                event7: null,
+                event8: {
+                    value: 1
+                }
+            },
+            session: {
+                web: {
+                    webInteraction: {
+                        linkClicks: {
+                            value: null
+                        }
+                    },
+                    webPageDetails: {
+                        ...tmAnalytics.pageDetails,
+                        ...{
+                            pageViews: {
+                                value: 1
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+    tmAnalyticsDataLayer.push(function (dl) {
+        const state = dl.getState();
+    });
+}
+function tmTiming(value, name, event_category, event_label) {
+    console.log('tmTiming', value, name, event_category, event_label);
+}
+
+        !function(e,a,n,t){var i=e.head;if(i){
+            if (a) return;
+            var o=e.createElement("style");
+            o.id="alloy-prehiding",o.innerText=n,i.appendChild(o),setTimeout(function(){o.parentNode&&o.parentNode.removeChild(o)},t)}}
+        (document, document.location.href.indexOf("adobe_authoring_enabled") !== -1, ".personalization-container { opacity: 0 !important }", 3000);
+
+            !function(n,o){o.forEach(function(o){n[o]||((n.__alloyNS=n.__alloyNS||
+                []).push(o),n[o]=function(){var u=arguments;return new Promise(
+                function(i,l){n[o].q.push([i,l,u])})},n[o].q=[])})}
+            (window,["alloy"]);
+</script>
+<tm-consent
+    type="adobe"
+    no-checkbox
+    embed="PHNjcmlwdCBhc3luYyBzcmM9Imh0dHBzOi8vYXNzZXRzLmFkb2JlZHRtLmNvbS83Y2FkY2E5NWRkOWEvY2Q0YWI4ODRkMjMxL2xhdW5jaC0wMTI3MmI0MDBjNjUubWluLmpzIj48L3NjcmlwdD4=">
+</tm-consent>
+
+    <script type="text/javascript" src="https://tmssl.akamaized.net//ads/ads.js"></script>
+    <script type="text/javascript">
+        window.tmGaId = "UA-3816204-13";
+
+        function sendIvwData() {}
+    </script>
+            <link rel="canonical" href="https://www.transfermarkt.com.tr/rasenballsport-leipzig/kader/verein/23826">
+    </head>
+
+<body class="desktop " itemscope itemtype="http://schema.org/WebPage" data-tm-tld="tr" data-cmp-layer-id="492691" data-db-name="tr-der-zauberzwerg" >
+    
+        <div id="main">
+                    <button id="back-to-top" title="Nach oben">
+                <svg xmlns="http://www.w3.org/2000/svg" width="17.795" height="10.009" viewBox="0 0 17.795 10.009">
+                    <path id="angle-up" d="M20.683,17.01a1.112,1.112,0,0,1-.786-.326l-7-7-7,7a1.112,1.112,0,1,1-1.573-1.573l7.785-7.785a1.112,1.112,0,0,1,1.573,0l7.785,7.785a1.112,1.112,0,0,1-.786,1.9Z" transform="translate(-4 -7)" fill="#fff"/>
+                </svg>
+            </button>
+            <div class="werbung-skyscraper-left-bound-container">
+                            </div>
+            <div class="werbung-skyscraper-container">
+                <div class="werbung ad-placement-note werbung-skyscraper" data-ad-placement-note="Reklam">
+  <div id="div-gpt-ad-7564369-3">
+    <script>googletag.cmd.push(() => { googletag.display("div-gpt-ad-7564369-3"); });</script>
+  </div>
+</div>
+            </div>
+
+            <div class="werbung-skyscraperbtf-container">
+                <div class="werbung ad-placement-note werbung-skyscraperbtf" data-ad-placement-note="Reklam">
+  <div id="div-gpt-ad-7564369-4">
+    <script>googletag.cmd.push(() => { googletag.display("div-gpt-ad-7564369-4"); });</script>
+  </div>
+</div>
+            </div>
+        
+        <div id="tm-overlay"></div>
+
+                    <div class="tm-header__box">
+                <!-- logo  -->
+                <a href="/" class="tm-header__logo" onclick="tmEvent('hauptnavi', '/', 'TM-Logo');">
+                    <img src="https://tmsi.akamaized.net/head/tm_logo_rebrush.svg"
+                         height="62"
+                         width="156"
+                         title="Transfermarkt"
+                         alt="Transfermarkt"
+                    >
+                </a>
+
+                <!-- domainswitcher  -->
+                <div class="domin-swicher">
+                    <tm-domain-switcher
+                        tld="com.tr"
+                        translations='{&quot;chooseYourDomain&quot;:&quot;Sayfan\u0131 se\u00e7&quot;}'></tm-domain-switcher>
+                </div>
+
+                <!-- live -->
+                <tm-live-match-count
+                    class="tm-header__live"
+                    auto-request                    content='{&quot;liveMatches&quot;:&quot;Canl\u0131 ma\u00e7lar&quot;,&quot;liveMatch&quot;:&quot;Canl\u0131 ma\u00e7&quot;,&quot;live&quot;:&quot;Canl\u0131&quot;}'></tm-live-match-count>
+
+                <!-- Search -->
+                                    <div class="tm-header__search " id="schnellsuche-platz">
+                        <form name="schnellsuche" id="schnellsuche" class="tm-header__form" action="/schnellsuche/ergebnis/schnellsuche">
+                            <input type="text" name="query" class="tm-header__input--search-field" onClick="" placeholder="Arama" autocorrect="off" spellcheck="false" value="" />
+                            <button type="submit" value="" class="tm-header__input--search-send" alt="Ara">
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18" height="18" viewBox="0 0 18 18">
+                                    <path d="M17.825,16.847 L14.28,13.303 C17.072,9.987 16.756,5.061 13.563,2.13 C10.37,-0.8 5.435,-0.695 2.37,2.37 C-0.695,5.435 -0.8,10.37 2.13,13.563 C5.061,16.756 9.987,17.072 13.303,14.28 L16.847,17.825 C17.121,18.069 17.538,18.057 17.797,17.797 C18.057,17.538 18.069,17.121 17.825,16.847 z M1.418,8.108 C1.417,4.413 4.412,1.417 8.107,1.416 C11.802,1.415 14.798,4.411 14.799,8.106 C14.799,11.801 11.804,14.797 8.108,14.797 C4.414,14.797 1.419,11.803 1.418,8.108 z" fill="#000" />
+                                </svg>
+                            </button>
+                        </form>
+                        <a href="/detailsuche/spielerdetail/suche" title="Detaylı oyuncu arama" id="detailsuche-head" class="tm-header__search-detail">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18" height="18" viewBox="0, 0, 18, 18">
+                                <path d="M3.138,3.558 C3.137,1.593 4.727,0 6.69,0 C8.652,-0 10.243,1.592 10.243,3.556 C10.243,5.521 8.653,7.113 6.69,7.113 C4.729,7.113 3.138,5.522 3.138,3.558 z M8.233,13.187 C8.261,11.778 8.861,10.442 9.893,9.486 C9.967,9.418 9.997,9.315 9.971,9.219 C9.946,9.119 9.863,9.044 9.76,9.03 C9.331,8.938 8.893,8.893 8.454,8.895 L4.906,8.895 C3.583,8.808 2.286,9.298 1.35,10.239 C0.414,11.179 -0.07,12.479 0.021,13.804 C-0.085,14.656 0.209,15.509 0.817,16.114 C1.425,16.72 2.279,17.009 3.13,16.897 L9.266,16.897 C9.372,16.895 9.467,16.831 9.508,16.732 C9.549,16.634 9.527,16.521 9.453,16.444 C8.665,15.544 8.232,14.387 8.236,13.191 z M17.805,17.804 C17.68,17.93 17.511,18 17.334,18 C17.158,18 16.989,17.93 16.864,17.804 L15.237,16.177 C13.686,17.242 11.58,16.949 10.378,15.501 C9.176,14.052 9.274,11.926 10.604,10.594 C11.934,9.263 14.058,9.165 15.505,10.368 C16.952,11.571 17.244,13.68 16.181,15.233 L17.805,16.866 C18.065,17.126 18.065,17.548 17.805,17.808 z M15.484,13.182 C15.484,11.911 14.455,10.881 13.186,10.881 C11.917,10.881 10.888,11.911 10.888,13.182 C10.888,14.452 11.917,15.482 13.186,15.482 C14.455,15.482 15.484,14.452 15.484,13.182 z" fill="#000" />
+                            </svg>
+                        </a>
+                                            </div>
+                
+                <!-- login button -->
+                <div class="tm-header__login">
+                    <tm-userbox translations='{&quot;addFavorite&quot;:&quot;Yeni sayfa ekle&quot;,&quot;adminArea&quot;:&quot;Y\u00f6netici alan\u0131&quot;,&quot;adminTools&quot;:&quot;Y\u00f6netici ara\u00e7lar\u0131&quot;,&quot;allFavoriteLinkText&quot;:&quot;T\u00fcm yer i\u015faretlerimi g\u00f6ster&quot;,&quot;applyAsModOrDatascout&quot;:&quot;Moderat\u00f6r veya Veri Y\u00f6neticisi olarak ba\u015fvur&quot;,&quot;checkAllNews&quot;:&quot;T\u00fcm haberlere g\u00f6z at&quot;,&quot;checkAllRumours&quot;:&quot;T\u00fcm s\u00f6ylentilere g\u00f6z at&quot;,&quot;chooseYourDomain&quot;:&quot;Sayfan\u0131 se\u00e7&quot;,&quot;clickAgain&quot;:&quot;Ba\u011flant\u0131y\u0131 kopyala&quot;,&quot;clubBoard&quot;:&quot;Kul\u00fcp forumu&quot;,&quot;confirm&quot;:&quot;Tamam&quot;,&quot;copied&quot;:&quot;Ba\u011flant\u0131 kopyaland\u0131&quot;,&quot;copyLink&quot;:&quot;Ba\u011flant\u0131y\u0131 kopyala&quot;,&quot;createAccount&quot;:&quot;Hesab\u0131n\u0131 olu\u015ftur&quot;,&quot;createNewMessage&quot;:&quot;Yeni mesaj olu\u015ftur&quot;,&quot;createShortlink&quot;:&quot;K\u0131sa link olu\u015ftur&quot;,&quot;createShortNews&quot;:&quot;K\u0131sa haber olu\u015ftur&quot;,&quot;dashboard&quot;:&quot;Performans&quot;,&quot;dataAdministration&quot;:&quot;Veri Bak\u0131m\u0131&quot;,&quot;debug&quot;:&quot;Debug&quot;,&quot;deleteAll&quot;:&quot;T\u00fcm\u00fcn\u00fc sil&quot;,&quot;deleteConfirm&quot;:&quot;Evet, t\u00fcm\u00fcn\u00fc sil.&quot;,&quot;editText&quot;:&quot;D\u00fczenle&quot;,&quot;forgotPassword&quot;:&quot;\u015eifreyi unuttun mu?&quot;,&quot;forgotUsername&quot;:&quot;Kullan\u0131c\u0131 ismi unuttum&quot;,&quot;forgotLoginDetails&quot;:&quot;Giri\u015f bilgilerini mi unuttun?&quot;,&quot;forum&quot;:&quot;forum&quot;,&quot;groundhoppingTool&quot;:&quot;Statgezer&quot;,&quot;lastMatch&quot;:&quot;Son ma\u00e7lar&quot;,&quot;signin&quot;:&quot;Giri\u015f yap&quot;,&quot;login&quot;:&quot;Giri\u015f&quot;,&quot;logOut&quot;:&quot;\u00c7\u0131k\u0131\u015f yap&quot;,&quot;manageFavorites&quot;:&quot;Favorileri y\u00f6net &quot;,&quot;marketValue&quot;:&quot;Piyasa de\u011feri&quot;,&quot;matchplan&quot;:&quot;Fikst\u00fcr&quot;,&quot;messages&quot;:&quot;Mesajlar&quot;,&quot;myClub&quot;:&quot;Benim tak\u0131m\u0131m&quot;,&quot;myClubText&quot;:&quot;Bir Transfermarkt hesab\u0131 ile favori kul\u00fcb\u00fcn\u00fcz\u00fc kaydedebilir ve kul\u00fcb\u00fcn\u00fczle ilgili t\u00fcm \u00f6nemli bilgileri (ma\u00e7lar, haberler, h\u0131zl\u0131 ba\u011flant\u0131lar) bulabilirsiniz.&quot;,&quot;myDreamTeam&quot;:&quot;Benim 11&#039;im&quot;,&quot;myFavorites&quot;:&quot;Yer i\u015faretlerim&quot;,&quot;myFavoritesText&quot;:&quot;Bir Transfermarkt hesab\u0131yla, herhangi bir sayfay\u0131 favori olarak kaydedebilir ve ard\u0131ndan tek bir t\u0131klamayla eri\u015febilirsiniz.&quot;,&quot;myProfile&quot;:&quot;Profilim&quot;,&quot;news&quot;:&quot;Haberler&quot;,&quot;newsAdministration&quot;:&quot;Haber y\u00f6netimi&quot;,&quot;nextMatch&quot;:&quot;S\u0131radaki ma\u00e7lar&quot;,&quot;noNewNotifications&quot;:&quot;Yeni bir bildirim yok&quot;,&quot;notifications&quot;:&quot;Bildirimler&quot;,&quot;notificationsDeletedAutomatically&quot;:&quot;Not: Bildirimler 30 g\u00fcn sonra otomatik olarak silinir&quot;,&quot;notifyDeleteMessage&quot;:&quot;45 g\u00fcnden eski \u00f6zel mesajlar zaman zaman silinecektir (data scouts ve moderat\u00f6rler hari\u00e7)&quot;,&quot;or&quot;:&quot;veya&quot;,&quot;other&quot;:&quot;Di\u011fer&quot;,&quot;overview&quot;:&quot;genel bak\u0131\u015f&quot;,&quot;password&quot;:&quot;Parola&quot;,&quot;playerRatings&quot;:&quot;Haftan\u0131n oyuncular\u0131&quot;,&quot;playerWatchlist&quot;:&quot;Oyuncu takip listesi&quot;,&quot;postponed&quot;:&quot;ertl.&quot;,&quot;profile&quot;:&quot;Profil&quot;,&quot;progDebug&quot;:&quot;Prog. Debug&quot;,&quot;progProfile&quot;:&quot;Prog. Profiler&quot;,&quot;registerNow&quot;:&quot;\u015eimdi kay\u0131t ol&quot;,&quot;rememberMe&quot;:&quot;Giri\u015f bilgilerini kaydet&quot;,&quot;removeFavorite&quot;:&quot;Yer i\u015faretini sil&quot;,&quot;rumors&quot;:&quot;S\u00f6ylentiler&quot;,&quot;schedule&quot;:&quot;program&quot;,&quot;sessionExpired&quot;:&quot;Transfermarkt&#039;taki oturumun sona erdi. L\u00fctfen tekrar giri\u015f yap.&quot;,&quot;sessionExpiredTitle&quot;:&quot;Oturum S\u00fcresi Doldu&quot;,&quot;setting&quot;:&quot;Ayarlar&quot;,&quot;shortlink&quot;:&quot;K\u0131sa link&quot;,&quot;shortLinkCreationError&quot;:&quot;K\u0131sa ba\u011flant\u0131 olu\u015fturulurken bir hata olu\u015ftu.&quot;,&quot;shortLinkHasBeenCreated&quot;:&quot;K\u0131sa ba\u011flant\u0131 olu\u015fturuldu ve kopyaland\u0131.&quot;,&quot;shortLinkIsBeingCreated&quot;:&quot;K\u0131sa link olu\u015ftur...&quot;,&quot;showAllMessages&quot;:&quot;T\u00fcm mesajlar\u0131 g\u00f6ster&quot;,&quot;totalMarketValue&quot;:&quot;Toplam de\u011fer&quot;,&quot;translation&quot;:&quot;\u00c7eviri&quot;,&quot;username&quot;:&quot;Kullan\u0131c\u0131 isim&quot;,&quot;whyRegister&quot;:&quot;Neden kay\u0131t olay\u0131m?&quot;,&quot;Bitte korrigieren Sie die markierten Felder&quot;:&quot;L\u00fctfen i\u015faretlenmi\u015f alanlar\u0131 d\u00fczelt&quot;,&quot;mindestensDreiZeichen&quot;:&quot;En az 3 karakter&quot;,&quot;mindestensAchtZeichen&quot;:&quot;En az 8 karakter&quot;,&quot;pleaseCorrectFields&quot;:&quot;profil&quot;,&quot;minThreeCharacters&quot;:&quot;En az \u00fc\u00e7 (3) karakter&quot;,&quot;minEightCharacters&quot;:&quot;En az sekiz (8) karakter&quot;,&quot;noAtCharacter&quot;:&quot;Kullan\u0131c\u0131 ad\u0131nda @ i\u015fareti kullanamazs\u0131n&quot;,&quot;agentProfile&quot;:&quot;Ajans Profilim&quot;}' page-title="RB Leipzig - Ayrıntılı kadro 26/27 | Transfermarkt" tld="tr" agent-profile=""  />
+                </div>
+            </div>
+        
+        
+                        <!-- mobile end -->
+            <nav class="main-navbar">
+                                    <a href="/" class="main-navbar__lp-link " onclick="tmEvent('hauptnavi', '/', 'Keşfet')">
+                        Keşfet                    </a>
+                                    <a href="/navigation/transfersundgeruechte" class="main-navbar__lp-link " onclick="tmEvent('hauptnavi', '/navigation/transfersundgeruechte', 'Transferler ve Söylentiler')">
+                        Transferler ve Söylentiler                    </a>
+                                    <a href="/navigation/marktwerte" class="main-navbar__lp-link " onclick="tmEvent('hauptnavi', '/navigation/marktwerte', 'Piyasa değerleri')">
+                        Piyasa değerleri                    </a>
+                                    <a href="/navigation/wettbewerbe" class="main-navbar__lp-link " onclick="tmEvent('hauptnavi', '/navigation/wettbewerbe', 'Müsabakalar')">
+                        Müsabakalar                    </a>
+                                    <a href="/navigation/statistiken" class="main-navbar__lp-link " onclick="tmEvent('hauptnavi', '/navigation/statistiken', 'İstatistikler')">
+                        İstatistikler                    </a>
+                                    <a href="/navigation/community" class="main-navbar__lp-link " onclick="tmEvent('hauptnavi', '/navigation/community', 'Topluluk')">
+                        Topluluk                    </a>
+                                    <a href="/navigation/gaming" class="main-navbar__lp-link " onclick="tmEvent('hauptnavi', '/navigation/gaming', 'Oyunlar')">
+                        Oyunlar                    </a>
+                                <div class="main-navbar__details">
+                    <div class="hamburger">
+                        <em></em>
+                    </div>
+                    <div class="dropdown-layer"></div>
+                    <div class="main-navbar__dropdown">
+                                                            <div class="recommendation">
+        
+    
+                            <div class="tm-discover__hero-container tm-discover__hero-container-grid tm-discover-container-grid">
+                    
+                                    <section class="tm-button-list__wrapper tm-button-list__wrapper--two-thirds  "><span class="tm-discover__h2">Öneriler</span><ul class="tm-button-list"><li><a
+                        href="/super-lig/startseite/wettbewerb/TR1"
+                        title="Süper Lig"
+                        target=""
+                        class="tm-button-list__list-item tm-button-list__list-item--big "
+                        onclick="tmEvent('recommendations_recommendation', '/super-lig/startseite/wettbewerb/TR1' , '1_1', 'buttonList');"
+                    ><img
+                            src="https://img.a.transfermarkt.technology/logo/homepageWappen150x150/tr1.png?lm=4711"
+                            alt="Süper Lig"
+                            class="tm-button-list__image tm-button-list__image--big 1"
+                            width="54"
+                            height="36"
+                        ></a></li><li><a
+                        href="/1-lig/startseite/wettbewerb/TR2"
+                        title="1.Lig"
+                        target=""
+                        class="tm-button-list__list-item tm-button-list__list-item--big "
+                        onclick="tmEvent('recommendations_recommendation', '/1-lig/startseite/wettbewerb/TR2' , '1_2', 'buttonList');"
+                    ><img
+                            src="https://img.a.transfermarkt.technology/logo/homepageWappen150x150/tr2.png?lm=4711"
+                            alt="1.Lig"
+                            class="tm-button-list__image tm-button-list__image--big 1"
+                            width="54"
+                            height="36"
+                        ></a></li><li><a
+                        href="/fenerbahce/startseite/verein/36"
+                        title=""
+                        target="_self"
+                        class="tm-button-list__list-item tm-button-list__list-item--big "
+                        onclick="tmEvent('recommendations_recommendation', '/fenerbahce/startseite/verein/36' , '1_3', 'buttonList');"
+                    ><img
+                            src="https://img.a.transfermarkt.technology/wappen/homepageWappen150x150/36.png?lm=4711"
+                            alt="Fenerbahçe SK"
+                            class="tm-button-list__image tm-button-list__image--big 1"
+                            width="54"
+                            height="36"
+                        ></a></li><li><a
+                        href="/besiktas-istanbul/startseite/verein/114"
+                        title=""
+                        target="_self"
+                        class="tm-button-list__list-item tm-button-list__list-item--big "
+                        onclick="tmEvent('recommendations_recommendation', '/besiktas-istanbul/startseite/verein/114' , '1_4', 'buttonList');"
+                    ><img
+                            src="https://img.a.transfermarkt.technology/wappen/homepageWappen150x150/114.png?lm=4711"
+                            alt="Beşiktaş JK"
+                            class="tm-button-list__image tm-button-list__image--big 1"
+                            width="54"
+                            height="36"
+                        ></a></li><li><a
+                        href="/galatasaray-istanbul/startseite/verein/141"
+                        title=""
+                        target="_self"
+                        class="tm-button-list__list-item tm-button-list__list-item--big "
+                        onclick="tmEvent('recommendations_recommendation', '/galatasaray-istanbul/startseite/verein/141' , '1_5', 'buttonList');"
+                    ><img
+                            src="https://img.a.transfermarkt.technology/wappen/homepageWappen150x150/141.png?lm=4711"
+                            alt="Galatasaray SK"
+                            class="tm-button-list__image tm-button-list__image--big 1"
+                            width="54"
+                            height="36"
+                        ></a></li><li><a
+                        href="/trabzonspor/startseite/verein/449"
+                        title=""
+                        target="_self"
+                        class="tm-button-list__list-item tm-button-list__list-item--big "
+                        onclick="tmEvent('recommendations_recommendation', '/trabzonspor/startseite/verein/449' , '1_6', 'buttonList');"
+                    ><img
+                            src="https://img.a.transfermarkt.technology/wappen/homepageWappen150x150/449.png?lm=1787315768"
+                            alt="Trabzonspor"
+                            class="tm-button-list__image tm-button-list__image--big 1"
+                            width="54"
+                            height="36"
+                        ></a></li></ul></section>
+                                                                                
+        
+    
+                
+                                    <section class="tm-button-list__wrapper tm-button-list__wrapper--one-third  tm-button-list__desktop"><span class="tm-discover__h2">Futbolcu menajerleri</span><ul class="tm-button-list"><li><a
+                        href="/agent-support/beraterIndex/berater"
+                        title="Ajans desteği"
+                        target="_self"
+                        class="tm-button-list__list-item tm-button-list__list-item--big tm-button-list__agent"
+                        onclick="tmEvent('recommendations_recommendation', '/agent-support/beraterIndex/berater' , '2_1', 'buttonList');"
+                    ><img
+                            src="https://tmsi.akamaized.net/rebrush/navigation/agent-support.webp"
+                            alt=""
+                            class="tm-button-list__image tm-button-list__image--big tm-button-list__image--country tm-button-list__image--border"
+                            width="54"
+                            height="36"
+                        >Ajans<br>desteği</a></li><li><a
+                        href="/berater/beraterfirmenuebersicht/berater"
+                        title="Ajans bilgileri"
+                        target="_self"
+                        class="tm-button-list__list-item tm-button-list__list-item--big tm-button-list__agent"
+                        onclick="tmEvent('recommendations_recommendation', '/berater/beraterfirmenuebersicht/berater' , '2_2', 'buttonList');"
+                    ><img
+                            src="https://tmsi.akamaized.net/rebrush/navigation/agent-statistic.webp"
+                            alt=""
+                            class="tm-button-list__image tm-button-list__image--big tm-button-list__image--country tm-button-list__image--border"
+                            width="54"
+                            height="36"
+                        >Oyuncu<br>acenteleri</a></li><li><a
+                        href="/premium-service/berater"
+                        title="Premium servis"
+                        target="_self"
+                        class="tm-button-list__list-item tm-button-list__list-item--big tm-button-list__agent"
+                        onclick="tmEvent('recommendations_recommendation', '/premium-service/berater' , '2_3', 'buttonList');"
+                    ><img
+                            src="https://tmsi.akamaized.net/rebrush/navigation/premium-service.webp"
+                            alt=""
+                            class="tm-button-list__image tm-button-list__image--big tm-button-list__image--country tm-button-list__image--border"
+                            width="54"
+                            height="36"
+                        >Premium<br>servis</a></li></ul></section>
+                                                                                
+        
+    
+                
+                                            
+<section class="tm-link-list-container tm-link-list--full ">
+        <div
+        class="tm-link-list-element"
+        role="navigation"
+        aria-label=""
+    >
+                    
+                        
+                                            <ul
+    class="tm-link-list-unordered   recommendation__links"
+>
+            <li
+            class="tm-link-list-item"
+        >
+                            <a
+                    class="tm-link__arrow  "
+                    href="/statistik/neuestetransfers"
+                    title="Son transferler"
+                    target="_self"
+                    onclick="tmEvent('recommendations_recommendation', '/statistik/neuestetransfers' , '3_1','linkList');"
+                >
+                    Son transferler
+                </a>
+                    </li>
+            <li
+            class="tm-link-list-item"
+        >
+                            <a
+                    class="tm-link__arrow  "
+                    href="/dedikodu-kazani/detail/forum/154"
+                    title="SÖYLENTİ KULİSİ"
+                    target="_self"
+                    onclick="tmEvent('recommendations_recommendation', '/dedikodu-kazani/detail/forum/154' , '3_2','linkList');"
+                >
+                    SÖYLENTİ KULİSİ
+                </a>
+                    </li>
+            <li
+            class="tm-link-list-item"
+        >
+                            <a
+                    class="tm-link__arrow  "
+                    href="/aktuell/newsarchiv"
+                    title="Tüm haberler"
+                    target="_self"
+                    onclick="tmEvent('recommendations_recommendation', '/aktuell/newsarchiv' , '3_3','linkList');"
+                >
+                    Tüm haberler
+                </a>
+                    </li>
+            <li
+            class="tm-link-list-item"
+        >
+                            <a
+                    class="tm-link__arrow  "
+                    href="/whatsMyValue"
+                    title="Değerim kaç?"
+                    target="_self"
+                    onclick="tmEvent('recommendations_recommendation', '/whatsMyValue' , '3_4','linkList');"
+                >
+                    Değerim kaç?
+                </a>
+                    </li>
+            <li
+            class="tm-link-list-item"
+        >
+                            <a
+                    class="tm-link__arrow  "
+                    href="/spieler-statistik/wertvollstespieler/marktwertetop"
+                    title="Dünyanın en değerli futbolcuları"
+                    target="_self"
+                    onclick="tmEvent('recommendations_recommendation', '/spieler-statistik/wertvollstespieler/marktwertetop' , '3_5','linkList');"
+                >
+                    Dünyanın en değerli futbolcuları
+                </a>
+                    </li>
+    </ul>
+                                            <ul
+    class="tm-link-list-unordered   recommendation__links"
+>
+            <li
+            class="tm-link-list-item"
+        >
+                            <a
+                    class="tm-link__arrow  "
+                    href="/super-lig/marktwerte/wettbewerb/TR1"
+                    title="En değerli futbolcular: Süper Lig"
+                    target="_self"
+                    onclick="tmEvent('recommendations_recommendation', '/super-lig/marktwerte/wettbewerb/TR1' , '3_6','linkList');"
+                >
+                    En değerli futbolcular: Süper Lig
+                </a>
+                    </li>
+            <li
+            class="tm-link-list-item"
+        >
+                            <a
+                    class="tm-link__arrow  "
+                    href="/piyasa-degeri-tartismalari/detail/forum/67"
+                    title="Piyasa Değeri Tartışmaları"
+                    target="_self"
+                    onclick="tmEvent('recommendations_recommendation', '/piyasa-degeri-tartismalari/detail/forum/67' , '3_7','linkList');"
+                >
+                    Piyasa Değeri Tartışmaları
+                </a>
+                    </li>
+            <li
+            class="tm-link-list-item"
+        >
+                            <a
+                    class="tm-link__arrow  "
+                    href="/statistik/vertragslosespieler"
+                    title="Serbest futbolcular"
+                    target="_self"
+                    onclick="tmEvent('recommendations_recommendation', '/statistik/vertragslosespieler' , '3_8','linkList');"
+                >
+                    Serbest futbolcular
+                </a>
+                    </li>
+            <li
+            class="tm-link-list-item"
+        >
+                            <a
+                    class="tm-link__arrow  "
+                    href="/statistik/endendevertraege"
+                    title="Sözleşmesi bitecek futbolcular"
+                    target="_self"
+                    onclick="tmEvent('recommendations_recommendation', '/statistik/endendevertraege' , '3_9','linkList');"
+                >
+                    Sözleşmesi bitecek futbolcular
+                </a>
+                    </li>
+    </ul>
+                        </div>
+
+    </section>
+                                                                        
+        
+    
+                
+                                    <section class="tm-button-list__wrapper tm-button-list__wrapper--full  tm-button-list__mobile"><span class="tm-discover__h2">Futbolcu menajerleri</span><ul class="tm-button-list"><li><a
+                        href="/agent-support/beraterIndex/berater"
+                        title="Ajans desteği"
+                        target="_self"
+                        class="tm-button-list__list-item tm-button-list__list-item--big tm-button-list__agent"
+                        onclick="tmEvent('recommendations_recommendation', '/agent-support/beraterIndex/berater' , '4_1', 'buttonList');"
+                    ><img
+                            src="https://tmsi.akamaized.net/rebrush/navigation/agent-support.webp"
+                            alt=""
+                            class="tm-button-list__image tm-button-list__image--big tm-button-list__image--country tm-button-list__image--border"
+                            width="54"
+                            height="36"
+                        >Ajans<br>desteği</a></li><li><a
+                        href="/berater/beraterfirmenuebersicht/berater"
+                        title="Ajans bilgileri"
+                        target="_self"
+                        class="tm-button-list__list-item tm-button-list__list-item--big tm-button-list__agent"
+                        onclick="tmEvent('recommendations_recommendation', '/berater/beraterfirmenuebersicht/berater' , '4_2', 'buttonList');"
+                    ><img
+                            src="https://tmsi.akamaized.net/rebrush/navigation/agent-statistic.webp"
+                            alt=""
+                            class="tm-button-list__image tm-button-list__image--big tm-button-list__image--country tm-button-list__image--border"
+                            width="54"
+                            height="36"
+                        >Oyuncu<br>acenteleri</a></li><li><a
+                        href="/premium-service/berater"
+                        title="Premium servis"
+                        target="_self"
+                        class="tm-button-list__list-item tm-button-list__list-item--big tm-button-list__agent"
+                        onclick="tmEvent('recommendations_recommendation', '/premium-service/berater' , '4_3', 'buttonList');"
+                    ><img
+                            src="https://tmsi.akamaized.net/rebrush/navigation/premium-service.webp"
+                            alt=""
+                            class="tm-button-list__image tm-button-list__image--big tm-button-list__image--country tm-button-list__image--border"
+                            width="54"
+                            height="36"
+                        >Premium<br>servis</a></li></ul></section>
+                                                                                
+                    </div>
+        
+    </div>
+                                                </div>
+                </div>
+            </nav>
+
+            <div class="quick-select-wrapper">
+    
+    <tm-quick-select defaultCountry="40" defaultCompetition="L1" defaultClub="23826" defaultPlayer="" dropdown-visible="" translations='{"home":"Web sayfas\u0131","country":"\u00dclke","competition":"M\u00fcsabaka","club":"Kul\u00fcp","player":"Oyuncu","attack":"Forvet","midfield":"Orta Saha","defense":"Defans","goalkeeper":"Kaleci"}'>
+    </tm-quick-select>
+</div>
+    <div data-archon-placeholder></div>
+
+            
+        
+        <div class="werbung ad-placement-note werbung-billboard" data-ad-placement-note="Reklam">
+  <div id="div-gpt-ad-7564369-5">
+    <script>googletag.cmd.push(() => { googletag.display("div-gpt-ad-7564369-5"); });</script>
+  </div>
+</div>
+<div class="werbung ad-placement-note werbung-interstitial" data-ad-placement-note="Reklam">
+  <div id="div-gpt-ad-1646721508756-0">
+    <script>googletag.cmd.push(() => { googletag.display("div-gpt-ad-1646721508756-0"); });</script>
+  </div>
+</div>
+
+
+        
+        <main id="tm-main">
+            <header class="data-header">
+    <div class="data-header__headline-container">
+        <h1 class="data-header__headline-wrapper data-header__headline-wrapper--oswald">
+                        RB Leipzig        </h1>
+    </div>
+    <div class="data-header__badge-container">
+                                    <a href="/rb-leipzig/erfolge/verein/23826" title="Almanya Kupası" onClick="tmEvent('vereinsprofil', 'click', 'erfolge');" class="data-header__success-data">
+                                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/erfolge/header/27.png?lm=4711" title="Almanya Kupası" alt="Almanya Kupası" class="data-header__success-image lazy lazy" />                        
+                    <span class="data-header__success-number">
+                        2                    </span>
+                </a>
+                                <a href="/rb-leipzig/erfolge/verein/23826" title="Almanya Süper Kupası" onClick="tmEvent('vereinsprofil', 'click', 'erfolge');" class="data-header__success-data">
+                                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/erfolge/header/312.png?lm=4711" title="Almanya Süper Kupası" alt="Almanya Süper Kupası" class="data-header__success-image lazy lazy" />                        
+                    <span class="data-header__success-number">
+                        1                    </span>
+                </a>
+                                <a href="/rb-leipzig/erfolge/verein/23826" title="Almanya 4. Lig Kuzeydoğu" onClick="tmEvent('vereinsprofil', 'click', 'erfolge');" class="data-header__success-data">
+                                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/erfolge/header/699.png?lm=4711" title="Almanya 4. Lig Kuzeydoğu" alt="Almanya 4. Lig Kuzeydoğu" class="data-header__success-image lazy lazy" />                        
+                    <span class="data-header__success-number">
+                        1                    </span>
+                </a>
+                                <a href="/rb-leipzig/erfolge/verein/23826" title="Almanya Saksonya Kupası" onClick="tmEvent('vereinsprofil', 'click', 'erfolge');" class="data-header__success-data">
+                                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/erfolge/header/76.png?lm=4711" title="Almanya Saksonya Kupası" alt="Almanya Saksonya Kupası" class="data-header__success-image lazy lazy" />                        
+                    <span class="data-header__success-number">
+                        2                    </span>
+                </a>
+                                            </div>
+            <div class="data-header__box--big">
+            <a class="data-header__box__club-link" href="/bundesliga/startseite/wettbewerb/L1">
+                                    <img srcset="
+                                    https://img.a.transfermarkt.technology/logo/homepageNewsLogo80x80/l1.png?lm=4711 1x,
+                                    https://img.a.transfermarkt.technology/logo/homepageWappen150x150/l1.png?lm=4711 2x
+                                " alt="Bundesliga" height="80" width="80" />
+                                </a>
+            <div class="data-header__club-info">
+                <span class="data-header__club" itemprop="affiliation">
+                    <a href="/bundesliga/startseite/wettbewerb/L1">
+                        Bundesliga                    </a>
+                </span>
+                                        <span class="data-header__label">
+                            <strong>Lig seviyesi:</strong>                            <span class="data-header__content">
+                                <a href="/bundesliga/startseite/wettbewerb/L1">
+                                    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/flagge/tiny/40.png?lm=4711" title="Almanya" alt="Almanya" class="flaggenrahmen vm lazy lazy" />1.Lig
+                                </a>
+                            </span>
+                        </span>
+                                            <span class="data-header__label">
+                            Lig Sıralaması:
+                            <span class="data-header__content">
+                                <a href="/bundesliga/tabelle/wettbewerb/L1" title="Puan Durumu"></a>                                </a>
+                            </span>
+                        </span>
+                        <span class="data-header__label">
+                            Lig istikrarı::
+                            <span class="data-header__content">
+                                <a href="/rb-leipzig/platzierungen/verein/23826" title="">11 Yıl</a>
+                            </span>
+                        </span>
+                                </div>
+        </div>
+            <div class="data-header__profile-container">
+                    <img src="https://img.a.transfermarkt.technology/wappen/head/23826.png?lm=4711" title="RB Leipzig" alt="RB Leipzig" class="" />            </div>
+            <div class="data-header__box--small">
+
+                        <a href="/rb-leipzig/kader/verein/23826" class="data-header__market-value-wrapper">481.35 <span class="waehrung">mil. €</span>            <p class="data-header__last-update">
+                Toplam değer            </p>
+            </a>
+        </div>
+            <div class="data-header__info-box ">
+        <div class="data-header__details">
+            <ul class="data-header__items">
+                <li class="data-header__label">
+                    Kadro genişliği:
+                    <span itemprop="dataItem" class="data-header__content">
+                        31                    </span>
+                </li>
+                <li class="data-header__label">
+                    Yaş ortalaması:
+                    <span itemprop="dataItem" class="data-header__content">
+                        24.0                    </span>
+                </li>
+                <li class="data-header__label">
+                    Lejyonerler:
+                    <span itemprop="dataItem" class="data-header__content">
+                        <a href="/rb-leipzig/legionaere/verein/23826">20</a>&nbsp;&nbsp;<span class="tabellenplatz">64.5 %</span>                    </span>
+                </li>
+            </ul>
+            <ul class="data-header__items">
+                                    <li class="data-header__label">
+                        Güncel A Milli oyuncular:
+                        <span itemprop="dataItem" class="data-header__content">
+                            <a href="/rb-leipzig/nationalspieler/verein/23826">10</a>                        </span>
+                    </li>
+                    <li class="data-header__label">
+                        Stadyum:
+                        <span itemprop="dataItem" class="data-header__content">
+                            <a title="RB Leipzig" href="/rasenballsport-leipzig/stadion/verein/23826">Red Bull Arena</a>&nbsp;&nbsp;<span class="tabellenplatz">47.069 kapasite</span>                        </span>
+                    </li>
+                    <li class="data-header__label">
+                        Güncel transfer bilançosu:
+                        <span itemprop="dataItem" class="data-header__content">
+                                                        <span class="greentext">
+                                <a class="greentext" href="/rb-leipzig/transfers/verein/23826/saison_id/2026">+127.25 mil. €</a>                            </span>
+                    </li>
+                            </ul>
+        </div>
+    </div>
+            <div class="data-header__toggle">
+            <div class="data-header__toggle-icon">+</div>
+            <ul class="data-header__list-clubs">
+                <li>
+                    <img src="https://img.a.transfermarkt.technology/wappen/tiny/23826.png?lm=4711" title="RB Leipzig" alt="RB Leipzig" class="tiny_wappen" /><span><a title="RB Leipzig" href="/rasenballsport-leipzig/startseite/verein/23826">RB Leipzig</a></span>                    </li><li>
+                    <img src="https://img.a.transfermarkt.technology/wappen/tiny/24293.png?lm=4711" title="RB Leipzig II (- 2017)" alt="RB Leipzig II (- 2017)" class="tiny_wappen" /><span><a title="RB Leipzig II (- 2017)" href="/rasenballsport-leipzig-ii/startseite/verein/24293">RB Leipzig II (- 2017)</a></span>                    </li><li>
+                    <img src="https://img.a.transfermarkt.technology/wappen/tiny/26621.png?lm=4711" title="RB Leipzig U19" alt="RB Leipzig U19" class="tiny_wappen" /><span><a title="RB Leipzig U19" href="/rasenballsport-leipzig-u19/startseite/verein/26621">RB Leipzig U19</a></span>                    </li><li>
+                    <img src="https://img.a.transfermarkt.technology/wappen/tiny/32942.png?lm=4711" title="RB Leipzig U17" alt="RB Leipzig U17" class="tiny_wappen" /><span><a title="RB Leipzig U17" href="/rasenballsport-leipzig-u17/startseite/verein/32942">RB Leipzig U17</a></span>                    </li><li>
+                    <img src="https://img.a.transfermarkt.technology/wappen/tiny/39962.png?lm=4711" title="RB Leipzig Altyapı" alt="RB Leipzig Altyapı" class="tiny_wappen" /><span><a title="RB Leipzig Altyapı" href="/rasenballsport-leipzig-jugend/startseite/verein/39962">RB Leipzig Altyapı</a></span>                    </li><li>
+                    <img src="https://img.a.transfermarkt.technology/wappen/tiny/24875.png?lm=4711" title="RB Leipzig III" alt="RB Leipzig III" class="tiny_wappen" /><span><a title="RB Leipzig III" href="/rasenballsport-leipzig-iii/startseite/verein/24875">RB Leipzig III</a></span>                    </li><li>
+                    <img src="https://img.a.transfermarkt.technology/wappen/tiny/62103.png?lm=4711" title="RB Leipzig UEFA U19" alt="RB Leipzig UEFA U19" class="tiny_wappen" /><span><a title="RB Leipzig UEFA U19" href="/rasenballsport-leipzig-uefa-u19/startseite/verein/62103">RB Leipzig UEFA U19</a></span>                    </li>            </ul>
+        </div>
+    </header>
+<script type="text/javascript">
+   const headerLinkList = document.querySelector('.data-header__toggle');
+    if (headerLinkList) {
+        headerLinkList.addEventListener('click', () => {
+            headerLinkList.classList.toggle('data-header__toggle--active');
+        })
+    };
+</script>
+<a href="https://www.threads.com/@transfermarkt.com.tr?from=banner"
+        target="0"
+    class="db mt10"
+        onclick="tmEvent('banner', 'https://www.threads.com/@transfermarkt.com.tr?from=banner', 'd-day-banner');"
+>
+    <img
+        loading="lazy"
+        src="https://dzjovqk3zamsg.cloudfront.net/ttd.jpg"
+        width="1034"
+        height="99"
+        alt="deadline-day banner"
+    >
+</a>
+
+<script type="text/javascript">
+    (() => {
+        const cookies = document.cookie
+            .split(';')
+            .map(c => c.trim().split('='))
+            .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+        const isContentPassUser = cookies?._cpauthhint !== undefined;
+        if (isContentPassUser) {
+            const adNodes = document.querySelectorAll('.ad-placement-note');
+            adNodes.forEach(node => node.remove());
+        }
+    })();
+</script><tm-subnavigation
+    controller="verein"
+    id="23826"
+    season="2026"
+    section="verein"
+    style="display: block; margin: 0 5px;">
+</tm-subnavigation>
+<div class="row">
+    <div class="large-8 columns">
+            <script async src="/js/custom/tm-track-links.min.js" type="module"></script>
+    <div class="box">
+        <h2 class="content-box-headline">
+            Kadro RB Leipzig
+                    </h2>
+        <div id="statistik-infoblock">
+                            <p class="info-content">
+                    Bu sayfa, bir kulübün kadrosunun ayrıntılı özetini içerir. Her takımın tüm oyuncuları yaşları, uyrukları, sözleşme süreleri ve piyasa değerleri ile birlikte gösterilir.                </p>
+                            <div class="content">
+                <form action="/rb-leipzig/kader/verein/23826/plus/0/galerie/0" method="get">                    <div class="row">
+                        <div class="large-12 columns">
+                            <table class="auflistung">
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        Sezon                                    </td>
+                                    <td>
+                                        <div class="inline-select">
+                                            <select name="saison_id"
+                                                    data-placeholder="Sezonu seç"
+                                                    class="chzn-select" tabindex="0">
+                                                                                                    <option
+                                                         selected="selected"value="2026">26/27                                                    </option>
+                                                                                                    <option
+                                                        value="2025">25/26                                                    </option>
+                                                                                                    <option
+                                                        value="2024">24/25                                                    </option>
+                                                                                                    <option
+                                                        value="2023">23/24                                                    </option>
+                                                                                                    <option
+                                                        value="2022">22/23                                                    </option>
+                                                                                                    <option
+                                                        value="2021">21/22                                                    </option>
+                                                                                                    <option
+                                                        value="2020">20/21                                                    </option>
+                                                                                                    <option
+                                                        value="2019">19/20                                                    </option>
+                                                                                                    <option
+                                                        value="2018">18/19                                                    </option>
+                                                                                                    <option
+                                                        value="2017">17/18                                                    </option>
+                                                                                                    <option
+                                                        value="2016">16/17                                                    </option>
+                                                                                                    <option
+                                                        value="2015">15/16                                                    </option>
+                                                                                                    <option
+                                                        value="2014">14/15                                                    </option>
+                                                                                                    <option
+                                                        value="2013">13/14                                                    </option>
+                                                                                                    <option
+                                                        value="2012">12/13                                                    </option>
+                                                                                                    <option
+                                                        value="2011">11/12                                                    </option>
+                                                                                                    <option
+                                                        value="2010">10/11                                                    </option>
+                                                                                                    <option
+                                                        value="2009">09/10                                                    </option>
+                                                                                            </select>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <input type="submit" class="small button"
+                                               value="Göster">
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    </form>
+                                </div>
+        </div>
+        
+<div class="tm-tabs">
+    <a class="tm-tab tm-tab__active--parent" href="/rb-leipzig/kader/verein/23826/saison_id/2026"><div class=" tm-tab__active"><span>Kompakt</span></div></a><a class="tm-tab" href="/rb-leipzig/kader/verein/23826/saison_id/2026/plus/1"><div class=""><span>Detaylı</span></div></a><a class="tm-tab" href="/rb-leipzig/kader/verein/23826/saison_id/2026/galerie/1"><div class=""><span>Galeri</span></div></a></div>
+        <div class="responsive-table">
+            <div id="yw1" class="grid-view">
+<div class="summary"></div>
+<table class="items">
+<thead>
+<tr>
+<th class="zentriert" id="yw1_c0"><a class="sort-link asc" href="/rasenballsport-leipzig/kader/verein/23826/sort/trikotNumber.desc">#</a></th><th id="yw1_c1"><a class="sort-link" href="/rasenballsport-leipzig/kader/verein/23826/sort/name">Oyuncu</a></th><th class="zentriert" id="yw1_c2"><a class="sort-link" href="/rasenballsport-leipzig/kader/verein/23826/sort/age">Yaş</a></th><th class="zentriert" id="yw1_c3">Uyruk</th><th class="zentriert" id="yw1_c4"><a class="sort-link" href="/rasenballsport-leipzig/kader/verein/23826/sort/contractEndTimestamp">Sözleşme</a></th><th class="rechts" id="yw1_c5"><a class="sort-link desc" href="/rasenballsport-leipzig/kader/verein/23826/sort/marketValueRaw">Piyasa değeri</a></th></tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td class="zentriert rueckennummer bg_Torwart" title="Kaleci"><div class=rn_nummer>26</div></td><td class="posrela">
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/486046-1724337345.jpg?lm=4711" title="Maarten Vandevoordt" alt="Maarten Vandevoordt" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/maarten-vandevoordt/profil/spieler/486046">
+                Maarten Vandevoordt            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Kaleci        </td>
+    </tr>
+</table>
+</td><td class="zentriert">24</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/19.png?lm=4711" title="Belçika" alt="Belçika" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2030</td><td class="rechts hauptlink"><a href="/maarten-vandevoordt/marktwertverlauf/spieler/486046">15.00 mil. €</a></td></tr>
+<tr class="even">
+<td class="zentriert rueckennummer bg_Torwart" title="Kaleci"><div class=rn_nummer>1</div></td><td class="posrela"><span class="wechsel-kader-wappen hide-for-small"><a title="Sevilla FC&#039;dan yeni transfer; Tarih: 4 Ağu 2026; Bonservis: Bedelsiz" href="/sevilla-fc/startseite/verein/368/saison_id/2026"><img src="https://img.a.transfermarkt.technology/wappen/kaderquad/368.png?lm=4711" title="Sevilla FC" alt="Sevilla FC" class="" /></a></span><a title="Sevilla FC&#039;dan yeni transfer; Tarih: 4 Ağu 2026; Bonservis: Bedelsiz" class="hide-for-small" href="/sevilla-fc/startseite/verein/368/saison_id/2026"><img src="/images/icons/zugang_beta_kader.png" class="wechsel-symbol" width="19px" height="19px" /></a>
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/73517-1779430891.jpg?lm=4711" title="Ørjan Nyland" alt="Ørjan Nyland" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/orjan-nyland/profil/spieler/73517">
+                Ørjan Nyland            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Kaleci        </td>
+    </tr>
+</table>
+</td><td class="zentriert">35</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/125.png?lm=4711" title="Norveç" alt="Norveç" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2028</td><td class="rechts hauptlink"><a href="/orjan-nyland/marktwertverlauf/spieler/73517">800 bin €</a></td></tr>
+<tr class="odd">
+<td class="zentriert rueckennummer bg_Torwart" title="Kaleci"><div class=rn_nummer>25</div></td><td class="posrela">
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/160971-1770713811.jpg?lm=4711" title="Leopold Zingerle" alt="Leopold Zingerle" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/leopold-zingerle/profil/spieler/160971">
+                Leopold Zingerle            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Kaleci        </td>
+    </tr>
+</table>
+</td><td class="zentriert">32</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/40.png?lm=4711" title="Almanya" alt="Almanya" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2028</td><td class="rechts hauptlink"><a href="/leopold-zingerle/marktwertverlauf/spieler/160971">300 bin €</a></td></tr>
+<tr class="even">
+<td class="zentriert rueckennummer bg_Abwehr" title="Defans"><div class=rn_nummer>23</div></td><td class="posrela">
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/618472-1713897532.jpg?lm=4711" title="Castello Lukeba" alt="Castello Lukeba" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/castello-lukeba/profil/spieler/618472">
+                Castello Lukeba            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Stoper        </td>
+    </tr>
+</table>
+</td><td class="zentriert">23</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/50.png?lm=4711" title="Fransa" alt="Fransa" class="flaggenrahmen" /><br /><img src="https://img.a.transfermarkt.technology/flagge/verysmall/6.png?lm=4711" title="Angola" alt="Angola" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2029</td><td class="rechts hauptlink"><a href="/castello-lukeba/marktwertverlauf/spieler/618472">50.00 mil. €</a></td></tr>
+<tr class="odd">
+<td class="zentriert rueckennummer bg_Abwehr" title="Defans"><div class=rn_nummer>3</div></td><td class="posrela"><span class="wechsel-kader-wappen hide-for-small"><a title="Burnley FC&#039;dan yeni transfer; Tarih: 17 Tem 2026; Bonservis: 25.00 mil. €" href="/burnley-fc/startseite/verein/1132/saison_id/2026"><img src="https://img.a.transfermarkt.technology/wappen/kaderquad/1132.png?lm=4711" title="Burnley FC" alt="Burnley FC" class="" /></a></span><a title="Burnley FC&#039;dan yeni transfer; Tarih: 17 Tem 2026; Bonservis: 25.00 mil. €" class="hide-for-small" href="/burnley-fc/startseite/verein/1132/saison_id/2026"><img src="/images/icons/zugang_beta_kader.png" class="wechsel-symbol" width="19px" height="19px" /></a>
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/842341-1767956558.jpg?lm=4711" title="Maxime Estève" alt="Maxime Estève" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/maxime-esteve/profil/spieler/842341">
+                Maxime Estève            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Stoper        </td>
+    </tr>
+</table>
+</td><td class="zentriert">24</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/50.png?lm=4711" title="Fransa" alt="Fransa" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2031</td><td class="rechts hauptlink"><a href="/maxime-esteve/marktwertverlauf/spieler/842341">28.00 mil. €</a></td></tr>
+<tr class="even">
+<td class="zentriert rueckennummer bg_Abwehr" title="Defans"><div class=rn_nummer>5</div></td><td class="posrela">
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/787912-1672304780.jpg?lm=4711" title="El Chadaille Bitshiabu" alt="El Chadaille Bitshiabu" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/el-chadaille-bitshiabu/profil/spieler/787912">
+                El Chadaille Bitshiabu            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Stoper        </td>
+    </tr>
+</table>
+</td><td class="zentriert">21</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/50.png?lm=4711" title="Fransa" alt="Fransa" class="flaggenrahmen" /><br /><img src="https://img.a.transfermarkt.technology/flagge/verysmall/193.png?lm=4711" title="Kongo DC" alt="Kongo DC" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2029</td><td class="rechts hauptlink"><a href="/el-chadaille-bitshiabu/marktwertverlauf/spieler/787912">18.00 mil. €</a></td></tr>
+<tr class="odd">
+<td class="zentriert rueckennummer bg_Abwehr" title="Defans"><div class=rn_nummer>2</div></td><td class="posrela"><span class="wechsel-kader-wappen hide-for-small"><a title="Stade Reims ile kiralık döneminden döndü; Tarih: 30 Haz 2026; Ablöse: Kiralıktan geri döndü" href="/stade-reims/startseite/verein/1421/saison_id/2025"><img src="https://img.a.transfermarkt.technology/wappen/kaderquad/1421.png?lm=4711" title="Stade Reims" alt="Stade Reims" class="" /></a></span><a title="Stade Reims ile kiralık döneminden döndü; Tarih: 30 Haz 2026; Ablöse: Kiralıktan geri döndü" class="hide-for-small" href="/stade-reims/startseite/verein/1421/saison_id/2025"><img src="/images/icons/rueckkehr_beta_kader.png" class="wechsel-symbol" width="19px" height="19px" /></a>
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/1130445-1723838146.png?lm=4711" title="Abdoul Koné" alt="Abdoul Koné" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/abdoul-kone/profil/spieler/1130445">
+                Abdoul Koné            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Stoper        </td>
+    </tr>
+</table>
+</td><td class="zentriert">21</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/50.png?lm=4711" title="Fransa" alt="Fransa" class="flaggenrahmen" /><br /><img src="https://img.a.transfermarkt.technology/flagge/verysmall/38.png?lm=4711" title="Fildişi Sahili" alt="Fildişi Sahili" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2031</td><td class="rechts hauptlink"><a href="/abdoul-kone/marktwertverlauf/spieler/1130445">15.00 mil. €</a></td></tr>
+<tr class="even">
+<td class="zentriert rueckennummer bg_Abwehr" title="Defans"><div class=rn_nummer>4</div></td><td class="posrela">
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/93740-1724337179.jpg?lm=4711" title="Willi Orbán" alt="Willi Orbán" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/willi-orban/profil/spieler/93740">
+                Willi Orbán            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Stoper        </td>
+    </tr>
+</table>
+</td><td class="zentriert">33</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/178.png?lm=4711" title="Macaristan" alt="Macaristan" class="flaggenrahmen" /><br /><img src="https://img.a.transfermarkt.technology/flagge/verysmall/40.png?lm=4711" title="Almanya" alt="Almanya" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2027</td><td class="rechts hauptlink"><a href="/willi-orban/marktwertverlauf/spieler/93740">5.00 mil. €</a></td></tr>
+<tr class="odd">
+<td class="zentriert rueckennummer bg_Abwehr" title="Defans"><div class=rn_nummer>16</div></td><td class="posrela">
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/215599-1724337278.jpg?lm=4711" title="Lukas Klostermann" alt="Lukas Klostermann" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/lukas-klostermann/profil/spieler/215599">
+                Lukas Klostermann            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Stoper        </td>
+    </tr>
+</table>
+</td><td class="zentriert">30</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/40.png?lm=4711" title="Almanya" alt="Almanya" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2028</td><td class="rechts hauptlink"><a href="/lukas-klostermann/marktwertverlauf/spieler/215599">3.50 mil. €</a></td></tr>
+<tr class="even">
+<td class="zentriert rueckennummer bg_Abwehr" title="Defans"><div class=rn_nummer>22</div></td><td class="posrela">
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/318204-1713945422.jpg?lm=4711" title="David Raum" alt="David Raum" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/david-raum/profil/spieler/318204">
+                David Raum<span title="Kaptan" class="kapitaenicon-table icons_sprite">&nbsp;</span>            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Sol Bek        </td>
+    </tr>
+</table>
+</td><td class="zentriert">28</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/40.png?lm=4711" title="Almanya" alt="Almanya" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2027</td><td class="rechts hauptlink"><a href="/david-raum/marktwertverlauf/spieler/318204">25.00 mil. €</a></td></tr>
+<tr class="odd">
+<td class="zentriert rueckennummer bg_Abwehr" title="Defans"><div class=rn_nummer>35</div></td><td class="posrela">
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/810649-1721139640.jpg?lm=4711" title="Max Finkgräfe" alt="Max Finkgräfe" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/max-finkgrafe/profil/spieler/810649">
+                Max Finkgräfe            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Sol Bek        </td>
+    </tr>
+</table>
+</td><td class="zentriert">22</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/40.png?lm=4711" title="Almanya" alt="Almanya" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2030</td><td class="rechts hauptlink"><a href="/max-finkgrafe/marktwertverlauf/spieler/810649">5.00 mil. €</a></td></tr>
+<tr class="even">
+<td class="zentriert rueckennummer bg_Abwehr" title="Defans"><div class=rn_nummer>17</div></td><td class="posrela">
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/327251-1764846399.jpg?lm=4711" title="Ridle Baku" alt="Ridle Baku" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/ridle-baku/profil/spieler/327251">
+                Ridle Baku            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Sağ Bek        </td>
+    </tr>
+</table>
+</td><td class="zentriert">28</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/40.png?lm=4711" title="Almanya" alt="Almanya" class="flaggenrahmen" /><br /><img src="https://img.a.transfermarkt.technology/flagge/verysmall/193.png?lm=4711" title="Kongo DC" alt="Kongo DC" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2027</td><td class="rechts hauptlink"><a href="/ridle-baku/marktwertverlauf/spieler/327251">12.00 mil. €</a></td></tr>
+<tr class="odd">
+<td class="zentriert rueckennummer bg_Abwehr" title="Defans"><div class=rn_nummer>39</div></td><td class="posrela">
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/202591-1715858341.jpg?lm=4711" title="Benjamin Henrichs" alt="Benjamin Henrichs" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/benjamin-henrichs/profil/spieler/202591">
+                Benjamin Henrichs            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Sağ Bek        </td>
+    </tr>
+</table>
+</td><td class="zentriert">29</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/40.png?lm=4711" title="Almanya" alt="Almanya" class="flaggenrahmen" /><br /><img src="https://img.a.transfermarkt.technology/flagge/verysmall/54.png?lm=4711" title="Gana" alt="Gana" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2028</td><td class="rechts hauptlink"><a href="/benjamin-henrichs/marktwertverlauf/spieler/202591">7.00 mil. €</a></td></tr>
+<tr class="even">
+<td class="zentriert rueckennummer bg_Mittelfeld" title="Orta saha"><div class=rn_nummer>13</div></td><td class="posrela">
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/404950-1716315232.jpg?lm=4711" title="Nicolas Seiwald" alt="Nicolas Seiwald" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/nicolas-seiwald/profil/spieler/404950">
+                Nicolas Seiwald            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Ön Libero        </td>
+    </tr>
+</table>
+</td><td class="zentriert">25</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/127.png?lm=4711" title="Avusturya" alt="Avusturya" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2028</td><td class="rechts hauptlink"><a href="/nicolas-seiwald/marktwertverlauf/spieler/404950">25.00 mil. €</a></td></tr>
+<tr class="odd">
+<td class="zentriert rueckennummer bg_Mittelfeld" title="Orta saha"><div class=rn_nummer>48</div></td><td class="posrela"><span class="wechsel-kader-wappen hide-for-small"><a title="Olympique Marsilya ile kiralık döneminden döndü; Tarih: 30 Haz 2026; Ablöse: Kiralıktan geri döndü" href="/olympique-marsilya/startseite/verein/244/saison_id/2025"><img src="https://img.a.transfermarkt.technology/wappen/kaderquad/244_1775674950.png?lm=4711" title="Olympique Marsilya ile kiralık döneminden döndü; Tarih: 30 Haz 2026; Ablöse: Kiralıktan geri döndü" alt="Olympique Marsilya" class="" /></a></span><a title="Olympique Marsilya ile kiralık döneminden döndü; Tarih: 30 Haz 2026; Ablöse: Kiralıktan geri döndü" class="hide-for-small" href="/olympique-marsilya/startseite/verein/244/saison_id/2025"><img src="/images/icons/rueckkehr_beta_kader.png" class="wechsel-symbol" width="19px" height="19px" /></a>
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/926694-1729520583.jpg?lm=4711" title="Arthur Vermeeren" alt="Arthur Vermeeren" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/arthur-vermeeren/profil/spieler/926694">
+                Arthur Vermeeren            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Ön Libero        </td>
+    </tr>
+</table>
+</td><td class="zentriert">21</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/19.png?lm=4711" title="Belçika" alt="Belçika" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2029</td><td class="rechts hauptlink"><a href="/arthur-vermeeren/marktwertverlauf/spieler/926694">20.00 mil. €</a></td></tr>
+<tr class="even">
+<td class="zentriert rueckennummer bg_Mittelfeld" title="Orta saha"><div class=rn_nummer>37</div></td><td class="posrela">
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/1279157-1760627062.jpg?lm=4711" title="Benno Kaltefleiter" alt="Benno Kaltefleiter" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/benno-kaltefleiter/profil/spieler/1279157">
+                Benno Kaltefleiter            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Ön Libero        </td>
+    </tr>
+</table>
+</td><td class="zentriert">18</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/40.png?lm=4711" title="Almanya" alt="Almanya" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2029</td><td class="rechts hauptlink">-</td></tr>
+<tr class="odd">
+<td class="zentriert rueckennummer bg_Mittelfeld" title="Orta saha"><div class=rn_nummer>8</div></td><td class="posrela">
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/897424-1759779834.jpg?lm=4711" title="Assan Ouédraogo" alt="Assan Ouédraogo" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/assan-ouedraogo/profil/spieler/897424">
+                Assan Ouédraogo<span title="Omuz sakatlığı - Geri dönüş bilinmiyor" class="verletzt-table icons_sprite">&nbsp;</span>            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Merkez Orta Saha        </td>
+    </tr>
+</table>
+</td><td class="zentriert">20</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/40.png?lm=4711" title="Almanya" alt="Almanya" class="flaggenrahmen" /><br /><img src="https://img.a.transfermarkt.technology/flagge/verysmall/29.png?lm=4711" title="Burkina Faso" alt="Burkina Faso" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2029</td><td class="rechts hauptlink"><a href="/assan-ouedraogo/marktwertverlauf/spieler/897424">28.00 mil. €</a></td></tr>
+<tr class="even">
+<td class="zentriert rueckennummer bg_Mittelfeld" title="Orta saha"><div class=rn_nummer>20</div></td><td class="posrela"><span class="wechsel-kader-wappen hide-for-small"><a title="Borussia Mönchengladbach&#039;dan yeni transfer; Tarih: 1 Tem 2026; Bonservis: 20.00 mil. €" href="/borussia-monchengladbach/startseite/verein/18/saison_id/2026"><img src="https://img.a.transfermarkt.technology/wappen/kaderquad/18.png?lm=4711" title="Borussia Mönchengladbach" alt="Borussia Mönchengladbach" class="" /></a></span><a title="Borussia Mönchengladbach&#039;dan yeni transfer; Tarih: 1 Tem 2026; Bonservis: 20.00 mil. €" class="hide-for-small" href="/borussia-monchengladbach/startseite/verein/18/saison_id/2026"><img src="/images/icons/zugang_beta_kader.png" class="wechsel-symbol" width="19px" height="19px" /></a>
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/467434-1760966939.jpg?lm=4711" title="Rocco Reitz" alt="Rocco Reitz" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/rocco-reitz/profil/spieler/467434">
+                Rocco Reitz            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Merkez Orta Saha        </td>
+    </tr>
+</table>
+</td><td class="zentriert">24</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/40.png?lm=4711" title="Almanya" alt="Almanya" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2031</td><td class="rechts hauptlink"><a href="/rocco-reitz/marktwertverlauf/spieler/467434">20.00 mil. €</a></td></tr>
+<tr class="odd">
+<td class="zentriert rueckennummer bg_Mittelfeld" title="Orta saha"><div class=rn_nummer>6</div></td><td class="posrela">
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/865682-1742827854.jpg?lm=4711" title="Ezechiel Banzuzi" alt="Ezechiel Banzuzi" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/ezechiel-banzuzi/profil/spieler/865682">
+                Ezechiel Banzuzi            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Merkez Orta Saha        </td>
+    </tr>
+</table>
+</td><td class="zentriert">21</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/122.png?lm=4711" title="Hollanda" alt="Hollanda" class="flaggenrahmen" /><br /><img src="https://img.a.transfermarkt.technology/flagge/verysmall/193.png?lm=4711" title="Kongo DC" alt="Kongo DC" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2030</td><td class="rechts hauptlink"><a href="/ezechiel-banzuzi/marktwertverlauf/spieler/865682">16.00 mil. €</a></td></tr>
+<tr class="even">
+<td class="zentriert rueckennummer bg_Mittelfeld" title="Orta saha"><div class=rn_nummer>42</div></td><td class="posrela"><span class="wechsel-kader-wappen hide-for-small"><a title="Red Bull New York ile kiralık döneminden döndü; Tarih: 30 Haz 2026; Ablöse: Kiralıktan geri döndü" href="/red-bull-new-york/startseite/verein/623/saison_id/2025"><img src="https://img.a.transfermarkt.technology/wappen/kaderquad/623.png?lm=4711" title="Red Bull New York" alt="Red Bull New York" class="" /></a></span><a title="Red Bull New York ile kiralık döneminden döndü; Tarih: 30 Haz 2026; Ablöse: Kiralıktan geri döndü" class="hide-for-small" href="/red-bull-new-york/startseite/verein/623/saison_id/2025"><img src="/images/icons/rueckkehr_beta_kader.png" class="wechsel-symbol" width="19px" height="19px" /></a>
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/990146-1771716588.jpg?lm=4711" title="Joyeux Masanka Bungi" alt="Joyeux Masanka Bungi" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/joyeux-masanka-bungi/profil/spieler/990146">
+                Joyeux Masanka Bungi            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Orta Saha Sol        </td>
+    </tr>
+</table>
+</td><td class="zentriert">19</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/19.png?lm=4711" title="Belçika" alt="Belçika" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2027</td><td class="rechts hauptlink"><a href="/joyeux-masanka-bungi/marktwertverlauf/spieler/990146">400 bin €</a></td></tr>
+<tr class="odd">
+<td class="zentriert rueckennummer bg_Mittelfeld" title="Orta saha"><div class=rn_nummer>14</div></td><td class="posrela">
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/324278-1716315718.jpg?lm=4711" title="Christoph Baumgartner" alt="Christoph Baumgartner" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/christoph-baumgartner/profil/spieler/324278">
+                Christoph Baumgartner<span title="Uyluk sakatlığı - Ön görülen geri dönüş tarihi 31 Eki 2026" class="verletzt-table icons_sprite">&nbsp;</span>            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            On Numara        </td>
+    </tr>
+</table>
+</td><td class="zentriert">27</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/127.png?lm=4711" title="Avusturya" alt="Avusturya" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2028</td><td class="rechts hauptlink"><a href="/christoph-baumgartner/marktwertverlauf/spieler/324278">40.00 mil. €</a></td></tr>
+<tr class="even">
+<td class="zentriert rueckennummer bg_Mittelfeld" title="Orta saha"><div class=rn_nummer>10</div></td><td class="posrela"><span class="wechsel-kader-wappen hide-for-small"><a title="Kiralandığı takım: Brighton &amp; Hove Albion; dönüş tarihi: 30 Haz 2027" href="/brighton-amp-hove-albion/kadernaechstesaison/verein/1237/saison_id/2026"><img src="https://img.a.transfermarkt.technology/wappen/kaderquad/1237.png?lm=4711" title="Brighton & Hove Albion" alt="Brighton & Hove Albion" class="" /></a></span><a title="Kiralandığı takım: Brighton &amp; Hove Albion; dönüş tarihi: 30 Haz 2027" class="hide-for-small" href="/brighton-amp-hove-albion/kadernaechstesaison/verein/1237/saison_id/2026"><img src="/images/icons/leihe_beta_kader.png" width="19px" height="19px" class="wechsel-symbol" /></a>
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/700106-1770733562.jpg?lm=4711" title="Brajan Gruda" alt="Brajan Gruda" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/brajan-gruda/profil/spieler/700106">
+                Brajan Gruda            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            On Numara        </td>
+    </tr>
+</table>
+</td><td class="zentriert">22</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/40.png?lm=4711" title="Almanya" alt="Almanya" class="flaggenrahmen" /><br /><img src="https://img.a.transfermarkt.technology/flagge/verysmall/3.png?lm=4711" title="Arnavutluk" alt="Arnavutluk" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2027</td><td class="rechts hauptlink"><a href="/brajan-gruda/marktwertverlauf/spieler/700106">28.00 mil. €</a></td></tr>
+<tr class="odd">
+<td class="zentriert rueckennummer bg_Mittelfeld" title="Orta saha"><div class=rn_nummer>33</div></td><td class="posrela">
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/952779-1764846286.jpg?lm=4711" title="Andrija Maksimovic" alt="Andrija Maksimovic" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/andrija-maksimovic/profil/spieler/952779">
+                Andrija Maksimovic            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            On Numara        </td>
+    </tr>
+</table>
+</td><td class="zentriert">19</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/215.png?lm=4711" title="Sırbistan" alt="Sırbistan" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2030</td><td class="rechts hauptlink"><a href="/andrija-maksimovic/marktwertverlauf/spieler/952779">9.00 mil. €</a></td></tr>
+<tr class="even">
+<td class="zentriert rueckennummer bg_Mittelfeld" title="Orta saha"><div class=rn_nummer>47</div></td><td class="posrela"><span class="wechsel-kader-wappen hide-for-small"><a title="İç transfer: RB Leipzig U19; tarih: 1 Tem 2026" href="/rb-leipzig-u19/startseite/verein/26621/saison_id/2026"><img src="https://img.a.transfermarkt.technology/wappen/kaderquad/26621.png?lm=4711" title="RB Leipzig U19" alt="RB Leipzig U19" class="" /></a></span><a title="İç transfer: RB Leipzig U19; tarih: 1 Tem 2026" class="hide-for-small" href="/rb-leipzig-u19/startseite/verein/26621/saison_id/2026"><img src="/images/icons/zugang_beta_kader.png" class="wechsel-symbol" width="19px" height="19px" /></a>
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/1074526-1723447785.jpg?lm=4711" title="Viggo Gebel" alt="Viggo Gebel" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/viggo-gebel/profil/spieler/1074526">
+                Viggo Gebel            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            On Numara        </td>
+    </tr>
+</table>
+</td><td class="zentriert">18</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/40.png?lm=4711" title="Almanya" alt="Almanya" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2028</td><td class="rechts hauptlink"><a href="/viggo-gebel/marktwertverlauf/spieler/1074526">350 bin €</a></td></tr>
+<tr class="odd">
+<td class="zentriert rueckennummer bg_Sturm" title="Forvet"><div class=rn_nummer>7</div></td><td class="posrela">
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/894914-1724337096.jpg?lm=4711" title="Antonio Nusa" alt="Antonio Nusa" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/antonio-nusa/profil/spieler/894914">
+                Antonio Nusa            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Sol Kanat        </td>
+    </tr>
+</table>
+</td><td class="zentriert">21</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/125.png?lm=4711" title="Norveç" alt="Norveç" class="flaggenrahmen" /><br /><img src="https://img.a.transfermarkt.technology/flagge/verysmall/124.png?lm=4711" title="Nijerya" alt="Nijerya" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2029</td><td class="rechts hauptlink"><a href="/antonio-nusa/marktwertverlauf/spieler/894914">32.00 mil. €</a></td></tr>
+<tr class="even">
+<td class="zentriert rueckennummer bg_Sturm" title="Forvet"><div class=rn_nummer>18</div></td><td class="posrela">
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/1235583-1758621608.jpg?lm=4711" title="Suleman Sani" alt="Suleman Sani" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/suleman-sani/profil/spieler/1235583">
+                Suleman Sani            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Sol Kanat        </td>
+    </tr>
+</table>
+</td><td class="zentriert">19</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/124.png?lm=4711" title="Nijerya" alt="Nijerya" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2031</td><td class="rechts hauptlink"><a href="/suleman-sani/marktwertverlauf/spieler/1235583">5.00 mil. €</a></td></tr>
+<tr class="odd">
+<td class="zentriert rueckennummer bg_Sturm" title="Forvet"><div class=rn_nummer>27</div></td><td class="posrela">
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/955448-1736408355.jpg?lm=4711" title="Tidiam Gomis" alt="Tidiam Gomis" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/tidiam-gomis/profil/spieler/955448">
+                Tidiam Gomis            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Sol Kanat        </td>
+    </tr>
+</table>
+</td><td class="zentriert">20</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/50.png?lm=4711" title="Fransa" alt="Fransa" class="flaggenrahmen" /><br /><img src="https://img.a.transfermarkt.technology/flagge/verysmall/149.png?lm=4711" title="Senegal" alt="Senegal" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2029</td><td class="rechts hauptlink"><a href="/tidiam-gomis/marktwertverlauf/spieler/955448">5.00 mil. €</a></td></tr>
+<tr class="even">
+<td class="zentriert rueckennummer bg_Sturm" title="Forvet"><div class=rn_nummer>21</div></td><td class="posrela">
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/763948-1727814145.jpg?lm=4711" title="Ayodele Thomas" alt="Ayodele Thomas" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/ayodele-thomas/profil/spieler/763948">
+                Ayodele Thomas            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Sol Kanat        </td>
+    </tr>
+</table>
+</td><td class="zentriert">19</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/122.png?lm=4711" title="Hollanda" alt="Hollanda" class="flaggenrahmen" /><br /><img src="https://img.a.transfermarkt.technology/flagge/verysmall/124.png?lm=4711" title="Nijerya" alt="Nijerya" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2031</td><td class="rechts hauptlink"><a href="/ayodele-thomas/marktwertverlauf/spieler/763948">1.00 mil. €</a></td></tr>
+<tr class="odd">
+<td class="zentriert rueckennummer bg_Sturm" title="Forvet"><div class=rn_nummer>11</div></td><td class="posrela">
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/565424-1697637209.jpg?lm=4711" title="Johan Bakayoko" alt="Johan Bakayoko" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/johan-bakayoko/profil/spieler/565424">
+                Johan Bakayoko            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Sağ Kanat        </td>
+    </tr>
+</table>
+</td><td class="zentriert">23</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/19.png?lm=4711" title="Belçika" alt="Belçika" class="flaggenrahmen" /><br /><img src="https://img.a.transfermarkt.technology/flagge/verysmall/38.png?lm=4711" title="Fildişi Sahili" alt="Fildişi Sahili" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2030</td><td class="rechts hauptlink"><a href="/johan-bakayoko/marktwertverlauf/spieler/565424">20.00 mil. €</a></td></tr>
+<tr class="even">
+<td class="zentriert rueckennummer bg_Sturm" title="Forvet"><div class=rn_nummer>40</div></td><td class="posrela">
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/957874-1761551454.jpg?lm=4711" title="Rômulo" alt="Rômulo" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/romulo/profil/spieler/957874">
+                Rômulo            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Santrafor        </td>
+    </tr>
+</table>
+</td><td class="zentriert">24</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/26.png?lm=4711" title="Brezilya" alt="Brezilya" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2030</td><td class="rechts hauptlink"><a href="/romulo/marktwertverlauf/spieler/957874">30.00 mil. €</a></td></tr>
+<tr class="odd">
+<td class="zentriert rueckennummer bg_Sturm" title="Forvet"><div class=rn_nummer>9</div></td><td class="posrela">
+<table class="inline-table">
+    <tr>
+        <td rowspan="2">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="https://img.a.transfermarkt.technology/portrait/medium/807386-1785932637.jpg?lm=4711" title="Conrad Harder" alt="Conrad Harder" class="bilderrahmen-fixed lazy lazy" />        </td>
+        <td class="hauptlink">
+            <a href="/conrad-harder/profil/spieler/807386">
+                Conrad Harder            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Santrafor        </td>
+    </tr>
+</table>
+</td><td class="zentriert">21</td><td class="zentriert"><img src="https://img.a.transfermarkt.technology/flagge/verysmall/39.png?lm=4711" title="Danimarka" alt="Danimarka" class="flaggenrahmen" /></td><td class="zentriert">30 Haz 2030</td><td class="rechts hauptlink"><a href="/conrad-harder/marktwertverlauf/spieler/807386">17.00 mil. €</a></td></tr>
+</tbody>
+</table>
+<div class="keys" style="display:none" title="/rasenballsport-leipzig/kader/verein/23826"><span>26</span><span>1</span><span>25</span><span>23</span><span>3</span><span>5</span><span>2</span><span>4</span><span>16</span><span>22</span><span>35</span><span>17</span><span>39</span><span>13</span><span>48</span><span>37</span><span>8</span><span>20</span><span>6</span><span>42</span><span>14</span><span>10</span><span>33</span><span>47</span><span>7</span><span>18</span><span>27</span><span>21</span><span>11</span><span>40</span><span>9</span></div>
+</div>        </div>
+            </div>
+        </div>
+            <div class="large-4 columns">
+            <div class="werbung ad-placement-note werbung-rectangle1" data-ad-placement-note="Reklam">
+  <div id="div-gpt-ad-2337006-1" style="min-width: 336px; min-height: 280px;">
+    <script>googletag.cmd.push(() => { googletag.display("div-gpt-ad-2337006-1"); });</script>
+  </div>
+</div>
+<div class="box">
+    <span class="content-box-headline">Mevkiye göre kadro detayları</span>
+    <table>
+        <thead>
+        <tr>
+            <th colspan="2">Mevki</th>
+            <th class="zentriert">&oslash;-Yaş</th>
+            <th class="rechts">Piyasa değeri</th>
+            <th class="rechts">&oslash;-Piyasa değeri</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class="bg_Torwart ma_pos">&nbsp;</td>
+            <td class="hauptlink">Kaleci</td>
+            <td class="zentriert">31.0</td>
+            <td class="rechts">16.10 mil. €</td>
+            <td class="rechts">5.37 mil. €</td>
+        </tr>
+        <tr>
+            <td class="bg_Abwehr ma_pos">&nbsp;</td>
+            <td class="hauptlink">Defans</td>
+            <td class="zentriert">26.3</td>
+            <td class="rechts">168.50 mil. €</td>
+            <td class="rechts">16.85 mil. €</td>
+        </tr>
+            <td class="bg_Mittelfeld ma_pos">&nbsp;</td>
+            <td class="hauptlink">Orta saha</td>
+            <td class="zentriert">21.7</td>
+            <td class="rechts">186.75 mil. €</td>
+            <td class="rechts">16.98 mil. €</td>
+        <tr>
+            <td class="bg_Sturm ma_pos">&nbsp;</td>
+            <td class="hauptlink">Forvet</td>
+            <td class="zentriert">21.4</td>
+            <td class="rechts">110.00 mil. €</td>
+            <td class="rechts">15.71 mil. €</td>
+        </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td class="rechts" colspan="2">Toplam:</td>
+                <td class="zentriert">24.0</td>
+                <td class="rechts">481.35 mil. €</td>
+                <td class="rechts">15.53 mil. €</td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+<div class="werbung ad-placement-note werbung-rectangle2" data-ad-placement-note="Reklam">
+  <div id="div-gpt-ad-7564369-2" style="min-width: 336px; min-height: 280px;">
+    <script>googletag.cmd.push(() => { googletag.display("div-gpt-ad-7564369-2"); });</script>
+  </div>
+</div>
+        </div>
+        </div>
+
+<script async src="/js/custom/tm-track-links.min.js" type="module"></script>
+<div class="werbung ad-placement-note werbung-fullsize_contentad" data-ad-placement-note="Reklam">
+  <div id="div-gpt-ad-7564369-6">
+    <script>googletag.cmd.push(() => { googletag.display("div-gpt-ad-7564369-6"); });</script>
+  </div>
+</div>
+        </main>
+        <footer class="tm-footer">
+               <section class="tm-footer__section-quick-links">
+        <strong class="tm-footer__headline tm-footer__headline--large">
+            Hızlı bağlantılar        </strong>
+        <div class="tm-footer__link-wrapper">
+            <a href="/spieler-statistik/wertvollstespieler/marktwertetop"
+               onclick="tmEvent('footer', 'quick_links', '/spieler-statistik/wertvollstespieler')"
+               class="tm-footer__link tm-footer__link--arrow"
+            >
+                Dünyanın en değerli futbolcuları            </a>
+            <a href="/statistik/neuestetransfers"
+                onclick="tmEvent('footer', 'quick_links', '/statistik/neuestetransfers')"
+               class="tm-footer__link tm-footer__link--arrow"
+            >
+                Son transferler            </a>
+            <a href="/geruechte/aktuellegeruechte/statistik"
+                onclick="tmEvent('footer', 'quick_links', '/statistik/aktuellegeruechte')"
+               class="tm-footer__link tm-footer__link--arrow"
+            >
+                Son söylentiler            </a>
+            <a href="/spieler-statistik/marktwertaenderungen/marktwertetop"
+                onclick="tmEvent('footer', 'quick_links', '/spieler-statistik/marktwertaenderungen/marktwertetop')"
+               class="tm-footer__link tm-footer__link--arrow"
+            >
+                Son piyasa değeri güncellemesi            </a>
+            <a href="/statistik/weltrangliste"
+                onclick="tmEvent('footer', 'quick_links', '/statistik/weltrangliste')"
+               class="tm-footer__link tm-footer__link--arrow"
+            >
+                FIFA Dünya Sıralaması            </a>
+                    </div>
+    </section>
+                <section class="tm-footer__section-involved">
+            <strong class="tm-footer__headline tm-footer__headline--large">
+                Sen de dahil ol            </strong>
+            <div class="tm-footer__link-wrapper">
+                <a href="/intern/paten"
+                    onclick="tmEvent('footer', 'be_involved', 'mods_data_scouts')"
+                   class="tm-footer__link tm-footer__link--arrow"
+                >
+                    Moderatörler ve Veri Gözlemcisi                </a>
+                <a href="/profil/bewerbung"
+                    onclick="tmEvent('footer', 'be_involved', 'apply_mod_datascout')"
+                   class="tm-footer__link tm-footer__link--arrow"
+                >
+                    Moderatör veya Veri Gözlemcisi olarak başvur                </a>
+                <a href="/intern/elfGebote"
+                    onclick="tmEvent('footer', 'be_involved', '11_commandments')"
+                   class="tm-footer__link tm-footer__link--arrow"
+                >
+                    11 Kural                </a>
+                <a href="/intern/fehlermelden"
+                    onclick="tmEvent('footer', 'be_involved', 'found_mistake')"
+                   class="tm-footer__link tm-footer__link--arrow"
+                >
+                    Hata raporu gönder                </a>
+            </div>
+        </section>
+        <section class="tm-footer__section-career">
+            <strong class="tm-footer__headline tm-footer__headline--large">
+                Bize Ulaşın            </strong>
+            <div class="tm-footer__link-wrapper">
+                                <a href="/intern/tmteam"
+                   class="tm-footer__link tm-footer__link--arrow"
+                   onclick="tmEvent('footer', 'career', 'contact')"
+                >
+                    İletişim                </a>
+            </div>
+        </section>
+        <section class="tm-footer__section-about">
+            <strong class="tm-footer__headline tm-footer__headline--large">
+                Hakkımızda            </strong>
+            <div class="tm-footer__link-wrapper">
+                <a href="/intern/tmteam"
+                   onclick="tmEvent('footer', 'about_us', 'tm_team')"
+                   class="tm-footer__link tm-footer__link--arrow"
+                >
+                    Transfermarkt ekibi                </a>
+                <a href="/intern/faq"
+                   onclick="tmEvent('footer', 'about_us', 'faq')"
+                   class="tm-footer__link tm-footer__link--arrow"
+                >
+                    SSS                </a>
+            </div>
+        </section>
+            <section class="tm-footer__section-social">
+        <strong class="tm-footer__headline
+            ">
+            Sosyal Medya        </strong>
+        <div class="tm-footer__social-wrapper">
+                        <a href="https://instagram.com/transfermarkt.com.tr"
+                   target="_blank"
+                   class="tm-footer__link-social"
+                   onclick="tmEvent('footer', 'social_media', 'instagram')"
+                >
+                    <img src="https://tmsi.akamaized.net/icons/socialMedia/instaRebrush.svg"
+                         alt="instagram"
+                         width="28"
+                         height="28"
+                         class="tm-footer__icon-social"
+                    >
+                </a>
+                <a href="https://www.facebook.com/transfermarkt.com.tr"
+                   target="_blank"
+                   class="tm-footer__link-social"
+                   onclick="tmEvent('footer', 'social_media', 'facebook')">
+                    <img src="https://tmsi.akamaized.net/icons/socialMedia/fbRebrush.svg"
+                         alt="facebook"
+                         width="25"
+                         height="25"
+                         class="tm-footer__icon-social"
+                    >
+                </a>
+                <a href="https://whatsapp.com/channel/0029VaDe23nCXC3OGrSbpB2Z"
+                   target="_blank"
+                   class="tm-footer__link-social"
+                   onclick="tmEvent('footer', 'social_media', 'whatsapp')"
+                >
+                    <img src="https://tmsi.akamaized.net/icons/socialMedia/whatsappRebrush.svg"
+                         alt="whatsapp"
+                         width="28"
+                         height="28"
+                         class="tm-footer__icon-social"
+                    >
+                </a>
+                <a href="https://x.com/TMtr_news"
+                   target="_blank"
+                   class="tm-footer__link-social"
+                   onclick="tmEvent('footer', 'social_media', 'x')">
+                    <img src="https://tmsi.akamaized.net/icons/socialMedia/twitter_rebrush.svg"
+                         alt="twitter"
+                         width="28"
+                         height="28"
+                         class="tm-footer__icon-social"
+                    >
+                </a>
+                <a href="https://www.threads.com/@transfermarkt_official"
+                   target="_blank"
+                   class="tm-footer__link-social"
+                   onclick="tmEvent('footer', 'social_media', 'threads')"
+                >
+                    <img src="https://tmsi.akamaized.net/icons/socialMedia/threadsRebrush.svg"
+                         alt="threads"
+                         width="28"
+                         height="28"
+                         class="tm-footer__icon-social"
+                    >
+                </a>
+                <a href="https://www.tiktok.com/@transfermarkt.com.tr"
+                   target="_blank"
+                   class="tm-footer__link-social"
+                   onclick="tmEvent('footer', 'social_media', 'tiktok')"
+                >
+                    <img src="https://tmsi.akamaized.net/icons/socialMedia/tiktokRebrush.svg"
+                         alt="tiktok"
+                         width="28"
+                         height="28"
+                         class="tm-footer__icon-social"
+                    >
+                </a>
+                <a href="https://www.youtube.com/@TransfermarktTurkiye"
+                   target="_blank"
+                   class="tm-footer__link-social"
+                   onclick="tmEvent('footer', 'social_media', 'youtube')"
+                >
+                    <img src="https://tmsi.akamaized.net/icons/socialMedia/RebrushYoutube.svg"
+                         alt="youtube"
+                         width="28"
+                         height="28"
+                         class="tm-footer__icon-social"
+                    >
+                </a>
+                <a href="https://www.transfermarkt.com.tr/intern/rssguide"
+                   target="_blank"
+                   class="tm-footer__link-social"
+                   onclick="tmEvent('footer', 'social_media', 'rss')"
+                >
+                    <img src="https://tmsi.akamaized.net/icons/socialMedia/RebrushRss.svg"
+                         alt="rss"
+                         width="28"
+                         height="28"
+                         class="tm-footer__icon-social"
+                    >
+                </a>
+                <a href="https://www.linkedin.com/company/transfermarkt-gmbh-&-co-kg"
+                   target="_blank"
+                   class="tm-footer__link-social"
+                   onclick="tmEvent('footer', 'social_media', 'linkedIn')"
+                >
+                    <img src="https://tmsi.akamaized.net/icons/socialMedia/linkedInRebrush.svg"
+                         alt="linkedIn"
+                         width="28"
+                         height="28"
+                         class="tm-footer__icon-social"
+                    >
+                </a>
+                        </div>
+    </section>
+                </footer>
+                <div id="menue_overlay"></div>
+    </div>
+    <section class="tm-footer__mobile tm-footer__transfermarkt-info">
+        <section class="tm-footer__section-desktop-width">
+                            <section class="tm-footer__section-company-links">
+                    <span class="tm-footer__headline tm-footer__headline--medium">
+                        Transfermarkt şirketin projeleri                    </span>
+                    <div class="tm-footer__project-wrapper">
+                        <a href="/wahretabelle"
+                           onclick="tmEvent('footer', 'projects', 'wahretabelle')"
+                           class="tm-footer__link"
+                        >
+                            Wahretabelle                        </a>
+                        <a href="https://www.soccerdonna.de/"
+                           onclick="tmEvent('footer', 'projects', 'soccerdonna')"
+                           class="tm-footer__link"
+                        >
+                            SoccerDonna                        </a>
+                        <a href="https://scoutastic.com/de/"
+                           onclick="tmEvent('footer', 'projects', 'scoutastic')"
+                           class="tm-footer__link"
+                        >
+                            Scoutastic.com                        </a>
+                    </div>
+                </section>
+                        <section class="tm-footer__section-company-infos">
+                <span class="tm-footer__headline tm-footer__headline--medium">&copy; Transfermarkt <span id="currentYear">2026</span></span>
+                <div class="tm-footer__company-wrapper">
+                    <a
+                    href="/intern/impressum"
+                    class="tm-footer__link tm-footer__link--blue"
+                    onclick="tmEvent('footer', 'officials', 'impressum')"
+                    >
+                        İletişim                    </a>
+                    <a
+                        href="/intern/web/datenschutz"
+                        class="tm-footer__link tm-footer__link--blue"
+                        onclick="tmEvent('footer', 'officials', 'data_protection')"
+                        >
+                        Veri koruma                    </a>
+                    <a
+                        href="javascript:void(0)"
+                        class="cmp-link tm-footer__link tm-footer__link--blue"
+                        onclick="tmEvent('footer', 'officials', 'privacy')"
+                    >
+                        Gizlilik Politikası                    </a>
+                    <a
+                        href="javascript:void(0)"
+                        class="revoke-tracking tm-footer__link tm-footer__link--blue"
+                        onclick="tmEvent('footer', 'officials', 'tracking_revocation')"
+                    >
+                        Takip İznini Geri Çekme                    </a>
+                    <a
+                        href="/intern/anb"
+                        class="tm-footer__link tm-footer__link--blue"
+                        onclick="tmEvent('footer', 'officials', 'general_conduct_of_use')"
+                        >
+                        Site politikası                    </a>
+                                    </div>
+            </section>
+        </section>
+    </section>
+    <script type="text/javascript">
+	if(typeof(adet) == "boolean" && adet == false){
+		img_src="/static/singlepictures/jk99hhfsdh209nbnkjldgh90sghfsdlk";
+	} else {
+		img_src="/static/singlepictures/jku90whjlkjbwbta1g4b8h89fh8sgh8d";
+	}
+	var elem = document.createElement("img");
+	document.body.appendChild(elem);
+	elem.src = img_src;
+</script>
+
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var cnt = document.querySelectorAll('div.large-4.columns').length;
+                if (cnt == 1) {
+                    var sidebarDiv = document.querySelector('div.large-4.columns');
+                    if (sidebarDiv !== null) {
+                        var sidebar = document.getElementById('werbung_recommender_sidebar_wrapper');
+                        sidebarDiv.appendChild(sidebar);
+                        sidebar.style.display = 'block';
+                    }
+                }
+            });
+        </script>
+        <div id="werbung_recommender_sidebar_wrapper" style="display: none;">
+                    </div>
+    <tm-consent type="adition" no-checkbox embed="PHNjcmlwdCBzcmM9Imh0dHBzOi8vY3JlYXRpdmUtY2RuLm9kZHNzZXJ2ZS5jb20vbG9hZGVyLmpzP3B1Ymxpc2hlcj10bSIgYXN5bmM9ImFzeW5jIj48L3NjcmlwdD4="></tm-consent><tm-consent type='adrenalead' no-checkbox embed='PHNjcmlwdCB0eXBlPSd0ZXh0L2phdmFzY3JpcHQnPgogICAgICAgICAgICB3aW5kb3cuX25BZHpxPXdpbmRvdy5fbkFkenF8fFtdOyhmdW5jdGlvbigpewogICAgICAgICAgICB3aW5kb3cuX25BZHpxLnB1c2goWydzZXRJZHMnLCdjZjJmZjkwNDdjMzhmM2FhJ10pOwogICAgICAgICAgICB2YXIgZT0naHR0cHM6Ly9ub3RpZnB1c2guY29tL3NjcmlwdHMvJzsKICAgICAgICAgICAgdmFyIHQ9ZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgnc2NyaXB0Jyk7CiAgICAgICAgICAgIHQudHlwZT0ndGV4dC9qYXZhc2NyaXB0JzsKICAgICAgICAgICAgdC5kZWZlcj10cnVlOwogICAgICAgICAgICB0LmFzeW5jPXRydWU7CiAgICAgICAgICAgIHQuc3JjPWUrJ25hZHotc2RrLmpzJzsKICAgICAgICAgICAgdmFyIHM9ZG9jdW1lbnQuZ2V0RWxlbWVudHNCeVRhZ05hbWUoJ3NjcmlwdCcpWzBdOwogICAgICAgICAgICBzLnBhcmVudE5vZGUuaW5zZXJ0QmVmb3JlKHQscyl9KSgpOwogICAgICAgIDwvc2NyaXB0Pg=='></tm-consent>    
+        <tm-modal id="tm-modal-revoke-tracking" additionalClose="Kapat">
+        <div class="tm-modal__headline">Takip İznini Geri Çekme</div>
+        <p class="tm-modal__text">Transfermarkt’i çerezler ve takip kullanımıyla ilgili izninizi başarıyla geri çektin. Şimdi Contentpass aboneliği ile kullanım veya kişiselleştirilmiş reklamlar, çerezler ve takip ile kullanım arasında seçim yapabilirsin.</p>
+    </tm-modal>
+        
+
+<tm-consent no-checkbox type='pubmatic' embed='PHNjcmlwdCB0eXBlPSd0ZXh0L2phdmFzY3JpcHQnPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChmdW5jdGlvbigpIHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdmFyIHB1cmwgPSB3aW5kb3cubG9jYXRpb24uaHJlZjsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdmFyIHVybCA9ICcvL2Fkcy5wdWJtYXRpYy5jb20vQWRTZXJ2ZXIvanMvcHd0LzE2MDc5Mi80NTA2JzsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdmFyIHByb2ZpbGVWZXJzaW9uSWQgPSAnJzsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaWYocHVybC5pbmRleE9mKCdwd3R2PScpPjApewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdmFyIHJlZ2V4cCA9IC9wd3R2PSguKj8pKCZ8JCkvZzsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB2YXIgbWF0Y2hlcyA9IHJlZ2V4cC5leGVjKHB1cmwpOwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmKG1hdGNoZXMubGVuZ3RoID49IDIgJiYgbWF0Y2hlc1sxXS5sZW5ndGggPiAwKXsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcHJvZmlsZVZlcnNpb25JZCA9ICcvJyttYXRjaGVzWzFdOwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdmFyIHd0YWRzID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgnc2NyaXB0Jyk7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHd0YWRzLmFzeW5jID0gdHJ1ZTsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgd3RhZHMudHlwZSA9ICd0ZXh0L2phdmFzY3JpcHQnOwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB3dGFkcy5zcmMgPSB1cmwrcHJvZmlsZVZlcnNpb25JZCsnL3B3dC5qcyc7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHZhciBub2RlID0gZG9jdW1lbnQuZ2V0RWxlbWVudHNCeVRhZ05hbWUoJ3NjcmlwdCcpWzBdOwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBub2RlLnBhcmVudE5vZGUuaW5zZXJ0QmVmb3JlKHd0YWRzLCBub2RlKTsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9KSgpOwogICAgICAgICAgICAgICAgICAgICAgICAgICAgPC9zY3JpcHQ+'></tm-consent><tm-consent type="googleadvertising" no-checkbox embed="PHNjcmlwdCAgc3JjPSJodHRwczovL3NlY3VyZXB1YmFkcy5nLmRvdWJsZWNsaWNrLm5ldC90YWcvanMvZ3B0LmpzIiBhc3luYz0iYXN5bmMiPjwvc2NyaXB0Pg=="></tm-consent>
+<tm-consent type="googleadvertising" no-checkbox embed="PHNjcmlwdCAgc3JjPSJodHRwczovL2FkeGJpZC5pbmZvL3B1YklkMTcyMTAuanMiIGFzeW5jPSJhc3luYyI+PC9zY3JpcHQ+"></tm-consent>
+<script type="text/javascript" src="https://tmsi.akamaized.net/js/svelte-components/subnavigation/bundle.js"></script>
+<script type="text/javascript" src="https://tmssl.akamaized.net/assets/aa69c6e9c51f1e811847082c63633956/gridview/jquery.yiigridview.js?lm=1787641531"></script>
+<script type="text/javascript" src="https://tmssl.akamaized.net/js/custom/vendors.min.js?lm=1787641531"></script>
+<script type="text/javascript" src="https://tmsi.akamaized.net/js/svelte-components/domain-switcher/bundle.js"></script>
+<script type="text/javascript" src="https://tmsi.akamaized.net/js/svelte-components/quick-select-bar/bundle.js"></script>
+<script type="text/javascript" src="https://tmsi.akamaized.net/js/svelte-components/userbox/bundle.js"></script>
+<script type="text/javascript" src="https://tmsi.akamaized.net/js/svelte-components/live-match-count/bundle.js"></script>
+<script type="text/javascript" src="https://tmsi.akamaized.net/js/svelte-components/modal/bundle.js"></script>
+<script type="text/javascript" src="https://tmssl.akamaized.net/js/custom/tm-skyscraper.min.js?lm=1787641531"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+	var loginUrl='/profil/login';
+	var onlyDE = '';
+	var onlyMobile = '';
+	var onlyTablet = '';
+	var getUserID = '';
+
+jQuery(function($) {
+jQuery('#yw1').yiiGridView({'ajaxUpdate':['yw1'],'ajaxVar':'ajax','pagerClass':'pager','loadingClass':'grid\x2Dview\x2Dloading','filterClass':'filters','tableClass':'items','selectableRows':1,'enableHistory':false,'updateSelector':'\x7Bpage\x7D,\x20\x7Bsort\x7D','filterSelector':'\x7Bfilter\x7D','afterAjaxUpdate':function() {window.LazyLoadInstance.update(); tmTrackingAndAds();  trackLinks();  document.dispatchEvent(new CustomEvent("tmInitTooltip"));}});
+});
+/*]]>*/
+</script>
+</body>
+
+</html>

@@ -165,7 +165,7 @@ window.C = (function(){
       const max = Math.max(...row.values);
       const min = Math.min(...row.values);
       const range = max - min || 1;
-      grid.push(h('div',{key:'l'+ri, className:'hm-row-label', title:row.title||row.label},
+      grid.push(h('div',{key:'l'+ri, className:'hm-row-label', 'data-tip':row.title||row.label},
         h('span',{style:{fontWeight:500, lineHeight:1.2}}, row.label),
         row.sub && h('span',{className:'txt-3', style:{fontSize:10, lineHeight:1.2, marginTop:2}}, row.sub)
       ));
@@ -340,7 +340,12 @@ window.C = (function(){
   // === LineChart with crosshair tooltip ===
   // Responsive: ResizeObserver ile container genişliğini ölçer, viewBox buna göre
   // kurulur. SVG fixed height prop ile çizilir, aspect ratio bozulmaz, taşma olmaz.
-  function LineChart({series, height=220, labels=TR_MONTHS, yFormat=fmtNum, legend}) {
+  function LineChart({series, height=220, labels=TR_MONTHS, yFormat=fmtNum, legend, gradient}) {
+    // Gradient dolgu için seri başına benzersiz kimlik; aynı sayfada birden
+    // çok chart olduğunda tanımlar birbirini ezmesin.
+    const gidRef = React.useRef(null);
+    if (gidRef.current == null) gidRef.current = 'lg' + Math.round(Math.random()*1e9).toString(36);
+    const gid = gidRef.current;
     const [hoverI, setHoverI] = React.useState(null);
     const wrapRef = React.useRef(null);
     const svgRef = React.useRef(null);
@@ -405,6 +410,13 @@ window.C = (function(){
         style:{width:'100%', height, display:'block', cursor:'crosshair'},
         onMouseMove: onMove, onMouseLeave: onLeave
       },
+        gradient && h('defs',null, drawSeries.map((s,si) => {
+          const renk = s.color || 'var(--accent)';
+          return h('linearGradient',{key:'g'+si, id:`${gid}-${si}`, x1:'0', y1:'0', x2:'0', y2:'1'},
+            h('stop',{offset:'0%',  stopColor:renk, stopOpacity: s.overlay ? 0.14 : 0.34}),
+            h('stop',{offset:'62%', stopColor:renk, stopOpacity: s.overlay ? 0.05 : 0.12}),
+            h('stop',{offset:'100%',stopColor:renk, stopOpacity: 0}));
+        })),
         tickVals.map((t,i) => h('g',{key:'t'+i},
           h('line',{x1:pad.l, x2:pad.l+cw, y1:yAt(t), y2:yAt(t), stroke:'var(--line)', strokeDasharray:i===0?'':'2 3'}),
           h('text',{x:pad.l-6, y:yAt(t)+3, fontSize:11, fill:'var(--ink-3)', textAnchor:'end'}, yFormat(t))
@@ -415,8 +427,15 @@ window.C = (function(){
         // alttaki seri tamamen gizlenir ve grafik erken bitiyormuş gibi görünür.
         drawSeries.map((s,si) => {
           if (!s.values) return null;
-          const path = 'M' + s.values.map((v,i) => v==null?null:`${xs[i]},${yAt(v)}`).filter(Boolean).join(' L');
+          const noktalar = s.values.map((v,i) => v==null?null:`${xs[i]},${yAt(v)}`).filter(Boolean);
+          const path = 'M' + noktalar.join(' L');
+          // Alan dolgusu: çizgiyi taban çizgisine kapatır
+          const ilkX = noktalar.length ? noktalar[0].split(',')[0] : null;
+          const sonX = noktalar.length ? noktalar[noktalar.length-1].split(',')[0] : null;
+          const alan = (gradient && noktalar.length > 1)
+            ? `${path} L${sonX},${pad.t+ch} L${ilkX},${pad.t+ch} Z` : null;
           return h('g',{key:'s'+si},
+            alan && h('path',{d:alan, fill:`url(#${gid}-${si})`, stroke:'none'}),
             h('path',{
               d:path, fill:'none', stroke:s.color||'var(--accent)', strokeWidth:2,
               strokeLinecap:'round', strokeLinejoin:'round',
@@ -811,10 +830,10 @@ window.C = (function(){
     },
       h('div',{className:'sm-header'},
         h('div',{className:'sm-dot', style:{background: color}}),
-        h('div',{className:'sm-label', title: it.title || it.label}, it.label),
+        h('div',{className:'sm-label', 'data-tip': it.title || it.label}, it.label),
         it.yoy != null && h('span',{className:'pill '+(it.yoy>0.02?'pos':it.yoy<-0.02?'neg':'neu'),
           style:{marginLeft:'auto',fontSize:11,padding:'1px 6px'},
-          title:`${yoyEtiket} değişim: ${fmtPct(it.yoy,1)} · ${toplamEtiket} / önceki dönem`},
+          'data-tip':`${yoyEtiket} değişim: ${fmtPct(it.yoy,1)} · ${toplamEtiket} / önceki dönem`},
           fmtPct(it.yoy,0))
       ),
       h('div',{className:'sm-body', style:{position:'relative'}},

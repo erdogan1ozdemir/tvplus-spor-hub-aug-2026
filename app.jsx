@@ -188,7 +188,7 @@
               .map(([v,l])=>h('button',{key:v||'all', className: trend===v?'active':'',
                 onClick:()=>setTrend(v)}, l))),
           h('div',{className:'segmented',
-            title:`Rolling = Son 12 Ay (${ROLLING_LABELS[0]} – ${ROLLING_LABELS[11]}) vs Önceki 12 Ay · Takvim = ${M.yillar.join(' / ')} yıl çizgileri. KPI ve YoY değerleri her zaman rolling karşılaştırmadır.`},
+            title:`Rolling = Son 12 Ay (${ROLLING_LABELS[0]} – ${ROLLING_LABELS[11]}) vs Önceki 12 Ay · Takvim = ${M.yillar.join(' / ')} yıl çizgileri. Özet KPI ve YoY değerleri seçili görünüme göre hesaplanır; Yükselen ve Düşen sayıları her zaman rolling karşılaştırmadan gelir.`},
             h('button',{className: viewMode==='rolling'?'active':'',
               onClick:()=>setViewMode('rolling')},'Rolling 12 Ay'),
             h('button',{className: viewMode==='calendar'?'active':'',

@@ -318,6 +318,70 @@ window.U = (function(){
   const SEZ_RENK = {Evergreen:'#2E7D32', Seasonal:'#F5A623', Spike:'#D32F2F', 'Veri Yok':'#8A8A8A'};
   const HAK_RENK = {'TV+ Var':'#2E7D32','TV+ Yok':'#D32F2F','Doğrulanacak':'#F5A623','Kısmi':'#B07AA1'};
 
+
+// ————————————————————————————————— Açıklama balonu sürücüsü
+// data-tip taşıyan her eleman için tek bir balon kullanılır. Tarayıcının
+// kendi title balonu geç açılıyor, uzun metni kırpıyor ve dokunmatikte
+// hiç çalışmıyordu.
+(function kurTipBalonu(){
+  // Tarayıcı dışı bağlamlarda (derleme, test) kurulum atlanır.
+  if (typeof document === 'undefined' || !document.addEventListener
+      || typeof window === 'undefined' || !window.addEventListener
+      || document.__tipKuruldu) return;
+  document.__tipKuruldu = true;
+  let kutu = null, hedef = null;
+
+  function olustur(){
+    if (kutu) return kutu;
+    kutu = document.createElement('div');
+    kutu.className = 'tipbox';
+    document.body.appendChild(kutu);
+    return kutu;
+  }
+  function konumla(e){
+    if (!kutu) return;
+    const bo = kutu.getBoundingClientRect();
+    const pay = 14;
+    let x = e.clientX + pay, y = e.clientY + pay;
+    if (x + bo.width > window.innerWidth - 8)  x = e.clientX - bo.width - pay;
+    if (y + bo.height > window.innerHeight - 8) y = e.clientY - bo.height - pay;
+    kutu.style.left = Math.max(8, x) + 'px';
+    kutu.style.top  = Math.max(8, y) + 'px';
+  }
+  function ac(el, e){
+    const metin = el.getAttribute('data-tip');
+    if (!metin || !metin.trim()) return;
+    const k = olustur();
+    // İlk satır başlık olarak biçimlenir
+    const satirlar = metin.split('\n');
+    k.textContent = '';
+    if (satirlar.length > 1){
+      const b = document.createElement('span');
+      b.className = 'tip-bas'; b.textContent = satirlar[0];
+      k.appendChild(b);
+      k.appendChild(document.createTextNode(satirlar.slice(1).join('\n')));
+    } else {
+      k.textContent = metin;
+    }
+    k.classList.add('acik');
+    hedef = el; konumla(e);
+  }
+  function kapat(){
+    if (kutu) kutu.classList.remove('acik');
+    hedef = null;
+  }
+  document.addEventListener('mouseover', e => {
+    const el = e.target.closest && e.target.closest('[data-tip]');
+    if (el === hedef) return;
+    if (el) ac(el, e); else kapat();
+  }, true);
+  document.addEventListener('mousemove', e => { if (hedef) konumla(e); }, true);
+  document.addEventListener('mouseleave', kapat, true);
+  window.addEventListener('scroll', kapat, true);
+  window.addEventListener('blur', kapat);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') kapat(); });
+})();
+
   return {
     TR_MONTHS, TR_MONTHS_LONG,
     FACET_ETIKET, SEVIYELER, applyFacets, groupBy, seriesFor, SEZ_RENK, HAK_RENK,

@@ -387,11 +387,7 @@ h4 { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacin
   box-shadow: var(--shadow-card);
   overflow: hidden;
 }
-/* Subtle diagonal accent line on top */
-.hero-kpi::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, var(--coral) 0%, var(--coral) 22%, transparent 22%, transparent 100%);
-}
+/* Üstteki coral şerit kaldırıldı; vurgu artık chart'ın gradient dolgusunda. */
 .hero-kpi .hk-label {
   font-family: 'Outfit';
   font-size: 11px;
@@ -1544,11 +1540,11 @@ button.action-card:hover { border-color: currentColor; transform: translateY(-1p
 .matrix-scroll .heatmap{ margin:0; }
 .matrix-scroll .hm-head{ position:sticky; top:0; z-index:3; background:var(--bg-card); }
 .matrix-scroll .hm-row-label{ position:sticky; left:0; z-index:2; background:var(--bg-card);
-  box-shadow:1px 0 0 var(--line-soft); cursor:help; }
+  box-shadow:1px 0 0 var(--line-soft); }
 .matrix-scroll .hm-corner{ position:sticky; left:0; top:0; z-index:4; background:var(--bg-card); }
 .matrix-scroll::-webkit-scrollbar{ width:10px; height:10px; }
 .matrix-scroll::-webkit-scrollbar-thumb{ background:var(--line); border-radius:99px; }
-.sm-item .sm-label{ cursor:help; }
+.sm-item .sm-label[data-tip]{ cursor:help; }
 
 
 /* ——— Kaydırılabilir pay listesi ——— */
@@ -1561,7 +1557,8 @@ button.action-card:hover { border-color: currentColor; transform: translateY(-1p
   padding:14px 16px; box-shadow:var(--shadow-card); transition:box-shadow .15s, border-color .15s; }
 .kova-kpi:hover{ box-shadow:var(--shadow-card-hover); }
 .kova-kpi.acik{ box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent); }
-.kova-i{ font-size:11px; color:var(--ink-3); cursor:help; }
+.kova-i{ font-size:11px; color:var(--ink-3); }
+.kova-i[data-tip]{ cursor:help; }
 
 /* ——— Modal: kompakt KPI şeridi ——— */
 .kpi-mini-row{ display:grid; grid-template-columns:repeat(auto-fit,minmax(112px,1fr)); gap:8px; }
@@ -1714,3 +1711,27 @@ button.action-card:hover { border-color: currentColor; transform: translateY(-1p
 .sm-metric-value{ font-family:'Bricolage Grotesque'; font-size:12.5px; font-weight:700;
   letter-spacing:-.01em; color:var(--ink); }
 .sm-footer{ border-top:0 !important; padding-top:6px !important; }
+
+
+/* ————————————————————————— Açıklama balonu
+   Tarayıcının kendi title balonu geç açılıyor, çok satırlı metni kırpıyor ve
+   biçimlendirilemiyordu. Aynı içerik data-tip ile bu balonda gösterilir. */
+[data-tip] { cursor: help; }
+.tipbox {
+  position: fixed; z-index: 4000; pointer-events: none;
+  max-width: min(420px, 82vw);
+  background: var(--ink); color: var(--bg-card);
+  border-radius: 10px; padding: 10px 13px;
+  font-size: 12.5px; line-height: 1.5;
+  white-space: pre-line;
+  box-shadow: 0 8px 28px rgba(0,0,0,.28);
+  opacity: 0; transform: translateY(4px);
+  transition: opacity .12s ease-out, transform .12s ease-out;
+}
+.tipbox.acik { opacity: 1; transform: translateY(0); }
+.tipbox .tip-bas {
+  display: block; font-weight: 700; margin-bottom: 5px;
+  font-family: 'Bricolage Grotesque', 'Outfit', sans-serif; font-size: 13px;
+  color: var(--accent);
+}
+@media (prefers-reduced-motion: reduce) { .tipbox { transition: none; } }

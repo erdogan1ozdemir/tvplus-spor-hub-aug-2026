@@ -205,7 +205,7 @@ window.TABS = (function(){
           th('sezType','Mevsim Tipi','col-hide-sm'))),
         h('tbody',null, veri.slice(0,limit).map((g,i)=>{
           const ust = ustDeger(g);
-          return h('tr',{key:g.label, className:'clickable', title:grupAciklama(g, viewMode),
+          return h('tr',{key:g.label, className:'clickable', 'data-tip':grupAciklama(g, viewMode),
             onClick:()=>onSelectGroup && onSelectGroup(seviye, g.ust)},
             h('td',null,
               h('div',{style:{display:'flex',alignItems:'center',gap:8}},
@@ -313,7 +313,7 @@ window.TABS = (function(){
             h('span',{className:'txt-3', style:{marginLeft:8, fontSize:11.5}},
               takvim ? ('vs. '+yilAd[0]+' ') : 'vs. Önceki 12 Ay ', fmtNum(p12)))),
         h('div',{className:'hero-chart'},
-          h(C.LineChart,{series, height:150, labels, yFormat:fmtNum, legend:true})),
+          h(C.LineChart,{series, height:150, labels, yFormat:fmtNum, legend:true, gradient:true})),
         h('div',{className:'hero-right'},
           h('div',{className:'hero-label'},'Peak Ay'),
           h('div',{className:'hero-peak'}, takvim ? U.TR_MONTHS[aggregateMonthly(rows,'m25')
@@ -1296,13 +1296,16 @@ window.TABS = (function(){
 
   function KeywordModal({kw, viewMode, onClose}){
     const M = D().meta;
-    const takvim = viewMode==='calendar';
+    // Modal kendi görünüm seçicisine sahiptir: detayda rolling ile takvim yılı
+    // arasında geçiş yapmak için ana filtreyi değiştirmek gerekmesin.
+    const [kip, setKip] = React.useState(viewMode || 'rolling');
+    const takvim = kip==='calendar';
     const g = {roll:U.rollingOf(kw), prev:U.prevRollingOf(kw)||new Array(12).fill(0),
       cal24:kw.m24, cal25:kw.m25, cal26:kw.m26};
-    const sr = seriesFor(g, viewMode);
+    const sr = seriesFor(g, kip);
     const t25 = (kw.m25||[]).reduce((a,b)=>a+(b||0),0);
     const t24 = (kw.m24||[]).reduce((a,b)=>a+(b||0),0);
-    const yv = yoyFor(kw, viewMode);
+    const yv = yoyFor(kw, kip);
     const mini = (lab, deger, alt, tone) => h('div',{className:'kpi-mini', key:lab},
       h('div',{className:'kpi-mini-label'}, lab),
       h('div',{className:'kpi-mini-value', style: tone?{color:tone}:null}, deger),
@@ -1314,25 +1317,43 @@ window.TABS = (function(){
           letterSpacing:'.07em', fontWeight:700}},
           [kw.spor, kw.org].filter(Boolean).join('  /  ')),
         h('h2',{style:{fontSize:20, margin:'3px 0 4px', lineHeight:1.2}}, kw.kw),
-        h('div',{className:'txt-3', style:{fontSize:10.5}},
-          takvim ? ('Takvim yılı görünümü · '+M.yillar.join(' / '))
-                 : ('Son 12 Ay: '+ROLLING_LABELS[0]+' – '+ROLLING_LABELS[11]),
-          ' · Kaynak: ', M.kaynak)),
+        h('div',{style:{display:'flex', alignItems:'center', gap:10, flexWrap:'wrap',
+          marginTop:6}},
+          h('div',{className:'segmented', style:{fontSize:11}},
+            h('button',{className: kip==='rolling'?'active':'',
+              onClick:()=>setKip('rolling')},'Rolling 12 Ay'),
+            h('button',{className: kip==='calendar'?'active':'',
+              onClick:()=>setKip('calendar')},'Takvim Yılı')),
+          h('div',{className:'txt-3', style:{fontSize:10.5}},
+            takvim ? ('Takvim yılı görünümü · '+M.yillar.join(' / '))
+                   : ('Son 12 Ay: '+ROLLING_LABELS[0]+' – '+ROLLING_LABELS[11]),
+            ' · Kaynak: ', M.kaynak))),
 
       h('div',{className:'kpi-mini-row'},
         mini(takvim ? M.yillar[1] : 'Son 12 Ay', fmtFull(takvim ? t25 : kw.r12), kw.bucket),
         mini(takvim ? M.yillar[0] : 'Önceki 12 Ay', fmtFull(takvim ? t24 : kw.p12)),
         mini('YoY', yv==null?'–':fmtPct(yv,1), yoyEtiketFor(viewMode),
           yv==null?null:(yv>0?'var(--green)':'var(--red)')),
-        mini('Aylık Ort.', fmtFull(kw.sv)),
+        (takvim
+          ? mini(M.yillar[1]+' Aylık Ort.', fmtFull(kw.a25),
+              M.yillar[1]+' toplamının 12 aya bölümü')
+          : mini('Son 12 Ay Aylık Ort.', fmtFull(kw.r12!=null ? Math.round(kw.r12/12) : null),
+              ROLLING_LABELS[0]+' – '+ROLLING_LABELS[11]+' ortalaması')),
         mini('Mevsim Tipi', kw.sinif, kw.cv!=null?('CV '+kw.cv+' · p/d '+kw.pd):null, SEZ_RENK[kw.sinif]),
         mini('Peak', kw.rpeakSerial ? serialToRollingLabel(kw.rpeakSerial) : '–',
-          qLabel(((viewMode==='calendar'?kw.pq:kw.rpq)||[]).indexOf(1), viewMode))),
+          qLabel((takvim?kw.pq:kw.rpq||[]).indexOf(1), kip))),
 
       h('div',{className:'card', style:{padding:10, margin:'14px 0 10px'}},
-        h(C.LineChart,{series:sr.series, labels:sr.labels, height:180, yFormat:fmtNum, legend:true})),
-      h(C.Heatmap,{rows:[{label: takvim?M.yillar[1]:'Son 12 Ay',
-        values: takvim?(kw.m25||[]):g.roll, prevValues: takvim?(kw.m24||[]):g.prev}],
+        h(C.LineChart,{series:sr.series, labels:sr.labels, height:180, yFormat:fmtNum,
+          legend:true, gradient:true})),
+      // Takvim kipinde üç takvim yılı alt alta; her yıl bir önceki yılla
+      // karşılaştırılır. Rolling kipinde son 12 ay ve önceki 12 ay.
+      h(C.Heatmap,{rows: takvim
+          ? [{label:String(M.yillar[0]), values:kw.m24||[]},
+             {label:String(M.yillar[1]), values:kw.m25||[], prevValues:kw.m24||[]},
+             {label:String(M.yillar[2]||'2026'), values:kw.m26||[], prevValues:kw.m25||[]}]
+          : [{label:'Son 12 Ay',    values:g.roll, prevValues:g.prev},
+             {label:'Önceki 12 Ay', values:g.prev}],
         monthsLabels: takvim?U.TR_MONTHS:ROLLING_LABELS, showValues:true, showYoY:true}),
 
       h('h4',{style:{fontSize:13, margin:'20px 0 10px'}},'Öznitelikler'),

@@ -75,6 +75,20 @@ Paralelde bağımsız bir code review çalıştırıldı. Doğrulanan ve düzelt
 
 Tüm sekmeler iki görünüm kipinde de duman testinden geçti (18/18).
 
+### Arayüz revizyonları ve Excel çıktısı
+
+- **Soru işareti imleci düzeltildi.** 495 elemanda `cursor: help` tanımlıydı, birçoğunun `title` değeri boştu: imleç soru işaretine dönüyor, hiçbir açıklama çıkmıyordu. Çıkanlar da tarayıcının geç açılan, biçimlendirilemeyen, uzun metni kırpan balonlarıydı. Yardım imleci artık yalnızca açıklaması olan elemanlarda görünüyor ve içerik `data-tip` ile özel balonda gösteriliyor (ilk satır başlık olarak biçimleniyor, imleci takip ediyor, ekran kenarında konum düzeltiyor, Escape ile kapanıyor).
+- **Pazar Özeti'ndeki coral şerit kaldırıldı** (`.hero-kpi::before`), chart gradient dolguya çevrildi. `LineChart` bileşenine `gradient` seçeneği eklendi: seri rengi %34 opaklıktan şeffafa inen dikey gradient, karşılaştırma serisinde daha soluk.
+- **Keyword detayında "Aylık Ort." neyin ortalaması olduğu yazılıyor.** Ayrıca DataForSEO'nun kendi ortalaması yerine ekrandaki seriden türetiliyor; yanındaki Son 12 Ay değeriyle tutarsız kalmıyordu.
+- **Keyword detayına kendi görünüm seçicisi eklendi.** Rolling 12 Ay ile Takvim Yılı arasında modal içinden geçiş yapılabiliyor, ana filtreyi değiştirmek gerekmiyor. Takvim kipinde chart üç yılı birden çiziyor, altındaki sezonsallık tablosu da 2024 / 2025 / 2026 satırlarını alt alta veriyor (her yıl bir önceki yılla karşılaştırmalı).
+- Görünüm seçicisinin yanıltıcı ipucu metni düzeltildi: Özet KPI'ları takvim kipinde takvim yılını kullanıyor, "her zaman rolling" ifadesi doğru değildi.
+
+**Excel çıktısı:** `data/tvplus-spor-keyword-veri-seti.xlsx` (6,5 MB, 12 sayfa)
+
+Özet · Yöntem · Spor Dalı · Organizasyon · Sayfa Tipi · Intent · Varlık Tipi · Yayın Hakkı · Katman · Denetim · Keyword Listesi (17.819 satır × 44 sütun) · Aylık Seri (31 ay)
+
+Özet sayfaları Python sabitleriyle değil SUMIF ve COUNTIF formülleriyle kuruldu; detay sayfasında filtre uygulandığında tutarlı kalıyor. Biçim Inbound Design System'in Excel katmanına uyuyor: başlık satırı `#434343` beyaz kalın, gövde Calibri + ink teal, değişim sütunlarında yalnızca yazı rengi (dolgu yok), durum sütununda dörtlü rozet paleti, not sayfasında kalın coral etiket + ince coral sol kenarlık. Denetim sayfasında öneri yalnızca ilk veri satırına yazıldı.
+
 **Güncel veri:** 17.819 keyword · Son 12 Ay 3,71B · YoY +%5,4 · dashboard.js 12,35 MB · artifact 12,72 MB
 
 ## 2026-08-24

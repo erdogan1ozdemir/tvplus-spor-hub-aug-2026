@@ -83,6 +83,7 @@ const FACET = {
   entity_tipi:'ent', marka_tipi:'marka', dil:'dil', sorgu_uzunlugu:'uzn',
   varyant_kodu:'vk', katman:'ktm', kurum_sorgusu:'kurum',
   kulup_dogrulama:'dog', oyuncu_dogrulama:'odog', kulup:'kulup',
+  varyant_denetim:'vden', oyuncu_ana_ad:'anaAd',
 };
 
 // ——————————————————————————————————————————— yükle
@@ -188,13 +189,17 @@ const sporSirali = [...new Set(keywords.map(k=>k.spor).filter(Boolean))]
 const SPOR_RENK = {};
 sporSirali.forEach((s,i)=>{ SPOR_RENK[s] = PALETTE[i%PALETTE.length]; });
 
-const jenerik = keywords.filter(k=>!k.marka || k.marka==='Jenerik');
+// Jenerik toplam: rakip markalı sorgular ve denetimde işaretlenen varyantlar hariç
+const jenerik = keywords.filter(k => (!k.marka || k.marka==='Jenerik')
+  && (!k.vden || k.vden==='Geçerli'));
 const DATA = {
   meta: {
     olusturma: new Date().toISOString().slice(0,10),
     kaynak: 'DataForSEO · Google Ads Search Volume · Türkiye/Türkçe',
     aylar: AY, yillar, dosyalar, mukerrer,
     toplamKeyword: keywords.length,
+    gecerliKeyword: jenerik.length,
+    isaretliVaryant: keywords.filter(k=>k.vden && k.vden!=='Geçerli').length,
     toplamR12: jenerik.reduce((a,k)=>a+(k.r12||0),0),
     toplamP12: jenerik.reduce((a,k)=>a+(k.p12||0),0),
   },
@@ -203,9 +208,30 @@ const DATA = {
   keywords,
 };
 
+// ——————————————————————————————————————————— dize sözlüğü
+// Faset değerleri satır başına tekrar ettiği için dosya gereksiz büyüyor.
+// Değerler sözlüğe alınıp indeksle saklanır, tarayıcıda yüklenirken geri açılır.
+const SOZLUK_ALAN = Object.values(FACET).concat(['sinif','bucket','trend','kaynak','catalog']);
+const sozluk = {};
+for(const alan of SOZLUK_ALAN){
+  const set = new Set();
+  for(const k of keywords) if(typeof k[alan] === 'string') set.add(k[alan]);
+  if(set.size === 0 || set.size > 4000) continue;
+  const liste = [...set];
+  const idx = new Map(liste.map((v,i)=>[v,i]));
+  sozluk[alan] = liste;
+  for(const k of keywords) if(typeof k[alan] === 'string') k[alan] = idx.get(k[alan]);
+}
+DATA.sozluk = sozluk;
+
 fs.mkdirSync(path.dirname(OUT), {recursive:true});
 fs.writeFileSync(OUT,
   'window.DATA = ' + JSON.stringify(DATA) + ';\n' +
+  // Sözlükten geri açma: downstream kod dizelerle çalışmaya devam eder.
+  '(function(){var D=window.DATA,S=D.sozluk||{};' +
+  'for(var a in S){var L=S[a];for(var i=0;i<D.keywords.length;i++){' +
+  'var v=D.keywords[i][a];if(typeof v==="number")D.keywords[i][a]=L[v];}}' +
+  'delete D.sozluk;})();\n' +
   'window.SPOR_RENK = ' + JSON.stringify(SPOR_RENK) + ';\n' +
   'window.BRAND_ACCENT = (window.BRAND && window.BRAND.accent) || "#FAD604";\n', 'utf8');
 

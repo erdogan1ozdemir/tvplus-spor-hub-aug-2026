@@ -1227,6 +1227,7 @@ window.TABS = (function(){
     ['Organizasyon Özellikleri', ['mus','sev','pres','per','tak']],
     ['Kapsam',                   ['cins','km','tb','cog','yer','turk']],
     ['TV+ & Kaynak',             ['hak','marka','kurum','ktm','kulup']],
+    ['Veri Denetimi',            ['vden','anaAd','dog','odog']],
     ['Sorgu Özellikleri',        ['dil','uzn','bucket','sinif','trend']],
   ];
 

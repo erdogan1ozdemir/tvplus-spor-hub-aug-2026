@@ -329,3 +329,10 @@ Kullanıcı geri bildirimi: görselleştirme, dinamizm ve YoY açısından eksik
 
 ### Sezonsallık satır etiketleri
 - Hücre içinde ortalandı, sola dayalı görünüm giderildi.
+
+### Oyuncu varyant denetimi ve dize sözlüğü
+- Aksansız/kısaltmalı varyantlar gerçek hacmi ortaya çıkardı: **Vinicius 18.640 → 165.800**, Mbappe 2,52M, Osimhen 5,80M, Haaland 1,70M, Trossard 1,69M. Oyuncu toplamı 282M → **468,7M**, kümedeki oyuncu payı %9,4 → **%17,8**.
+- Soyad-tek varyantları marka ve genel kelimelerle çakışabiliyor. `scripts/oyuncu_varyant_denetim.py` yazıldı; **yıkıcı değil**, satırları `varyant_denetim` kolonuyla işaretliyor ve dashboard yalnızca "Geçerli" olanları jenerik toplama katıyor. Böylece eşikler yeniden çekim gerektirmeden değiştirilebiliyor.
+- İlk denemede eşik fazla dardı ve Trossard, Bailey gibi gerçek oyuncular eleniyordu; oran eşiği 4x'ten 20x'e çekildi, blokaj listesi yalnızca marka/ünlü çakışmalarıyla sınırlandı. Son durumda 15.087 satırın yalnızca **17'si** işaretli (cumhuriyeti, watson, karaca, mcdonald, network, stanley, kartal, özdilek, vikings, yeşil burun adaları gibi).
+- **Dize sözlüğü:** faset değerleri satır başına tekrar ettiği için `data/dashboard.js` gereksiz büyüyordu. Değerler sözlüğe alınıp indeksle saklanıyor, tarayıcıda yüklenirken geri açılıyor. Dosya 14,01 MB → **10,27 MB**, artifact 14,38 MB → **10,64 MB**.
+- Güncel veri: 15.087 keyword, Son 12 Ay 3,69B, YoY +%4,8, 31 aylık seri. Takım araması 2,17B, oyuncu araması 468,7M.

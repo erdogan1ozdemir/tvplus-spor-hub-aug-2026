@@ -740,5 +740,85 @@
    "Ziraat Bankkart Spor Kulübü",
    "Ziraat Bankkart"
   ]
+ },
+ "Panathinaikos B.C.": {
+  "wiki": "Panathinaikos B.C.",
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "panathinaikos"
+  ],
+  "adaylar": [
+   "Panathinaikos B.C."
+  ]
+ },
+ "Olympiacos B.C.": {
+  "wiki": "Olympiacos B.C.",
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "olympiakos"
+  ],
+  "adaylar": [
+   "Olympiacos B.C."
+  ]
+ },
+ "Maccabi Tel Aviv B.C.": {
+  "wiki": "Maccabi Tel Aviv B.C.",
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "maccabi tel aviv"
+  ],
+  "adaylar": [
+   "Maccabi Tel Aviv B.C."
+  ]
+ },
+ "Žalgiris Kaunas": {
+  "wiki": "Žalgiris Kaunas",
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "zalgiris"
+  ],
+  "adaylar": [
+   "BC Žalgiris",
+   "Žalgiris Kaunas",
+   "BC Zalgiris",
+   "Zalgiris Kaunas"
+  ]
+ },
+ "KK Partizan": {
+  "wiki": "KK Partizan",
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "partizan"
+  ],
+  "adaylar": [
+   "KK Partizan"
+  ]
+ },
+ "Saski Baskonia": {
+  "wiki": "Saski Baskonia",
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "baskonia"
+  ],
+  "adaylar": [
+   "Saski Baskonia"
+  ]
+ },
+ "Hapoel Tel Aviv B.C.": {
+  "wiki": "Hapoel Tel Aviv B.C.",
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "hapoel tel aviv"
+  ],
+  "adaylar": [
+   "Hapoel Tel Aviv B.C."
+  ]
  }
 }

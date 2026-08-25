@@ -59,7 +59,14 @@ Paralelde bağımsız bir code review çalıştırıldı. Doğrulanan ve düzelt
 
 **Açık kalan bulgular (tasarım kararı gerektiriyor):** peak çeyrek iki farklı yöntemle hesaplanıyor (satırların %90'ında sonuç farklı), sezonsallık sınıfı 31 ay üzerinden hesaplanıp 12 ay olarak anlatılıyor, takvim görünümünde ısı haritası peak noktası yanlış sütuna düşüyor, takım kümeleme tek sonek kırpıyor (248 küme parçalanmış), altı Python betiği hâlâ atomik yazmıyor.
 
-**Güncel veri:** 14.292 keyword · Son 12 Ay 3,63B · YoY +%5,1 · dashboard.js 9,94 MB · artifact 10,32 MB
+### Oyuncu hacim çekimi (onaylı)
+
+- Onay alınarak 11.559 keyword çekildi: 3.521'i veri döndü, maliyet $1,53, pencere 2024-01 → 2026-07 (31 ay). Veri seti 14.292 → 17.823 keyword, Son 12 Ay 3,63B → 3,71B.
+- Oyuncu hacmi spor dalına göre: Futbol 384,8M · Basketbol 59,0M · Voleybol 8,5M. Önceki durumda basketbol ve voleybol oyuncu hacmi sıfıra yakındı.
+- **Transfermarkt eşleme hatası bulundu ve düzeltildi.** Panathinaikos, Olympiakos, Maccabi Tel Aviv, Žalgiris, Partizan, Baskonia, Hapoel Tel Aviv ve Tokat Belediye Plevne kulüpleri için Transfermarkt futbol kadrosunu döndürmüş, oyuncular basketbol ve voleybol olarak etiketlenmişti. 914 satır futbola taşındı ve `faset_notu` ile işaretlendi. Bu kulüplerin gerçek basketbol kadroları Wikipedia'dan alındı (7 kulüp, 111 oyuncu); hacim çekimi için 428 keyword bekliyor.
+- `kadro_wiki_basket.py` tek kulüple çalıştırıldığında çıktı dosyasının tamamını o kulüple değiştiriyordu. Betik birleştirmeli ve atomik yazıma çevrildi.
+
+**Güncel veri:** 17.823 keyword · Son 12 Ay 3,71B · YoY +%5,4 · dashboard.js 12,35 MB · artifact 12,72 MB
 
 ## 2026-08-24
 

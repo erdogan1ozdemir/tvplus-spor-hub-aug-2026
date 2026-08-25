@@ -1,4 +1,35 @@
 {
+ "Žalgiris Kaunas": {
+  "kadro": [
+   "Sterling Brown",
+   "Nigel Williams-Goss",
+   "Kaodirichi Akobundu-Ehiogu",
+   "Carsen Edwards",
+   "Saben Lee",
+   "Dovydas Giedraitis",
+   "Ąžuolas Tubelis",
+   "Maodo Lô",
+   "Dustin Sleva",
+   "Jonas Valančiūnas",
+   "Marek Blaževič",
+   "Marius Grigonis",
+   "Arnas Butkevičius",
+   "Deividas Sirvydis",
+   "Edgaras Ulanovas"
+  ],
+  "wiki": "Žalgiris Kaunas",
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "zalgiris"
+  ],
+  "adaylar": [
+   "BC Žalgiris",
+   "Žalgiris Kaunas",
+   "BC Zalgiris",
+   "Zalgiris Kaunas"
+  ]
+ },
  "Anadolu Efes S.K.": {
   "kadro": [
    "Jordan Loyd",
@@ -1048,19 +1079,6 @@
    "Indiana Pacers"
   ]
  },
- "İstanbul Büyükşehir Belediyespor": {
-  "kadro": [],
-  "wiki": "İstanbul Büyükşehir Belediyespor",
-  "org": "Efeler Ligi",
-  "spor": "Voleybol",
-  "kw": [
-   "istanbul büyükşehir belediyespor"
-  ],
-  "adaylar": [
-   "İstanbul Büyükşehir Belediyespor (erkek voleybol takımı)",
-   "İstanbul Büyükşehir Belediyespor"
-  ]
- },
  "New York Knicks": {
   "kadro": [
    "Jose Alvarado",
@@ -1833,6 +1851,180 @@
    "Ziraat Bankası (erkek voleybol takımı)",
    "Ziraat Bankkart Spor Kulübü",
    "Ziraat Bankkart"
+  ]
+ },
+ "Panathinaikos B.C.": {
+  "kadro": [
+   "Panagiotis Kalaitzakis",
+   "Kostas Sloukas",
+   "Nigel Hayes-Davis",
+   "Nikos Rogkavopoulos",
+   "Jerian Grant",
+   "Ioannis Kouzeloglou",
+   "Kendrick Nunn",
+   "Mathias Lessort",
+   "Guerschon Yabusele",
+   "Juancho Hernangómez",
+   "Dinos Mitoglou",
+   "Lefteris Mantzoukas",
+   "Moustapha Fall",
+   "Brancou Badio",
+   "Isaac Bonga",
+   "Dimitrios Moraitis",
+   "Sylvain Francisco"
+  ],
+  "wiki": "Panathinaikos B.C.",
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "panathinaikos"
+  ],
+  "adaylar": [
+   "Panathinaikos B.C."
+  ]
+ },
+ "Olympiacos B.C.": {
+  "kadro": [
+   "Thomas Walkup",
+   "Tyson Ward",
+   "Giorgos Bourneles",
+   "Giannoulis Larentzakis",
+   "Jean Montero",
+   "Sasha Vezenkov",
+   "Kostas Papanikolaou",
+   "Omiros Netzipoglou",
+   "Tyler Dorsey",
+   "Nikola Milutinov",
+   "Cory Joseph",
+   "Donta Hall",
+   "Tyrique Jones",
+   "Evan Fournier",
+   "Codi Miller-McIntyre",
+   "Mbaye Ndiaye"
+  ],
+  "wiki": "Olympiacos B.C.",
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "olympiakos"
+  ],
+  "adaylar": [
+   "Olympiacos B.C."
+  ]
+ },
+ "Maccabi Tel Aviv B.C.": {
+  "kadro": [
+   "Gabriel Lundberg",
+   "Jaylen Hoard",
+   "Jimmy Clark III",
+   "Amit Ebo",
+   "Gur Lavy",
+   "Armando Bacot",
+   "Roman Sorkin",
+   "Oshae Brissett",
+   "Will Rayman",
+   "John DiBartolomeo",
+   "Keaton Wallace",
+   "T. J. Leaf",
+   "Daniel Theis",
+   "Yam Madar",
+   "Shane Hunter",
+   "Bonzie Colson"
+  ],
+  "wiki": "Maccabi Tel Aviv B.C.",
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "maccabi tel aviv"
+  ],
+  "adaylar": [
+   "Maccabi Tel Aviv B.C."
+  ]
+ },
+ "KK Partizan": {
+  "kadro": [
+   "Kyle Allman Jr.",
+   "Carlik Jones",
+   "Luca Vildoza",
+   "Ethan Thompson",
+   "Alessandro Pajola",
+   "Mario Nakić",
+   "Vanja Marinković",
+   "Nikola Tanasković",
+   "Lamar Stevens",
+   "Kevarrius Hayes",
+   "Arijan Lakić",
+   "Jabari Parker",
+   "Tonye Jekiri",
+   "Derek Willis",
+   "Joffrey Lauvergne"
+  ],
+  "wiki": "KK Partizan",
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "partizan"
+  ],
+  "adaylar": [
+   "KK Partizan"
+  ]
+ },
+ "Saski Baskonia": {
+  "kadro": [
+   "Markus Howard",
+   "Kobi Simmons",
+   "Rodions Kurucs",
+   "Tadas Sedekerskis",
+   "Matteo Spagnolo",
+   "Khalifa Diop",
+   "Clément Frisch",
+   "Stefan Joksimović",
+   "Chris Duarte",
+   "A. J. Lawson",
+   "D.J. Stewart Jr.",
+   "Damion Baugh"
+  ],
+  "wiki": "Saski Baskonia",
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "baskonia"
+  ],
+  "adaylar": [
+   "Saski Baskonia"
+  ]
+ },
+ "Hapoel Tel Aviv B.C.": {
+  "kadro": [
+   "Jacob Toppin",
+   "Eugene German",
+   "Antonio Blakeney",
+   "Elijah Bryant",
+   "Khadeen Carrington",
+   "Itay Segev",
+   "Amir Coffey",
+   "Guy Palatin",
+   "Bar Timor",
+   "Tyler Ennis",
+   "Tomáš Satoranský",
+   "Oz Blayzer",
+   "Zach LeDay",
+   "Tai Odiase",
+   "Vasilije Micić",
+   "Ish Wainright",
+   "Daniel Oturu",
+   "Tomer Ginat",
+   "Yiftach Ziv",
+   "Tamir Blatt"
+  ],
+  "wiki": "Hapoel Tel Aviv B.C.",
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "hapoel tel aviv"
+  ],
+  "adaylar": [
+   "Hapoel Tel Aviv B.C."
   ]
  }
 }

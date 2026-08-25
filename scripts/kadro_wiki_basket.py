@@ -149,5 +149,16 @@ if __name__ == "__main__":
         print(f"  {k:<30} {len(v):>3} → {', '.join(v[:5])}")
     bos = [k for k, v in sonuc.items() if not v]
     if bos: print(f"\nKadro bulunamayan ({len(bos)}): {', '.join(bos[:14])}")
-    json.dump({k: {"kadro": v, **kanon[k]} for k, v in sonuc.items()},
-              open("data/raw/_kadro_bv.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    # Tek kulüple çalıştırıldığında dosyanın tamamı o kulüple değişmemeli;
+    # önceki sonuçlar korunur ve yalnızca taranan kulüpler güncellenir.
+    cikti = "data/raw/_kadro_bv.json"
+    onceki = {}
+    if os.path.exists(cikti):
+        try: onceki = json.load(open(cikti, encoding="utf-8"))
+        except Exception: onceki = {}
+    onceki.update({k: {"kadro": v, **kanon[k]} for k, v in sonuc.items() if v})
+    gecici = cikti + ".tmp"
+    with open(gecici, "w", encoding="utf-8") as f:
+        json.dump(onceki, f, ensure_ascii=False, indent=1)
+    os.replace(gecici, cikti)
+    print(f"dosyadaki toplam kulup: {len(onceki)}")

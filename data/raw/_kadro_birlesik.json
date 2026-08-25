@@ -1,4 +1,29 @@
 {
+ "Žalgiris Kaunas": {
+  "kadro": [
+   "Sterling Brown",
+   "Nigel Williams-Goss",
+   "Kaodirichi Akobundu-Ehiogu",
+   "Carsen Edwards",
+   "Saben Lee",
+   "Dovydas Giedraitis",
+   "Ąžuolas Tubelis",
+   "Maodo Lô",
+   "Dustin Sleva",
+   "Jonas Valančiūnas",
+   "Marek Blaževič",
+   "Marius Grigonis",
+   "Arnas Butkevičius",
+   "Deividas Sirvydis",
+   "Edgaras Ulanovas"
+  ],
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "zalgiris"
+  ],
+  "kaynak": "Wikipedia"
+ },
  "Anadolu Efes S.K.": {
   "kadro": [
    "Jordan Loyd",
@@ -1596,6 +1621,162 @@
   "spor": "Voleybol",
   "kw": [
    "ziraat bankkart"
+  ],
+  "kaynak": "Wikipedia"
+ },
+ "Panathinaikos B.C.": {
+  "kadro": [
+   "Panagiotis Kalaitzakis",
+   "Kostas Sloukas",
+   "Nigel Hayes-Davis",
+   "Nikos Rogkavopoulos",
+   "Jerian Grant",
+   "Ioannis Kouzeloglou",
+   "Kendrick Nunn",
+   "Mathias Lessort",
+   "Guerschon Yabusele",
+   "Juancho Hernangómez",
+   "Dinos Mitoglou",
+   "Lefteris Mantzoukas",
+   "Moustapha Fall",
+   "Brancou Badio",
+   "Isaac Bonga",
+   "Dimitrios Moraitis",
+   "Sylvain Francisco"
+  ],
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "panathinaikos"
+  ],
+  "kaynak": "Wikipedia"
+ },
+ "Olympiacos B.C.": {
+  "kadro": [
+   "Thomas Walkup",
+   "Tyson Ward",
+   "Giorgos Bourneles",
+   "Giannoulis Larentzakis",
+   "Jean Montero",
+   "Sasha Vezenkov",
+   "Kostas Papanikolaou",
+   "Omiros Netzipoglou",
+   "Tyler Dorsey",
+   "Nikola Milutinov",
+   "Cory Joseph",
+   "Donta Hall",
+   "Tyrique Jones",
+   "Evan Fournier",
+   "Codi Miller-McIntyre",
+   "Mbaye Ndiaye"
+  ],
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "olympiakos"
+  ],
+  "kaynak": "Wikipedia"
+ },
+ "Maccabi Tel Aviv B.C.": {
+  "kadro": [
+   "Gabriel Lundberg",
+   "Jaylen Hoard",
+   "Jimmy Clark III",
+   "Amit Ebo",
+   "Gur Lavy",
+   "Armando Bacot",
+   "Roman Sorkin",
+   "Oshae Brissett",
+   "Will Rayman",
+   "John DiBartolomeo",
+   "Keaton Wallace",
+   "T. J. Leaf",
+   "Daniel Theis",
+   "Yam Madar",
+   "Shane Hunter",
+   "Bonzie Colson"
+  ],
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "maccabi tel aviv"
+  ],
+  "kaynak": "Wikipedia"
+ },
+ "KK Partizan": {
+  "kadro": [
+   "Kyle Allman Jr.",
+   "Carlik Jones",
+   "Luca Vildoza",
+   "Ethan Thompson",
+   "Alessandro Pajola",
+   "Mario Nakić",
+   "Vanja Marinković",
+   "Nikola Tanasković",
+   "Lamar Stevens",
+   "Kevarrius Hayes",
+   "Arijan Lakić",
+   "Jabari Parker",
+   "Tonye Jekiri",
+   "Derek Willis",
+   "Joffrey Lauvergne"
+  ],
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "partizan"
+  ],
+  "kaynak": "Wikipedia"
+ },
+ "Saski Baskonia": {
+  "kadro": [
+   "Markus Howard",
+   "Kobi Simmons",
+   "Rodions Kurucs",
+   "Tadas Sedekerskis",
+   "Matteo Spagnolo",
+   "Khalifa Diop",
+   "Clément Frisch",
+   "Stefan Joksimović",
+   "Chris Duarte",
+   "A. J. Lawson",
+   "D.J. Stewart Jr.",
+   "Damion Baugh"
+  ],
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "baskonia"
+  ],
+  "kaynak": "Wikipedia"
+ },
+ "Hapoel Tel Aviv B.C.": {
+  "kadro": [
+   "Jacob Toppin",
+   "Eugene German",
+   "Antonio Blakeney",
+   "Elijah Bryant",
+   "Khadeen Carrington",
+   "Itay Segev",
+   "Amir Coffey",
+   "Guy Palatin",
+   "Bar Timor",
+   "Tyler Ennis",
+   "Tomáš Satoranský",
+   "Oz Blayzer",
+   "Zach LeDay",
+   "Tai Odiase",
+   "Vasilije Micić",
+   "Ish Wainright",
+   "Daniel Oturu",
+   "Tomer Ginat",
+   "Yiftach Ziv",
+   "Tamir Blatt"
+  ],
+  "org": "EuroLeague",
+  "spor": "Basketbol",
+  "kw": [
+   "hapoel tel aviv"
   ],
   "kaynak": "Wikipedia"
  },
@@ -6172,8 +6353,8 @@
    "Milos Pantovic",
    "Iason Nebis"
   ],
-  "org": "EuroLeague",
-  "spor": "Basketbol",
+  "org": "Diğer Avrupa Ligleri",
+  "spor": "Futbol",
   "kw": [
    "panathinaikos"
   ],
@@ -6211,8 +6392,8 @@
    "Ayoub El Kaabi",
    "Roman Yaremchuk"
   ],
-  "org": "EuroLeague",
-  "spor": "Basketbol",
+  "org": "Diğer Avrupa Ligleri",
+  "spor": "Futbol",
   "kw": [
    "olympiakos"
   ],
@@ -6254,8 +6435,8 @@
    "Elad Madmon",
    "Ion Nicolaescu"
   ],
-  "org": "EuroLeague",
-  "spor": "Basketbol",
+  "org": "Diğer Avrupa Ligleri",
+  "spor": "Futbol",
   "kw": [
    "maccabi tel aviv"
   ],
@@ -6291,8 +6472,8 @@
    "Haris Kadric",
    "Renan Oliveira"
   ],
-  "org": "EuroLeague",
-  "spor": "Basketbol",
+  "org": "Diğer Avrupa Ligleri",
+  "spor": "Futbol",
   "kw": [
    "zalgiris"
   ],
@@ -6337,8 +6518,8 @@
    "Jeh",
    "Marko Lekic"
   ],
-  "org": "EuroLeague",
-  "spor": "Basketbol",
+  "org": "Diğer Avrupa Ligleri",
+  "spor": "Futbol",
   "kw": [
    "partizan"
   ],
@@ -6368,8 +6549,8 @@
    "Marcos Goñi",
    "Xabi Gómez"
   ],
-  "org": "EuroLeague",
-  "spor": "Basketbol",
+  "org": "Diğer Avrupa Ligleri",
+  "spor": "Futbol",
   "kw": [
    "baskonia"
   ],
@@ -6407,8 +6588,8 @@
    "Emmanuel Boateng",
    "Anas Mahamid"
   ],
-  "org": "EuroLeague",
-  "spor": "Basketbol",
+  "org": "Diğer Avrupa Ligleri",
+  "spor": "Futbol",
   "kw": [
    "hapoel tel aviv"
   ],
@@ -6442,8 +6623,8 @@
    "Yiğit Kotan",
    "Mustafa Ateş"
   ],
-  "org": "Efeler Ligi",
-  "spor": "Voleybol",
+  "org": "Diğer Avrupa Ligleri",
+  "spor": "Futbol",
   "kw": [
    "tokat belediye plevne"
   ],

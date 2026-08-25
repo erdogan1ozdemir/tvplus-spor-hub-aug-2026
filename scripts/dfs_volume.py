@@ -80,9 +80,18 @@ def post(payload, auth):
             code = out[-1].strip() if len(out) > 1 else "000"
             if code == "200":
                 try:
-                    return json.loads(out[0])
+                    veri = json.loads(out[0])
                 except json.JSONDecodeError:
-                    pass
+                    veri = None
+                if veri is not None:
+                    # HTTP 200 tek başına yeterli değil: kota bitmesi, kimlik
+                    # veya hız sınırı hataları da 200 ile döner ve tasks alanı
+                    # boş gelir. Bu durum sonuçsuz yazıma yol açıyordu.
+                    gd = veri.get("status_code")
+                    if gd not in (20000, None):
+                        sys.exit(f"DataForSEO govde hatasi {gd}: "
+                                 f"{veri.get('status_message')}")
+                    return veri
             if attempt < 3:
                 time.sleep(15 * (attempt + 1)); continue
             sys.exit(f"HTTP {code}: {(out[0] or r.stderr)[:400]}")
@@ -131,8 +140,12 @@ def main():
             task["date_from"] = date_from
         resp = post([task], auth)
         total_cost += resp.get("cost", 0) or 0
-        for t in resp.get("tasks") or []:
+        gorevler = resp.get("tasks") or []
+        if not gorevler:
+            sys.exit("DataForSEO bos tasks dondurdu; dosya korundu, cikiliyor.")
+        for t in gorevler:
             if t.get("status_code") != 20000:
+                hatali_gorev.append(t.get("status_message"))
                 print(f"  ! task hatasi: {t.get('status_message')}", file=sys.stderr)
             for item in (t.get("result") or []):
                 kw = (item.get("keyword") or "").strip().lower()
@@ -152,7 +165,23 @@ def main():
 
     months = sorted({m for it in results.values() for m in msmap(it)}, reverse=True)
 
-    with open(dst, "w", newline="", encoding="utf-8-sig") as f:
+    # ——— Yazım öncesi güvenlik denetimi
+    # Sonuçsuz veya kapsamı çöken bir çekim, dolu bir CSV'yi boşaltabiliyordu.
+    if not results:
+        sys.exit(f"Hicbir sonuc donmedi ({len(hatali_gorev)} hatali gorev); "
+                 f"{dst} korundu, cikiliyor.")
+    if os.path.exists(dst):
+        try:
+            with open(dst, encoding="utf-8-sig") as f:
+                onceki = sum(1 for r in csv.DictReader(f) if r.get("veri_var") == "evet")
+        except Exception:
+            onceki = 0
+        if onceki and len(results) < onceki * 0.6:
+            sys.exit(f"Kapsam dustu: onceki {onceki}, simdi {len(results)} "
+                     f"(%{100*len(results)/onceki:.0f}). {dst} korundu, cikiliyor.")
+
+    gecici = dst + ".tmp"
+    with open(gecici, "w", newline="", encoding="utf-8-sig") as f:
         w = csv.writer(f)
         w.writerow(["keyword"] + facet_cols +
                    ["search_volume", "competition", "competition_index", "cpc",
@@ -169,6 +198,7 @@ def main():
                         (it or {}).get("high_top_of_page_bid", ""),
                         "evet" if it and it.get("search_volume") is not None else "hayir"] +
                        [ms.get(m, "") for m in months])
+    os.replace(gecici, dst)
 
     got = sum(1 for k in order if results.get(k, {}).get("search_volume") is not None)
     print(f"\nGonderilen: {len(order)} | Veri donen: {got} | Veri donmeyen: {len(order)-got}")

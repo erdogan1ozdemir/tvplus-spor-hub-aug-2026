@@ -25,6 +25,7 @@ KULUP_ISARET = re.compile(
     r"sparta|ferencvaros|rapid|sturm|salzburg|basel|malmo|brann|"
     r"midtjylland|copenhagen|qarabag|qarabağ|maccabi|hapoel|shakhtar|ludogorets|"
     r"cluj|fcsb|zabrze|lech|jagiellonia|braga|plzen|plzeň|kairat|paok|aek|apoel|"
+    r"tc|sk|ck|kk|bc|ac|ic|ferencvaros[ıi]?|ferencváros[ıi]?|"
     r"galatasaray|fenerbahçe|beşiktaş|trabzonspor|başakşehir|bayern|dortmund|"
     r"leverkusen|leipzig|frankfurt|stuttgart|bremen|gladbach|hoffenheim|freiburg)\b",
     re.I)
@@ -97,6 +98,17 @@ for d in dosyalar:
         # D. Boş zorunlu faset
         if not spor or not ent:
             etiket = "Eksik faset"
+
+        # Kişi adı olduğu tespit edilen satırlar dışarı atılmaz; doğru varlık
+        # tipine taşınır. Yalnızca gerçek kirlilik (genel kelime, şehir adı)
+        # işaretli kalır ve toplamlardan düşer.
+        if etiket in ("Oyuncu adı, kulüp değil", "Olası kişi adı (kulüp işareti yok)",
+                      "Tek kelime, kulüp işareti yok (doğrulanmalı)"):
+            r["entity_tipi"] = "Oyuncu"
+            r["sayfa_tipi"] = "Oyuncu Jenerik"
+            r["katman"] = "Genişletme"
+            rapor.setdefault("__tasindi__", []).append((kw, sv, org, ""))
+            etiket = "Geçerli"
 
         r["mantik_denetim"] = etiket
         if etiket != "Geçerli":

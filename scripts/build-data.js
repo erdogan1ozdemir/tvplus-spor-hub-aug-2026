@@ -145,8 +145,10 @@ for(const o of kwMap.values()){
 
   const {pq}  = ceyrekBayrak(m25.length?m25:m24);
   const rC    = ceyrekBayrak(r12arr);
-  const peakI25 = m25.length ? m25.indexOf(Math.max(...m25)) : -1;
-  const peakIR  = r12arr.indexOf(Math.max(...r12arr));
+  // Tümü sıfır olan seride indexOf(max) 0 döndürür; bu, hacmi olmayan
+  // satırlara gerçekte var olmayan bir peak ayı atar.
+  const peakI25 = (m25.length && Math.max(...m25) > 0) ? m25.indexOf(Math.max(...m25)) : -1;
+  const peakIR  = (r12arr.length && Math.max(...r12arr) > 0) ? r12arr.indexOf(Math.max(...r12arr)) : -1;
   const sz = siniflandir(tum);
   const nz = tum.filter(v=>v>0);
   const dipI = nz.length ? tum.indexOf(Math.min(...nz)) : -1;
@@ -207,7 +209,9 @@ const DATA = {
   },
   months2024, months2025, months2026, monthsR12, monthsP12,
   facetAdlari: FACET, facetDegerleri,
-  keywords,
+  // Denetimde işaretli satırlar dashboard'a hiç gönderilmez; aksi halde
+  // toplamlarda ve kırılımlarda sayılmaya devam ediyorlardı.
+  keywords: jenerik,
 };
 
 // ——————————————————————————————————————————— dize sözlüğü
@@ -217,12 +221,12 @@ const SOZLUK_ALAN = Object.values(FACET).concat(['sinif','bucket','trend','kayna
 const sozluk = {};
 for(const alan of SOZLUK_ALAN){
   const set = new Set();
-  for(const k of keywords) if(typeof k[alan] === 'string') set.add(k[alan]);
+  for(const k of jenerik) if(typeof k[alan] === 'string') set.add(k[alan]);
   if(set.size === 0 || set.size > 4000) continue;
   const liste = [...set];
   const idx = new Map(liste.map((v,i)=>[v,i]));
   sozluk[alan] = liste;
-  for(const k of keywords) if(typeof k[alan] === 'string') k[alan] = idx.get(k[alan]);
+  for(const k of jenerik) if(typeof k[alan] === 'string') k[alan] = idx.get(k[alan]);
 }
 DATA.sozluk = sozluk;
 

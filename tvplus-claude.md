@@ -46,7 +46,20 @@
 
 **Ayrıştırıcıda çözülen sorunlar:** başlık satırından sütun indeksi okuma, "Ad-Soyad / Soyadı - Adı / SOYADI - İSMİ" başlık türevleri, "Soyad, Ad" ve soyad-önce sıra çevirimi, veri satırlarında `<th>` hücrelerinin sayılmaması (sütun kayması), hücredeki ilk bağlantının bayrak ikonu olması, başlıksız kadro tabloları için yedek yol.
 
-**Güncel veri:** 14.302 keyword · Son 12 Ay 3,63B · YoY +%5,2 · dashboard.js 9,94 MB · artifact 10,32 MB
+### Code review ve düzeltilen kritik hatalar
+
+Paralelde bağımsız bir code review çalıştırıldı. Doğrulanan ve düzeltilen bulgular:
+
+- **Master Liste sekmesi tüm dashboard'ı düşürüyordu.** `tabs.jsx` içinde `MasterTab` tanımsız `viewMode` değişkenini okuyor, React kökü çöküyordu. Sekme adresi localStorage'a yazıldığı için son ziyareti bu sekme olan kullanıcı boş sayfayla açılıyordu. Destructure'a eklendi.
+- **`dfs_volume.py` dolu CSV'leri boşaltabiliyordu.** DataForSEO kota, kimlik ve hız sınırı hatalarını HTTP 200 ile döndürüyor; yalnızca HTTP kodu denetlendiği için `results` boş kalıyor ve 11,7 MB'lık dosya `veri_var=hayir` satırlarıyla üzerine yazılıyordu. Gövde `status_code` denetimi, boş sonuç kontrolü, önceki dosyaya göre %60 kapsam eşiği ve atomik yazım eklendi. `refetch_all.sh` dosyasına `pipefail` eklendi.
+- **Denetimde işaretli satırlar dashboard'da sayılmaya devam ediyordu.** `jenerik` filtresi yalnızca derleme meta verisinde kullanılıyordu, `app.jsx` ise filtresiz `D.keywords` besliyordu. Artık dashboard'a yalnızca geçerli satırlar gönderiliyor.
+- **12 aylık toplam "aylık" diye etiketleniyordu.** Takım & Oyuncu bölümündeki cümle 12 kat yüksek rakam gösteriyordu; ayrı `aylik` alanı eklendi.
+- **Hacmi sıfır olan satırlara uydurma peak ayı yazılıyordu.** `indexOf(Math.max(...))` tümü sıfır seride 0 döndürüyor, 163 satır Ağustos 25 kovasına düşüyordu. Hem `build-data.js` hem `app.jsx` tarafında sıfır kontrolü eklendi.
+- **Kişi adı tespit edilen satırlar artık silinmiyor, oyuncuya taşınıyor.** "rafa silva", "talisca", "orkun kökçü" gibi 10 satır Oyuncu Jenerik olarak yeniden sınıflandırıldı; yalnızca gerçek kirlilik (sabah, viking, istanbul, zagreb) işaretli kalıp toplamdan düşüyor.
+
+**Açık kalan bulgular (tasarım kararı gerektiriyor):** peak çeyrek iki farklı yöntemle hesaplanıyor (satırların %90'ında sonuç farklı), sezonsallık sınıfı 31 ay üzerinden hesaplanıp 12 ay olarak anlatılıyor, takvim görünümünde ısı haritası peak noktası yanlış sütuna düşüyor, takım kümeleme tek sonek kırpıyor (248 küme parçalanmış), altı Python betiği hâlâ atomik yazmıyor.
+
+**Güncel veri:** 14.292 keyword · Son 12 Ay 3,63B · YoY +%5,1 · dashboard.js 9,94 MB · artifact 10,32 MB
 
 ## 2026-08-24
 

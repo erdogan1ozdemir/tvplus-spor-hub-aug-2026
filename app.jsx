@@ -90,7 +90,10 @@
       let r = applyFacets(D.keywords, filtre, arama);
       if(peakAy.length){
         const s=new Set(peakAy);
-        r = r.filter(k=>{ const i=(k.rpq||[]).length ? U.rollingOf(k).indexOf(Math.max(...U.rollingOf(k))) : -1;
+        r = r.filter(k=>{ const seri=U.rollingOf(k);
+          // Tümü sıfır olan seride peak ayı yoktur; indexOf(max) 0 döndürüp
+          // hacimsiz satırları ilk ayın kovasına doldururdu.
+          const i = (seri.length && Math.max(...seri) > 0) ? seri.indexOf(Math.max(...seri)) : -1;
           return i>=0 && s.has(ROLLING_LABELS[i]); });
       }
       if(peakCeyrek.length){

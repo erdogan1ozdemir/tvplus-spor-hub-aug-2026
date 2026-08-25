@@ -1,6 +1,6 @@
 #!/bin/bash
 # Tum seed dosyalarini 2024-01'den itibaren yeniden ceker
-set -e
+set -euo pipefail
 cd "$(dirname "$0")/.."
 for s in organizasyon tur2 tur3 takimlar oyuncular; do
   if [ -f "data/raw/seed_${s}.csv" ]; then

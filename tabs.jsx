@@ -1091,7 +1091,8 @@ window.TABS = (function(){
           return {spor:sp, orgAdet,
             tkKw:tk.length, tkVol:topR12(tk),
             oyKw:oy.length, oyVol:topR12(oy),
-            toplam: topR12(tk)+topR12(oy)};
+            toplam: topR12(tk)+topR12(oy),
+            aylik: Math.round((topR12(tk)+topR12(oy))/12)};
         }).filter(x=>x.toplam>0).sort((a,b)=>b.toplam-a.toplam);
         if(!satirlar.length) return null;
         const ust = satirlar[0];
@@ -1101,7 +1102,7 @@ window.TABS = (function(){
           h('div',{className:'insight-bar', style:{marginTop:0}},
             h('span',null,
               h('strong',null, ust.spor), ' dikeyinde takım ve oyuncu sayfaları ',
-              h('strong',null, fmtNum(ust.toplam)), ' aylık talebe karşılık geliyor ve ',
+              h('strong',null, fmtNum(ust.aylik)), ' aylık talebe karşılık geliyor ve ',
               h('strong',null, ust.orgAdet), ' ayrı organizasyona aynı anda hizmet ediyor. ',
               'Bir takım sayfası hem kendi liginde hem Şampiyonlar Ligi, Avrupa Ligi ve ',
               'Konferans Ligi eşleşmelerinde; bir oyuncu sayfası hem kulübünde hem milli takımında ',
@@ -1224,7 +1225,7 @@ window.TABS = (function(){
   }
 
   // ══════════════════════════════════════════ MASTER LİSTE
-  function MasterTab({rows, setKeywordModal}){
+  function MasterTab({rows, setKeywordModal, viewMode}){
     const M = D().meta;
     const KOL = [
       {label:'Keyword',key:'kw'},{label:'Son 12 Ay',key:'r12'},{label:'Önceki 12 Ay',key:'p12'},

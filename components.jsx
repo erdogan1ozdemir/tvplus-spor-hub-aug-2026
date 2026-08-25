@@ -99,6 +99,16 @@ window.C = (function(){
     kupa:      'M7 4h10v5a5 5 0 01-10 0z M5 5h2v3a2 2 0 01-2-2z M17 5h2a2 2 0 01-2 2z M9 20h6 M12 14v6',
     saha:      'M3 5h18v14H3z M12 5v14 M12 9a3 3 0 100 6 3 3 0 000-6',
     sinyal:    'M4 18a12 12 0 0116 0 M7 15a8 8 0 019 0 M11 12a3 3 0 012 0 M12 20h.01',
+    kopya:     'M9 9h10v12H9z M5 15H3V3h12v2',
+    indir:     'M12 3v12 M7 11l5 5 5-5 M4 20h16',
+    ara:       'M11 4a7 7 0 100 14 7 7 0 000-14z M20 20l-4.2-4.2',
+    filtre:    'M3 5h18 M7 12h10 M10 19h4',
+    goz:       'M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z M12 9a3 3 0 100 6 3 3 0 000-6z',
+    gozKapali: 'M4 4l16 16 M10.6 6.2A9.6 9.6 0 0112 6c6.5 0 10 6 10 6a17 17 0 01-3.4 3.9 M6.5 8.1A17 17 0 002 12s3.5 6 10 6c1.2 0 2.3-.2 3.3-.5',
+    okSag:     'M4 12h15 M13 6l6 6-6 6',
+    kapat:     'M6 6l12 12 M18 6L6 18',
+    arti:      'M12 5v14 M5 12h14',
+    eksi:      'M5 12h14',
   };
   function Ikon({ ad, size=16, stroke=1.6 }) {
     const d = IKON_YOL[ad];
@@ -1283,22 +1293,15 @@ window.C = (function(){
       }
       return String(v).replace(/\t/g,' ').replace(/\n/g,' ');
     };
-    const btnSize = size === 'md' ? {padding:'6px 12px', fontSize:13} : {padding:'4px 9px', fontSize:12};
+    // Görünüm ortak kontrol sisteminden gelir; satır içi stil bırakılmaz
     return h('button', {
-      className: 'copy-btn chip-btn' + (copied ? ' copied' : ''),
+      className: 'chip-btn copy-btn' + (copied ? ' kopyalandi' : ''),
       onClick: handle,
-      title: copied ? 'Kopyalandı!' : 'Tabloyu TSV olarak kopyala (Excel/Sheets\'e yapıştırılabilir)',
-      style: {
-        ...btnSize, borderRadius: 999, cursor: 'pointer',
-        display: 'inline-flex', alignItems: 'center', gap: 4,
-        background: copied ? 'color-mix(in srgb, var(--green, #059669) 16%, var(--bg-card))' : 'var(--bg-card)',
-        color: copied ? 'var(--green, #059669)' : 'var(--ink-2)',
-        border: '1px solid var(--line)',
-        fontWeight: 600,
-        transition: 'background .18s, color .18s, border-color .18s'
-      }
+      'data-tip': copied ? 'Kopyalandı' :
+        'Tabloyu TSV olarak kopyalar; Excel veya Sheets\'e doğrudan yapıştırılabilir'
     },
-      copied ? 'Kopyalandı' : (h('span', null, '', title))
+      h('span',{className:'btn-ikon'}, copied ? '✓' : h(Ikon,{ad:'kopya', size:13})),
+      copied ? 'Kopyalandı' : title
     );
   }
 

@@ -110,6 +110,20 @@ Zincir: **Spor Dalı → Organizasyon → Takım → Sayfa Tipi**, iki atlama ku
 
 Doğrulama: Tüm portföy 3,71B → Futbol 3,29B (69 organizasyon) → Süper Lig 2,30B (47 takım) → galatasaray 676,5M (12 sayfa tipi) → iz şeridiyle geri dönüş. Tüm sekmeler iki görünüm kipinde duman testinden geçti (20/20).
 
+### Kontrol sistemi: düğmeler ve alanlar
+
+`.chip-btn` için temel stil hiç tanımlı değildi; yalnızca iki bağlamsal override vardı, bu yüzden tarayıcının varsayılan düğmesi görünüyordu. Ortak bir kontrol sistemi yazıldı:
+
+- **Eylem düğmesi** (`.chip-btn`): 30 px yükseklik, hap biçimi, ince kenarlık, Outfit 12,5 px 600, yumuşak gölge; üzerine gelince bir piksel yükselip kenarlığı koyulaşıyor, klavye odağında halka çıkıyor
+- **Üç varyant**: `birincil` (koyu zemin, tek ana eylem için · "Bu grubun tüm keyword'lerini gör"), `sessiz` (kenarlıksız, geri alıcı eylemler · Temizle, Kapat), `active` (accent dolgu)
+- **Sayaç rozeti** (`.btn-sayac`): "Temizle 3" gibi düğme içi sayılar
+- **Arama alanı**: sol tarafta büyüteç ikonu, hap biçimi, odakta accent halkası, dolu olduğunda sağda temizleme düğmesi
+- **Segment seçici**: yükseklik ve tipografi eylem düğmesiyle hizalandı, aktif segment rozeti accent rengine dönüyor
+- **12 yeni SVG ikon**: kopya, indir, ara, filtre, göz, gözKapalı, okSağ, kapat, artı, eksi
+- `CopyButton` içindeki satır içi stiller kaldırılıp ortak sisteme bağlandı
+
+Ham metin etiketleri ("↓ CSV", "× Kapat", "× Temizle", "+ Ek filtre") ikon + metin yapısına çevrildi; tabs.jsx ve app.jsx'te ham etiket kalmadı.
+
 **Güncel veri:** 17.819 keyword · Son 12 Ay 3,71B · YoY +%5,4 · dashboard.js 12,35 MB · artifact 12,72 MB
 
 ## 2026-08-24

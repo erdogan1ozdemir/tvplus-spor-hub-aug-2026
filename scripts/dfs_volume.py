@@ -10,6 +10,7 @@ Kullanim:
 Girdi CSV: 'keyword' kolonu zorunlu, diger tum kolonlar (facet'ler) ciktiya aynen tasinir.
 """
 import sys, json, csv, base64, time, os, re, subprocess, tempfile
+import unicodedata
 
 API = "https://api.dataforseo.com/v3/keywords_data/google_ads/search_volume/live"
 LOCATION_TR, LANG_TR = 2792, "tr"
@@ -25,15 +26,26 @@ YUMUSAMA  = {"c":"ç", "ğ":"k", "b":"p", "d":"t"}
 # Google Ads bazi sembolleri kabul etmiyor; kabul edilmeyen karakter tum batch'i dusuruyor
 GECERSIZ = re.compile(r"[^0-9a-zçğıöşü\u00c0-\u024f' .\-+]", re.I)
 
+# Python'da "İ".lower() tek karakter degil, "i" + U+0307 (birlesen nokta) uretir.
+# U+0307 izinli araligin disinda kaldigi icin sanitiser onu bosluga cevirip
+# "Ilkay Gundogan" -> "i lkay gundogan" gibi anlamsiz bir sorgu gonderiyordu.
+# Turkce buyuk harfler kucultmeden once dogru karsiliklarina indirilir.
+TR_BUYUK = str.maketrans({"İ": "i", "I": "ı", "Ş": "ş", "Ğ": "ğ",
+                          "Ü": "ü", "Ö": "ö", "Ç": "ç"})
+
+def tr_kucult(s):
+    return (s or "").translate(TR_BUYUK).lower()
+
 def temizle_kw(kw):
-    k = GECERSIZ.sub(" ", (kw or "").strip().lower())
+    k = unicodedata.normalize("NFC", tr_kucult((kw or "").strip()))
+    k = GECERSIZ.sub(" ", k)
     return " ".join(k.split())
 
 def norm_key(kw):
     """Tekil/cogul ve iyelik varyantlarini tek anahtara indirger.
     Google Ads bu varyantlara ayni birlesik hacmi donduruyor; ayni istekte
     ikisi birden gonderilirse hacim birine yazilip digerine 0 donebiliyor."""
-    k = " ".join((kw or "").strip().lower().split())
+    k = " ".join(tr_kucult((kw or "").strip()).split())
     out = []
     for w in k.split(" "):
         w = TR_PLURAL.sub("", w)                       # maclari -> maci, durumlari -> durumi
@@ -131,6 +143,7 @@ def main():
 
     auth = base64.b64encode(":".join(creds()).encode()).decode()
     results, total_cost = {}, 0.0
+    hatali_gorev = []
 
     for i in range(0, len(order), BATCH):
         chunk = order[i:i + BATCH]
@@ -148,7 +161,7 @@ def main():
                 hatali_gorev.append(t.get("status_message"))
                 print(f"  ! task hatasi: {t.get('status_message')}", file=sys.stderr)
             for item in (t.get("result") or []):
-                kw = (item.get("keyword") or "").strip().lower()
+                kw = tr_kucult((item.get("keyword") or "").strip())
                 results[kw] = item
         print(f"  batch {i//BATCH+1}: {len(chunk)} kw gonderildi, toplam {len(results)} sonuc",
               file=sys.stderr)

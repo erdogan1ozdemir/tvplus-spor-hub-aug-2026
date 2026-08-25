@@ -124,6 +124,29 @@ Doğrulama: Tüm portföy 3,71B → Futbol 3,29B (69 organizasyon) → Süper Li
 
 Ham metin etiketleri ("↓ CSV", "× Kapat", "× Temizle", "+ Ek filtre") ikon + metin yapısına çevrildi; tabs.jsx ve app.jsx'te ham etiket kalmadı.
 
+### Keyword denetimi · altı paralel ajan (devam ediyor)
+
+Salt-okunur, dosya değiştirmeyen, DFS çağırmayan altı ajan başlatıldı: varlık/spor tutarlılığı, sayfa tipi ve intent, oyuncu güncelliği, hacim eksikleri, kapsam boşlukları, faset bütünlüğü. Üçü tamamlandı.
+
+**Bu oturumda düzeltilen iki kritik hata**
+
+- **`dfs_volume.py` içinde tanımsız değişken.** Bu oturumda eklediğim görev-hatası sayacının (`hatali_gorev`) başlatma satırı tutmamış; herhangi bir DataForSEO görevi 20000 dışında bir kod döndürse betik `NameError` ile çökerdi. Çöküş, batch'ler gönderildikten yani maliyet oluştuktan sonra, dosya yazılmadan gerçekleşirdi. Tanımlandı.
+- **Türkçe "İ" harfi çekim sırasında bozuluyordu.** Python'da `"İ".lower()` tek karakter değil `i` + U+0307 (birleşen nokta) üretiyor; sanitizer bu kod noktasını izinli aralıkta bulamayıp boşluğa çeviriyordu. Sonuç: `İlkay Gündoğan` API'ye `i lkay gündoğan` olarak gitmiş. **341 satır, 74 varlık, hepsi %0 veri dönüşü.** İçinde İlkay Gündoğan, İrfan Can Kahveci, İsmail Yüksek, Emirhan İlkhan ve dört Avrupa ligi (İskoçya Premiership, İsviçre Süper Lig, İsveç Allsvenskan, İsrail Ligi) var; bu varlıklar bugün veri setinde "talep yok" görünüyor. Türkçe büyük harfler küçültmeden önce doğru karşılıklarına indiriliyor, ardından NFC normalizasyonu uygulanıyor.
+
+**Ajan bulgularından doğrulananlar**
+
+- Ham CSV'lerde 609 mükerrer keyword var (441M vs 314M aylık). Ancak **dashboard'da sıfır mükerrer**: 17.819 satır, 17.819 tekil keyword. Derleme keyword bazında tekilleştirdiği için çift sayım ekrana ve Excel'e yansımıyor. Ajanın "hub kararı iki katına çıkmış görünür" çıkarımı dashboard için geçerli değil.
+- `marka_tipi` faseti tüm satırlarda `Jenerik`: filtre çalışır görünüyor ama hiçbir şeyi daraltamıyor. `marka_siniflandir.py`'nin rakip sözlüğü veri setinde hiç eşleşmemiş, yani rakip marka hacmi ölçülmüyor.
+- `kulup_dogrulama` kolonu hiçbir CSV'de yok ama faset haritasında tanımlı.
+- `hacim_takimlar.csv` üçüncü batch'i 31 ay yerine 30 ay dönmüş; 484 satırda 2026-07 boş.
+- Oyuncu `kulup` alanı sistematik olarak bir transfer geride: 2026 yaz penceresinden önce kurulmuş. Kadro kazıması ise güncel.
+
+**Bekleyen çekim listesi** (onay gerekiyor, henüz çekilmedi): Türkçe "İ" onarımı ~261 keyword · bekleyen oyuncu seed'i 428 · güncel kadro seed boşluğu 1.243 · takimlar 2026-07 onarımı. Tekilleştirilmiş toplam yaklaşık 3.600 keyword, 6 istek, ~$0,54.
+
+### Filtre ve kırılım varyantları
+
+Canlıda değişiklik yapılmadı. Dört varyant ayrı bir HTML'de tıklanabilir mockup olarak hazırlandı: varlık seçicisinin global filtreye bağlanması, eksen yazıcısının tekilleştirilmesi, filtre çubuğunun tek düğmeye inmesi, kırılım satırının menüye inmesi. Ölçüm: Gruplar sayfasında bugün 52 görünür kontrol var, dördü birlikte uygulanırsa 16'ya iniyor.
+
 **Güncel veri:** 17.819 keyword · Son 12 Ay 3,71B · YoY +%5,4 · dashboard.js 12,35 MB · artifact 12,72 MB
 
 ## 2026-08-24

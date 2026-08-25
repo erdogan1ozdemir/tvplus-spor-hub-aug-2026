@@ -173,7 +173,34 @@ Kök neden: yedek ayrıştırıcı forma numarası sütunu taşıyan her tabloyu
 
 **Düzeltilmeyi bekleyenler:** tek kelimelik varyantlar (3.432 keyword, 145,1M · "washington" 1,47M, "erdoğan" 1,40M) · 240 oyuncu olmayan kayıt (kulüp adları, NCAA takımları, medya markaları) · beş NBA kulübünde tüm zamanlar kadrosu · 41 doğrulanmış kulüp transfer düzeltmesi · 6 mükerrer yazım çifti · kadrosu olmayan 628 kulüp.
 
-**Güncel veri:** 17.819 keyword · Son 12 Ay 3,71B · YoY +%5,4 · dashboard.js 12,35 MB · artifact 12,72 MB
+### Varyant A+B uygulandı ve denetim düzeltmeleri yapıldı
+
+**Varyant A · varlık seçicisi global filtreye bağlandı.** Matristeki Tümü/Takım/Oyuncu/Maç/Lig artık yerel duruma değil `filtre.ent`'e yazıyor. "Lig"e tıklandığında çip çıkıyor ve sayfa daralıyor (165 → 130 grup); çip kaldırılınca düğme "Tümü"ye dönüyor. Sorulan tutarsızlık kapandı.
+
+**Varyant B · eksen yazıcısı tekilleştirildi.** Sezon takvimindeki eksik seçenekli 3'lü seçici kaldırıldı, yerine salt-okunur rozet geldi ("Organizasyon kırılımı · 165"). Başlık ile seçici bir daha çelişemez.
+
+**Denetim düzeltmeleri** (`scripts/denetim_duzelt.py`, yıkıcı değil, atomik yazım):
+
+| Düzeltme | Adet |
+|---|---|
+| NCAA üniversite takımı işaretlendi | 530 |
+| İmkânsız kombinasyon düzeltildi (Lig + Kıta Üstü → Kıta Turnuvası) | 472 |
+| Aktif oyuncu değil (emekli/teknik adam) işaretlendi | 188 |
+| Türk sporcu işareti eklendi | 153 |
+| Medya ve kurum markası işaretlendi | 60 |
+| 2026-27 küme düşmesi uygulandı | 51 |
+| 2026-27 yükselme uygulandı | 48 |
+| Şehir/ülke adı, stadyum, hakem, çöp kayıt işaretlendi | 57 |
+| Tek kelime varyantı kirliliği işaretlendi | 25 |
+| Mükerrer yazım eşleştirildi | 6 |
+
+Doğrulama: Antalyaspor ve Kayserispor artık TFF 1. Lig · `Lig + Kıta Üstü` kombinasyonu 0 · Türk sporcu işaretli 125 oyuncu, 61,7M · washington, sports, pictures, sergen yalçın, arda turan, utc+00 00 toplamlardan düştü.
+
+**Ölü fasetler kaldırıldı.** `marka_tipi` (tüm satırlarda tek değer), `kulup_dogrulama` (kolon hiçbir dosyada yok), `varyant_denetim` (tek değerli) ve `prestij_katmani` (prestij değil kaynak dosya ölçüyordu) hem veri setinden hem arayüzden çıkarıldı. Jenerik filtresi artık yalnızca mantık denetimine dayanıyor.
+
+**Güncel durum:** 17.502 keyword (321 satır denetimle toplamdan düşüyor) · Son 12 Ay 3,65B · dashboard.js 11,88 MB · artifact 12,28 MB · Excel 6,4 MB. Tüm sekmeler iki görünüm kipinde duman testinden geçti (20/20).
+
+**Güncel veri:** 17.502 keyword · Son 12 Ay 3,65B · YoY +%5,4 · dashboard.js 11,88 MB · artifact 12,28 MB
 
 ## 2026-08-24
 

@@ -143,17 +143,13 @@ window.TABS = (function(){
               ? `Takvim yılı görünümü · ${D().meta.yillar[1]} ayları, ${D().meta.yillar[0]} ile karşılaştırmalı`
               : `Rolling görünüm · Son 12 Ay (${ROLLING_LABELS[0]} – ${ROLLING_LABELS[11]}), Önceki 12 Ay ile karşılaştırmalı`))),
         h('div',{style:{display:'flex',gap:6,flexWrap:'wrap',alignItems:'center',marginLeft:'auto'}},
-          eksenDis
-            ? h('span',{className:'eksen-rozet'},
-                (ZINCIR_ETIKET[eksenDis]||eksenDis), ' kırılımı',
-                h('span',{className:'badge', style:{marginLeft:6}}, gruplar.length))
-            : h('div',{className:'segmented'},
-                SEVIYELER.map(function(sv){
-                  return h('button',{key:sv.id, className: seviye===sv.id?'active':'',
-                    onClick:()=>setSeviye(sv.id)}, sv.label,
-                    h('span',{className:'badge', style:{marginLeft:5}},
-                      new Set(rows.map(r=>r[sv.id]).filter(Boolean)).size));
-                })),
+          // Eksen tek yerden değişir: Kırılım satırı. Buradaki rozet yalnızca
+          // hangi eksende olunduğunu söyler; iki yazıcı olduğunda başlık ile
+          // seçici çelişebiliyordu.
+          h('span',{className:'eksen-rozet',
+            'data-tip':'Kırılım ekseni yukarıdaki Kırılım satırından değiştirilir'},
+            (ZINCIR_ETIKET[eksenDis] || FACET_ETIKET[seviye] || seviye), ' kırılımı',
+            h('span',{className:'badge', style:{marginLeft:6}}, gruplar.length)),
           h('div',{className:'segmented', title:'Varlık tipine göre daralt'},
             [['','Tümü'],['Takım','Takım'],['Oyuncu','Oyuncu'],['Maç','Maç'],
              ['Lig/Organizasyon','Lig']].map(function(e){
@@ -1371,10 +1367,10 @@ window.TABS = (function(){
       {label:'Peak Ay',get:r=>r.rpeakSerial?serialToRollingLabel(r.rpeakSerial):''},
       {label:'Peak Çeyrek',get:r=>qLabel(((viewMode==='calendar'?r.pq:r.rpq)||[]).indexOf(1), viewMode)},
       ...Object.entries(FACET_ETIKET).filter(([id])=>
-        ['spor','org','st','it','ent','hak','mus','sev','pres','cins','km','tb','cog','yer',
-         'turk','per','tak','marka','kurum','dil','uzn','ktm','kulup'].includes(id))
+        ['spor','org','st','it','ent','hak','mus','sev','cins','km','tb','cog','yer',
+         'turk','per','tak','kurum','dil','uzn','ktm','kulup'].includes(id))
         .map(([id,lab])=>({label:lab, key:id})),
-      {label:'Kulüp Doğrulama',key:'dog'},{label:'Oyuncu Doğrulama',key:'odog'},
+      {label:'Oyuncu Doğrulama',key:'odog'},
       ...D().months2024.map((m,i)=>({label:m, get:r=>r.m24[i]})),
       ...D().months2025.map((m,i)=>({label:m, get:r=>r.m25[i]})),
       ...D().months2026.map((m,i)=>({label:m, get:r=>r.m26[i]})),
@@ -1402,10 +1398,10 @@ window.TABS = (function(){
   // ══════════════════════════════════════════ KEYWORD MODAL
   const MODAL_FASET_GRUP = [
     ['Sınıflandırma',            ['spor','org','st','it','ent']],
-    ['Organizasyon Özellikleri', ['mus','sev','pres','per','tak']],
+    ['Organizasyon Özellikleri', ['mus','sev','per','tak']],
     ['Kapsam',                   ['cins','km','tb','cog','yer','turk']],
-    ['TV+ & Kaynak',             ['hak','marka','kurum','ktm','kulup']],
-    ['Veri Denetimi',            ['vden','mden','anaAd','dog','odog']],
+    ['TV+ & Kaynak',             ['hak','kurum','ktm','kulup']],
+    ['Veri Denetimi',            ['mden','anaAd','odog']],
     ['Sorgu Özellikleri',        ['dil','uzn','bucket','sinif','trend']],
   ];
 

@@ -194,14 +194,13 @@ window.U = (function(){
   // ——— TV+ faset yardımcıları ———
   const FACET_ETIKET = {
     spor:'Spor Dalı', org:'Organizasyon', st:'Sayfa Tipi', it:'Intent', ent:'Varlık Tipi',
-    hak:'Yayın Hakkı', mus:'Müsabaka Tipi', sev:'Lig Seviyesi', pres:'Prestij Katmanı',
+    hak:'Yayın Hakkı', mus:'Müsabaka Tipi', sev:'Lig Seviyesi',
     cins:'Cinsiyet', km:'Kulüp/Milli', tb:'Takım/Bireysel', cog:'Coğrafya', yer:'Yerlilik',
-    turk:'Türk Bağlantısı', per:'Periyodiklik', tak:'Takvim Tipi', marka:'Marka Tipi',
+    turk:'Türk Bağlantısı', per:'Periyodiklik', tak:'Takvim Tipi',
     dil:'Dil', uzn:'Sorgu Uzunluğu', ktm:'Katman', kurum:'Kurum Sorgusu',
     sinif:'Mevsim Tipi', bucket:'Hacim Aralığı', trend:'Trend', kulup:'Takım',
     a24:'2024 Ort.', a25:'2025 Ort.', a26:'2026 YTD Ort.',
-    vden:'Varyant Denetimi', mden:'Mantık Denetimi', anaAd:'Oyuncu Ana Adı',
-    dog:'Kulüp Doğrulama',
+    mden:'Mantık Denetimi', anaAd:'Oyuncu Ana Adı',
     odog:'Oyuncu Doğrulama',
   };
   // Kırılım hiyerarşisi: seviye 1 → 2 → 3 (Özdilek'teki Kat 1/2/3 karşılığı)

@@ -48,7 +48,12 @@
     // Sekmeler arası akan görünüm state'i: bir sekmede seçilen kırılım ve
     // varlık daralması diğer sekmelerde de geçerli olur.
     const [seviye, setSeviye] = React.useState('org');
-    const [entFiltre, setEntFiltre] = React.useState('');
+    // Varlık tipi tek yerde tutulur: global filtre. Daha önce matristeki
+    // seçici yerel bir duruma yazıyordu; çip üretmiyor, yalnızca o tabloyu
+    // daraltıyor ve satır tıklamasından farklı davranıyordu.
+    const entFiltre = (filtre.ent && filtre.ent.length === 1) ? filtre.ent[0] : '';
+    const setEntFiltre = React.useCallback(
+      v => setFiltre(f => ({...f, ent: v ? [v] : []})), []);
     const [peakGizli, setPeakGizli] = React.useState(false);
     const [keywordModal, setKeywordModal] = React.useState(null);
     const [scrolled, setScrolled] = React.useState(false);

@@ -77,13 +77,13 @@ function ceyrekBayrak(m12){
 // CSV kolonu → DATA kısa adı
 const FACET = {
   organizasyon:'org', spor_dali:'spor', musabaka_tipi:'mus', lig_seviyesi:'sev',
-  prestij_katmani:'pres', cinsiyet:'cins', kulup_milli:'km', takim_bireysel:'tb',
+  cinsiyet:'cins', kulup_milli:'km', takim_bireysel:'tb',
   cografya:'cog', yerlilik:'yer', turk_baglantisi:'turk', yayin_hakki:'hak',
   periyodiklik:'per', takvim_tipi:'tak', sayfa_tipi:'st', intent_katmani:'it',
   entity_tipi:'ent', marka_tipi:'marka', dil:'dil', sorgu_uzunlugu:'uzn',
   varyant_kodu:'vk', katman:'ktm', kurum_sorgusu:'kurum',
-  kulup_dogrulama:'dog', oyuncu_dogrulama:'odog', kulup:'kulup',
-  varyant_denetim:'vden', oyuncu_ana_ad:'anaAd', mantik_denetim:'mden',
+  oyuncu_dogrulama:'odog', kulup:'kulup',
+  oyuncu_ana_ad:'anaAd', mantik_denetim:'mden',
 };
 
 // ——————————————————————————————————————————— yükle
@@ -192,9 +192,9 @@ const SPOR_RENK = {};
 sporSirali.forEach((s,i)=>{ SPOR_RENK[s] = PALETTE[i%PALETTE.length]; });
 
 // Jenerik toplam: rakip markalı sorgular ve denetimde işaretlenen varyantlar hariç
-const jenerik = keywords.filter(k => (!k.marka || k.marka==='Jenerik')
-  && (!k.vden || k.vden==='Geçerli')
-  && (!k.mden || k.mden==='Geçerli'));
+// marka_tipi tüm satırlarda tek değerdi ve hiçbir satırı elemiyordu;
+// varyant_denetim de öyle. Filtre yalnızca mantık denetimine dayanır.
+const jenerik = keywords.filter(k => !k.mden || k.mden==='Geçerli');
 const DATA = {
   meta: {
     olusturma: new Date().toISOString().slice(0,10),
@@ -202,7 +202,6 @@ const DATA = {
     aylar: AY, yillar, dosyalar, mukerrer,
     toplamKeyword: keywords.length,
     gecerliKeyword: jenerik.length,
-    isaretliVaryant: keywords.filter(k=>k.vden && k.vden!=='Geçerli').length,
     isaretliMantik: keywords.filter(k=>k.mden && k.mden!=='Geçerli').length,
     toplamR12: jenerik.reduce((a,k)=>a+(k.r12||0),0),
     toplamP12: jenerik.reduce((a,k)=>a+(k.p12||0),0),

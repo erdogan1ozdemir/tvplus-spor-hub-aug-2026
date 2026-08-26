@@ -13,6 +13,7 @@
     {id:'entity',  label:'Takım & Oyuncu',      Comp:T.EntityTab,
       rozet:r=>fmtNum(r.filter(k=>k.ent==='Takım'||k.ent==='Oyuncu').length)},
     {id:'keyword', label:'Keyword',             Comp:T.KeywordTab, rozet:r=>fmtNum(r.length)},
+    {id:'kirilim', label:'Kırılım',             Comp:T.KirilimTab},
     {id:'karar',   label:'Karar Ağacı',         Comp:T.KararTab},
     {id:'sayfa',   label:'Sayfa Tipi & Intent', Comp:T.SayfaTipiTab},
     {id:'trendler',label:'Trendler',            Comp:T.TrendlerTab},

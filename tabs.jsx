@@ -1444,7 +1444,249 @@ window.TABS = (function(){
         })));
   }
 
+  /* ═══════════════════════════════════════════════════════════════════
+     KIRILIM SEKMESİ
+     Hızlı bakma sekmesi: Spor Dalı → Organizasyon → Takım zincirinde
+     aşağı inilir, yalnızca büyüklük gösterilir (trend/sezonsallık yok).
+     İki gösterim: karo şeridi (A) ve sütun kırılımı (B). Yol ve
+     kontroller ikisinde ortaktır, gösterim değişince yer korunur.
+     ═══════════════════════════════════════════════════════════════════ */
+  const KIRILIM_SEVIYE = [['spor','Spor Dalı'],['org','Organizasyon'],['takim','Takım']];
+  const KIRILIM_ESIK = [0, 10000, 50000, 250000, 1e6, 5e6, 25e6];
+
+  // Üç seviyeli ağaç. Her düğümde hacim ve keyword sayısı
+  // [tümü, yalnız takım araması, yalnız oyuncu araması] olarak tutulur.
+  function kirilimAgaci(rows){
+    const kok = new Map();
+    const bos = ad => ({n:ad, v:[0,0,0], k:[0,0,0], c:new Map()});
+    const ekle = (d,k) => {
+      const i = k.ent==='Takım' ? 1 : k.ent==='Oyuncu' ? 2 : -1;
+      d.v[0]+=k.r12||0; d.k[0]++;
+      if(i>0){ d.v[i]+=k.r12||0; d.k[i]++; }
+    };
+    for(const k of rows){
+      const s=k.spor||'Diğer', o=k.org||'Belirsiz', t=k.takim||null;
+      if(!kok.has(s)) kok.set(s, bos(s));
+      const ds=kok.get(s); ekle(ds,k);
+      if(!ds.c.has(o)) ds.c.set(o, bos(o));
+      const dOrg=ds.c.get(o); ekle(dOrg,k);
+      if(t){ if(!dOrg.c.has(t)) dOrg.c.set(t, bos(t)); ekle(dOrg.c.get(t), k); }
+    }
+    const diz = m => [...m.values()].map(d=>({n:d.n, v:d.v, k:d.k, c:diz(d.c)}));
+    return diz(kok);
+  }
+
+  function KirilimTab({rows, onNavigateKw}){
+    const [gorunum, setGorunum] = React.useState(function(){
+      try { return localStorage.getItem('tvplus.kirilim.gorunum') || 'karo'; }
+      catch(e){ return 'karo'; }
+    });
+    const [kapsam, setKapsam] = React.useState(0);
+    const [sira, setSira]     = React.useState('v');
+    const [q, setQ]           = React.useState('');
+    const [esik, setEsik]     = React.useState(0);
+    const [yol, setYol]       = React.useState([]);
+
+    React.useEffect(function(){
+      try { localStorage.setItem('tvplus.kirilim.gorunum', gorunum); } catch(e){}
+    }, [gorunum]);
+
+    const agac = React.useMemo(()=>kirilimAgaci(rows), [rows]);
+
+    // Yol boyunca ilerleyip bulunulan seviyenin listesini döndürür
+    const konum = React.useMemo(function(){
+      let liste = agac;
+      for(const ad of yol){
+        const d = liste.find(x=>x.n===ad);
+        if(!d){ return {liste:[], kirik:true}; }
+        liste = d.c;
+      }
+      return {liste, kirik:false};
+    }, [agac, yol]);
+
+    // Filtre bir üst seviyeyi kopardıysa yolu kısalt
+    React.useEffect(function(){
+      if(konum.kirik && yol.length) setYol([]);
+    }, [konum.kirik]);
+
+    const cocuklar = React.useCallback(function(liste){
+      const min = KIRILIM_ESIK[esik];
+      let r = (liste||[]).filter(d=>d.v[kapsam]>0 && d.v[kapsam]>=min);
+      if(q){
+        const t = q.toLocaleLowerCase('tr');
+        r = r.filter(d=>d.n.toLocaleLowerCase('tr').includes(t) ||
+                        d.c.some(x=>x.n.toLocaleLowerCase('tr').includes(t)));
+      }
+      return r.slice().sort(function(a,b){
+        if(sira==='n') return a.n.localeCompare(b.n,'tr');
+        if(sira==='k') return b.k[kapsam]-a.k[kapsam];
+        if(sira==='c') return b.c.length-a.c.length;
+        return b.v[kapsam]-a.v[kapsam];
+      });
+    }, [kapsam, sira, q, esik]);
+
+    // Bir düğüme tıklandığında: alt kırılımı varsa in, yoksa keyword'lere git
+    function tikla(seviye, dugum){
+      const yeniYol = yol.slice(0, seviye).concat(dugum.n);
+      if(seviye>=2 || !dugum.c.length){
+        const alan = KIRILIM_SEVIYE[Math.min(seviye,2)][0];
+        onNavigateKw({alan, deger:dugum.n});
+        return;
+      }
+      setYol(yeniYol);
+    }
+
+    const kapsamAd = ['tüm aramalar','takım araması','oyuncu araması'][kapsam];
+    const gorunenler = cocuklar(konum.liste);
+    const seviyeIdx  = Math.min(yol.length, 2);
+    const toplamHacim = gorunenler.reduce((a,d)=>a+d.v[kapsam],0);
+    const toplamKw    = gorunenler.reduce((a,d)=>a+d.k[kapsam],0);
+
+    // ——— parça: pay çubuğu (takım / oyuncu) ———
+    function PayCubugu({d}){
+      const t=d.v[1]||0, o=d.v[2]||0, s=t+o;
+      if(!s) return null;
+      return h('span',{className:'kr-bar',
+        'data-tip':'Takım araması '+fmtNum(t)+' · oyuncu araması '+fmtNum(o)},
+        h('i',{className:'t', style:{width:(100*t/s).toFixed(1)+'%'}}),
+        h('i',{className:'o', style:{width:(100*o/s).toFixed(1)+'%'}}));
+    }
+
+    // ——— A · karo şeridi ———
+    function karoGorunum(){
+      const seritler = [];
+      for(let lv=0; lv<=yol.length && lv<3; lv++){
+        let liste = agac;
+        for(let i=0;i<lv;i++){ const d=liste.find(x=>x.n===yol[i]); if(!d){ liste=[]; break; } liste=d.c; }
+        const c = cocuklar(liste);
+        if(!c.length){ if(lv===0) seritler.push(h('div',{key:'bos', className:'kr-bos'},
+          'Bu kapsam ve eşikte gösterilecek kayıt bulunmuyor.')); break; }
+        const secili = yol[lv]||null;
+        seritler.push(
+          h('div',{key:lv, className:'kr-serit'},
+            h('div',{className:'kr-serit-bas'},
+              h('span',{className:'kr-serit-ad'}, KIRILIM_SEVIYE[lv][1]),
+              h('span',{className:'kr-serit-sayi'}, c.length.toLocaleString('tr-TR')+' kayıt')),
+            h('div',{className:'kr-kaydir'},
+              c.slice(0,80).map(function(d){
+                const alt = d.c.length;
+                return h('button',{key:d.n, className:'kr-karo'+(d.n===secili?' secili':''),
+                  onClick:()=>tikla(lv,d),
+                  'data-tip': alt ? 'Aç: '+alt+' '+KIRILIM_SEVIYE[lv+1][1].toLocaleLowerCase('tr')
+                                  : 'Keyword listesine git'},
+                  h('span',{className:'kr-karo-ad', title:d.n}, d.n),
+                  h('span',{className:'kr-karo-hacim'}, fmtNum(d.v[kapsam])),
+                  h('span',{className:'kr-karo-alt'},
+                    d.k[kapsam].toLocaleString('tr-TR')+' kw' +
+                    (alt ? ' · '+alt+' '+(lv===0?'org':'takım') : '')),
+                  h(PayCubugu,{d}));
+              }),
+              c.length>80 && h('div',{key:'daha', className:'kr-daha'},
+                '+'+(c.length-80).toLocaleString('tr-TR')+' daha · arama ile daraltın'))));
+        if(!secili) break;
+      }
+      return seritler;
+    }
+
+    // ——— B · sütun kırılımı ———
+    function sutunGorunum(){
+      return h('div',{className:'kr-sutunlar'},
+        KIRILIM_SEVIYE.map(function(sv, lv){
+          let liste = agac, kopuk = false;
+          for(let i=0;i<lv;i++){
+            const d = liste.find(x=>x.n===yol[i]);
+            if(!d){ kopuk = true; break; }
+            liste = d.c;
+          }
+          const c = (!kopuk && lv<=yol.length) ? cocuklar(liste) : [];
+          return h('div',{key:sv[0], className:'kr-sutun'},
+            h('div',{className:'kr-sutun-bas'},
+              h('span',null, sv[1]),
+              h('span',null, c.length ? c.length.toLocaleString('tr-TR') : '–')),
+            h('div',{className:'kr-sutun-liste'},
+              c.length
+                ? c.map(d=>h('button',{key:d.n, className:'kr-sat'+(yol[lv]===d.n?' secili':''),
+                    onClick:()=>tikla(lv,d),
+                    'data-tip': d.k[kapsam].toLocaleString('tr-TR')+' keyword'},
+                    h('span',{className:'kr-sat-ad', title:d.n}, d.n),
+                    h('span',{className:'kr-sat-hacim'}, fmtNum(d.v[kapsam]))))
+                : h('div',{className:'kr-bos'},
+                    lv>yol.length ? 'Soldaki sütundan seçin' : 'Bu kapsamda kayıt yok')));
+        }));
+    }
+
+    return h('div',null,
+      h(C.SectionHeader,{icon:'karne', title:'Kırılım',
+        desc:'spor dalı, organizasyon ve takım zincirinde hızlı bakış · trend gösterilmiyor'}),
+
+      h('div',{className:'card kr-kontrol'},
+        h('div',{className:'kr-kontrol-satir'},
+          // Etiket ve seçici birlikte sarmalanır ki satır kırılınca ayrı düşmesinler
+          h('span',{className:'kr-grup'},
+            h('span',{className:'kr-etiket'},'Gösterim'),
+            h('div',{className:'segmented'},
+              [['karo','Karo Şeridi'],['sutun','Sütun Kırılımı']].map(g=>
+                h('button',{key:g[0], className: gorunum===g[0]?'active':'',
+                  onClick:()=>setGorunum(g[0])}, g[1])))),
+
+          h('span',{className:'kr-grup'},
+            h('span',{className:'kr-etiket'},'Kapsam'),
+            h('div',{className:'segmented'},
+              ['Tümü','Yalnız Takım','Yalnız Oyuncu'].map((g,i)=>
+                h('button',{key:g, className: kapsam===i?'active':'',
+                  onClick:()=>setKapsam(i)}, g)))),
+
+          h('span',{className:'kr-grup'},
+            h('span',{className:'kr-etiket'},'Sırala'),
+            h('div',{className:'segmented'},
+              [['v','Hacim'],['k','Keyword'],['c','Alt kırılım'],['n','A-Z']].map(g=>
+                h('button',{key:g[0], className: sira===g[0]?'active':'',
+                  onClick:()=>setSira(g[0])}, g[1])))),
+
+          h('label',{className:'ara-sarmal kr-ara'},
+            h('span',{className:'ara-ikon'}, h(C.Ikon,{ad:'ara', size:13})),
+            h('input',{className:'ara-alan', type:'search', value:q,
+              placeholder:'Ara…', onChange:e=>setQ(e.target.value.trim())})),
+
+          h('span',{className:'kr-grup kr-esik'},
+            h('span',{className:'kr-etiket'},'Min hacim'),
+            h('input',{type:'range', min:0, max:KIRILIM_ESIK.length-1, step:1, value:esik,
+              onChange:e=>setEsik(+e.target.value)}),
+            h('b',null, esik===0 ? 'yok' : fmtNum(KIRILIM_ESIK[esik]))),
+
+          (yol.length>0 || q || esik>0 || kapsam>0) &&
+            h('button',{className:'chip-btn sessiz',
+              onClick:()=>{ setYol([]); setQ(''); setEsik(0); setKapsam(0); }},
+              h('span',{className:'btn-ikon'},'✕'), 'Sıfırla')),
+
+        h('div',{className:'kr-iz'},
+          h('button',{className:'iz-adim', onClick:()=>setYol([])},'Tüm portföy'),
+          yol.map((ad,i)=>h(React.Fragment,{key:i},
+            h('span',{className:'iz-ayrac'},'›'),
+            i===yol.length-1
+              ? h('span',{className:'iz-adim aktif'}, ad)
+              : h('button',{className:'iz-adim', onClick:()=>setYol(yol.slice(0,i+1))}, ad))),
+          h('span',{className:'kr-iz-ozet'},
+            h('strong',null, KIRILIM_SEVIYE[seviyeIdx][1]), ' · ',
+            h('strong',null, gorunenler.length.toLocaleString('tr-TR')), ' kayıt · ',
+            h('strong',null, fmtNum(toplamHacim)), ' Son 12 Ay · ',
+            h('strong',null, toplamKw.toLocaleString('tr-TR')), ' keyword',
+            kapsam>0 && h('span',{className:'kr-iz-kapsam'}, ' (yalnız '+kapsamAd+')')),
+          yol.length>0 && h('button',{className:'chip-btn sessiz kr-ust',
+            onClick:()=>setYol(yol.slice(0,-1)), 'data-tip':'Bir üst kırılıma dön'},
+            '↑ Üst kırılım'))),
+
+      h('div',{className:'card kr-govde'},
+        gorunum==='karo' ? karoGorunum() : sutunGorunum()),
+
+      h('div',{className:'txt-3', style:{fontSize:10.5, marginTop:8}},
+        'Alt kırılımı olan bir kayda tıklandığında bir seviye aşağı inilir; ',
+        'alt kırılımı olmayan kayıtta ve takım seviyesinde Keyword sekmesi açılır. ',
+        'Bireysel sporlarda takım seviyesi bulunmadığı için zincir organizasyonda tamamlanır.'));
+  }
+
   return { OzetTab, GruplarTab, KeywordTab, TrendlerTab, SayfaTipiTab, EntityTab,
+           KirilimTab,
            HakDisiTab, KararTab, MasterTab, KeywordModal,
            SezonTakvimi, GrupTablosu, KeywordTablosu,
            ZINCIR, ZINCIR_ETIKET, aktifEksen, yoluUygula, kirilimGruplari, takimKumeleri,

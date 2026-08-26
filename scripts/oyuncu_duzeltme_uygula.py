@@ -27,7 +27,8 @@ for d in [x for x in sorted(glob.glob("data/raw/hacim_*.csv")) if not x.endswith
         kw  = (r.get("keyword") or "").strip().lower()
         ana = (r.get("oyuncu_ana_ad") or "").strip().lower()
         if r.get("entity_tipi") != "Oyuncu": continue
-        anahtar = kw if kw in KULUP or kw in ORG or kw in JEN or kw in KISI or kw in MUK else ana
+        anahtar = (kw if kw in KULUP or kw in ORG or kw in JEN or kw in KISI
+                       or kw in MUK or kw in SPOR else ana)
 
         if anahtar in KULUP:
             v = KULUP[anahtar]

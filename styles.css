@@ -1926,3 +1926,31 @@ button.action-card:hover { border-color: currentColor; transform: translateY(-1p
   /* Dar ekranda şerit kendi satırına iner, taşma yapmaz */
   .gorunum-sag { margin-left: 0; width: 100%; justify-content: flex-start; }
 }
+
+/* ————————————————————————— Sezonsallık satır etiketi
+   Etiket, satır yüksekliği içinde dikey ortalanır. Satır sonu eylem düğmesi
+   akıştan çıkarılır; aksi halde metnin yatay ortalanmasını bozuyordu. */
+.heatmap .hm-row-label {
+  position: relative;
+  flex-direction: row;
+  align-items: center;          /* dikey ortalama */
+  justify-content: center;      /* yatay ortalama */
+  text-align: center;
+  padding: 0 22px 0 10px;       /* sağda düğme için pay */
+}
+.heatmap .hm-row-label > span:first-child {
+  display: flex; flex-direction: column; justify-content: center;
+  min-width: 0; width: 100%;
+}
+.heatmap .hm-row-action {
+  position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
+  margin-left: 0;
+}
+
+/* ————————————————————————— Aylık ritim kartı
+   Kart, yanındaki pazar payı kartı kadar uzuyordu; grafik üste dayanıp
+   altında büyük boşluk kalıyordu. Kart sütun akışına alınır, grafik
+   kalan alanı doldurup içinde ortalanır. */
+.grid-main > .card { display: flex; flex-direction: column; }
+.grid-main > .card > .chart-orta { flex: 1; min-height: 0; }
+.grid-main > .card > .pay-scroll { flex: 1; min-height: 0; }

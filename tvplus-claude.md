@@ -9,7 +9,7 @@
 
 ---
 
-## 2026-08-26
+## 2026-08-27
 
 ### Takım faseti eklendi
 - `build-data.js` her satıra `takim` alanı üretiyor: takım satırında kendi kulüp anahtarı, oyuncu satırında kulübü. 15.863 satır dolu, 995 küme.
@@ -48,6 +48,29 @@
 - **Sayfa tipi yeniden yapılandırması:** Kanal/Yayın + Canlı İzle birleşmesi (52,1M), yeni Lig/Turnuva Jenerik tipi (310,6M), yeni Spor Dalı/Branş tipi (103,6M).
 - **BEKLEYEN_EMEKLI:** 39 emekli/antrenör/yönetici kaydı. Listeden çıkarılsın mı, pasif etiketiyle tutulsun mu?
 - **SUPHELI:** 33 keyword, karar ağacı hazırlanacak.
+
+### Denetim kapatıldı: emekliler, soyad kuralı, şüpheliler
+- **Emekliler çıkarıldı** (kullanıcı kararı): 141 emekli, antrenör, yönetici ve vefat etmiş isim listeden düştü. Aralarında `kevin garnett`, `pau gasol`, `dwight howard` (Mart 2026'da resmen emekli), `achille polonara` (Mayıs 2026), `chris paul` (Şubat 2026), `steve kerr`, `gregg popovich`, `zeljko obradovic`, `sarunas jasikevicius` var. `ted turner` hiç basketbolcu olmamış, CNN kurucusu ve eski Hawks sahibi.
+- **Soyad kuralı** (81 keyword): tam adı listede duran soyadlar çıktı, tam adlar kaldı. `kahveci` çıktı / `irfan can kahveci` 2,05M duruyor · `kafkas` çıktı / `nazlı eda kafkas` duruyor · `bayındır` çıktı / `altay bayındır` 972K duruyor.
+- **49 şüpheli araştırılarak karara bağlandı.** Yöntem: her keyword'ün hacmi kendi liginde doğrulanmış tam adlı oyuncuların dağılımıyla karşılaştırıldı. Kalibrasyon: TFF 1. Lig medyan 110, p90 1.000, lig rekoru 18.100; Süper Lig medyan 140, p90 8.100. Lig bandının belirgin üstünde kalan ve yaygın ad taşıyan satırlarda hacmin oyuncuya ait olmadığı kabul edildi; ayırt edici adlar kaynaktan doğrulandı.
+  - **Kalan 17:** `samuel ballet` (Antalyaspor golcüsü), `erkan yılmaz` (Anadolu Efes, sözleşme 2027'ye uzatıldı), `naz aydemir akyol` (bırakma haberlerine rağmen oynamayı sürdürüyor), `braxton key` (Temmuz 2026'da Fenerbahçe), `onuralp çakıroğlu` (Mayıs 2026'da Trabzonspor'da debut).
+  - **Çıkan 33:** `davinchi` (hacim DaVinci Resolve'dan), `maestro` (gerçek Alanyaspor oyuncusu ama 671K hacim Mastercard Maestro'dan), `ahmet özer` (Esenyurt eski belediye başkanı), `sinan özen` ve `oğuz yılmaz` (müzisyen), `haydar karataş` (romancı), `bernardo`/`kevin`/`rayan`/`emerson` (tek başına ilk isim), `tacko fall`/`jeff green`/`radamel falcao` (aktif kulüp kaydı yok).
+
+### Tipoloji yeniden yapılandırıldı
+- **Milli takımlar Takım'a alındı** (63 satır). Dosya bu ayrımı kendi içinde tutarsız uyguluyordu.
+- **Kanal/Yayın ile Canlı İzle birleşti** (545 satır, 58M). İkisi de aynı izleme sayfasına iniyordu.
+- **Jenerik kovası ayrıştırıldı:** 529M tek kovada duruyordu, üçe bölündü. Lig Jenerik **317M**, Spor Dalı Jenerik **104M**, Etkinlik Jenerik **57M**, kalan jenerik 6M. Lig hub'ının kendi sayfa tipi yoktu.
+
+### Ölü eşleşmeler silinmedi, işaretlendi
+- Bu satırlar gerçek geçmiş talebi taşıyor; portföyden çıkarmak ölçülmüş hacmi yok saymak olurdu. `guncellik` faseti eklendi: **Arşiv** 16 kw / 1,2M (Erzurumspor Süper Lig'e yükseldi, rakipleri TFF 1. Lig'de kaldı), **Kura Bekliyor** 142 kw / 2,8M (2026-27 Avrupa kupası kurası 27 Ağustos'ta çekildi), **Güncel** 773 kw / 265,8M.
+
+### Kadro ayrıştırıcısı: kaynaktaki sızıntı
+- Beş denetim parçasında da aynı örüntü çıktı: kadro sayfalarından oyuncu adı yerine ortak kelime alınıyordu (`features`, `forward`, `battle`, `eagles`, `parlak`, `sağlam`).
+- `kadro_transfermarkt.py` yedek deseninde tam ad şartı arandı. **Ana desende blanket eleme yapılmadı**: Brezilyalı oyuncuların büyük bölümü tek adla oynuyor (`ederson` 5,35M, `talisca` 2,27M, `fabinho`). İlk denemede düz boşluk şartı koymuştum, onları da elediği için geri alındı.
+- `build_oyuncular.py` tek kelimelik adları elemez, `mantik_denetim` ile "doğrulanmalı" işaretler; karar denetim aşamasına bırakıldı.
+
+### Güncel durum
+- Portföy **16.939 keyword**, Son 12 Ay **3,616 milyar**. Şüpheli kova boş, emekli kova boş.
 
 ## 2026-08-25
 

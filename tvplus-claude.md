@@ -200,7 +200,31 @@ Doğrulama: Antalyaspor ve Kayserispor artık TFF 1. Lig · `Lig + Kıta Üstü`
 
 **Güncel durum:** 17.502 keyword (321 satır denetimle toplamdan düşüyor) · Son 12 Ay 3,65B · dashboard.js 11,88 MB · artifact 12,28 MB · Excel 6,4 MB. Tüm sekmeler iki görünüm kipinde duman testinden geçti (20/20).
 
-**Güncel veri:** 17.502 keyword · Son 12 Ay 3,65B · YoY +%5,4 · dashboard.js 11,88 MB · artifact 12,28 MB
+### Onaylı DFS çekimi yapıldı
+
+**3.560 keyword gönderildi, 1.011'i veri döndü, maliyet tam $0,54** (6 istek, tahmin edilenle birebir).
+
+Çekim listesi üç kalemden kuruldu: Türkçe "İ" onarımı 341 · bekleyen oyuncu seed'i 428 · güncel kadro seed boşluğu 3.279. Federasyon ve üniversite adlarından oluşan 456 kirlilik kaydı çekim öncesi ayıklandı.
+
+**Bozulmanın kaynağı çekim değil seed üretimiymiş.** Seed dosyalarında hiç `İ` yok; üreteçler de Python'un `.lower()` metodunu kullandığı için bozulma orada oluşmuş. Onarım kuralı: `İ` ayrılınca "ada i bik" oluyor, doğrusu "ada ibik".
+
+Onarım sonucu, daha önce "talep yok" görünen varlıklar:
+
+| Varlık | Son 12 Ay |
+|---|---|
+| İstanbul Başakşehir F.K. | 3.885.700 |
+| İlkay Gündoğan | 2.272.500 |
+| İrfan Can Kahveci | 2.052.000 |
+| İsmail Kartal | 1.902.500 |
+| İsmail Yüksek | 1.400.000 |
+
+**Aksan mükerreri yakalandı ve önlendi.** Çekimden dönen 1.017 satırın 474'ü aksanlı form mükerreriydi (atlético madrid / atletico madrid ikisi de 673.000). Google Ads aynı sorguyu iki formda döndürüyor; birleştirilmeseydi 2,14M hacim çift sayılacaktı. Satırlar projenin aksansız kuralına indirildi, derlemedeki "yüksek hacim kazanır" kuralı gerisini hallediyor: `leroy sane` 49.500'den 1.469.600'e çıktı.
+
+**Çekilmeyen kalem:** `hacim_takimlar.csv` 2026-07 onarımı (1.892 keyword, 3 istek). Oyuncu seed boşluğu tahmin edilenden büyük çıktığı için (1.243 yerine 3.279) onaylanan 6 isteklik zarf ilk üç kalemle doldu. Bu kalem ayrı onay bekliyor.
+
+**Güncel veri:** 18.038 keyword · Son 12 Ay 3,68B · YoY +%5,4 · dashboard.js 12,23 MB · artifact 12,63 MB
+
+**Güncel veri:** 18.038 keyword · Son 12 Ay 3,68B · YoY +%5,4 · dashboard.js 12,23 MB · artifact 12,63 MB
 
 ## 2026-08-24
 

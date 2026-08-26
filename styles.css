@@ -2080,3 +2080,47 @@ button.action-card:hover { border-color: currentColor; transform: translateY(-1p
 .kr-grup { display: inline-flex; align-items: center; gap: 8px; }
 .kr-ara { min-width: 168px; }
 .kr-ara .ara-alan { width: 100%; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   FİLTRE ÇUBUĞU · tek düğme
+   Faset seçicileri "Filtrele" panelinin içine indi. Çubukta arama,
+   düğme ve seçili filtrelerin rozetleri kalır.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.filtre-serit { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.filtre-ok { font-size: 9px; opacity: .55; margin-left: 1px; }
+.chip-btn.active .filtre-ok { opacity: .9; }
+
+.filtre-cipler { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-width: 0; }
+.filtre-cip {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 26px; padding: 0 6px 0 10px;
+  border: 1px solid var(--line); border-radius: var(--r-pill);
+  background: var(--accent-wash); color: var(--accent-deep);
+  font-family: 'Outfit', system-ui, sans-serif;
+  font-size: 11.5px; font-weight: 600; line-height: 1;
+  white-space: nowrap; cursor: pointer; box-shadow: none;
+  transition: border-color .14s, background .14s;
+}
+.filtre-cip:hover {
+  border-color: var(--accent); background: var(--accent-wash);
+  transform: none; box-shadow: none;
+}
+.filtre-cip .cip-alan { font-weight: 500; opacity: .72; }
+.filtre-cip .cip-deger { max-width: 168px; overflow: hidden; text-overflow: ellipsis; }
+.filtre-cip .cip-sil {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 16px; height: 16px; border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  font-size: 12px; line-height: 1;
+}
+.filtre-cip:hover .cip-sil { background: var(--accent); color: #fff; }
+.filtre-temizle { margin-left: auto; }
+
+.filtre-kutu { display: flex; flex-direction: column; gap: 12px; align-items: stretch; }
+.filtre-grup + .filtre-grup { padding-top: 12px; border-top: 1px solid var(--line-soft); }
+.filtre-grup-bas {
+  font-size: 10.5px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .07em; color: var(--ink-3); margin-bottom: 8px;
+}
+.filtre-grup-alan { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }

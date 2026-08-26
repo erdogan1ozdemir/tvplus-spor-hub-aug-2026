@@ -145,6 +145,25 @@
     const temizle = ()=>{ setFiltre({}); setArama(''); setPeakAy([]); setPeakCeyrek([]);
       setMevsim([]); setBucket([]); setTrend(''); setSecili(null); setYol([]); };
 
+    // Çubukta rozet olarak gösterilecek seçili filtreler.
+    // Her rozet kendi alanını temizler; "Temizle" hepsini birden alır.
+    const aktifCipler = React.useMemo(function(){
+      const out = [];
+      for(const [alan, lab] of [...BIRINCIL, ...EK]){
+        const sel = filtre[alan] || [];
+        if(sel.length) out.push({id:alan, lab, sel,
+          sil:()=>setFiltre(f=>({...f, [alan]:[]}))});
+      }
+      const ozel = [['peakAy','Peak Ay',peakAy,setPeakAy],
+                    ['peakCeyrek','Peak Çeyrek',peakCeyrek,setPeakCeyrek],
+                    ['mevsim','Mevsim Tipi',mevsim,setMevsim],
+                    ['bucket','Hacim Aralığı',bucket,setBucket]];
+      for(const [id, lab, deger, setter] of ozel){
+        if(deger && deger.length) out.push({id, lab, sel:deger, sil:()=>setter([])});
+      }
+      return out;
+    }, [filtre, peakAy, peakCeyrek, mevsim, bucket]);
+
     const onSelectGroup = (alan, deger) => {
       setSecili({alan, deger});
       setSeviye(alan);
@@ -186,38 +205,63 @@
           s.rozet && h('span',{className:'badge'}, s.rozet(rows))))),
 
       h('div',{className:'global-filter-wrap'+(scrolled?' scrolled':'')},
-        h('div',{className:'filter-panel'},
+        // Varyant C: tüm faset seçicileri tek "Filtrele" düğmesinin altına iner.
+        // Çubukta yalnızca arama, düğme ve seçili filtrelerin rozeti kalır.
+        h('div',{className:'filter-panel filtre-serit'},
           h('div',{className:'ara-sarmal'},
             h('span',{className:'ara-ikon'}, h(C.Ikon,{ad:'ara', size:13})),
             h('input',{type:'text', className:'search-input', placeholder:'Keyword ara…',
               value:arama, onChange:e=>setArama(e.target.value)}),
             arama && h('button',{className:'ara-temizle', onClick:()=>setArama(''),
               'aria-label':'Aramayı temizle'}, '×')),
-          BIRINCIL.map(([alan,lab,w])=>(secenekler[alan]||[]).length>1 &&
-            h(C.MultiSelect,{key:alan, label:lab, options:secenekler[alan], width:w,
-              selected:filtre[alan]||[], colorMap: alan==='spor'?window.SPOR_RENK:null,
-              onChange:sel=>setFiltre(f=>({...f,[alan]:sel}))})),
+
           h('button',{className:'chip-btn'+(ekAcik?' active':''),
-            onClick:()=>setEkAcik(o=>!o)},
-            h('span',{className:'btn-ikon'}, h(C.Ikon,{ad: ekAcik?'eksi':'arti', size:13})),
-            'Ek filtre'),
-          aktif>0 && h('button',{className:'chip-btn sessiz', onClick:temizle},
+            onClick:()=>setEkAcik(o=>!o),
+            'aria-expanded': ekAcik ? 'true' : 'false',
+            'data-tip': ekAcik ? 'Filtre panelini kapat' : 'Tüm filtreleri aç'},
+            h('span',{className:'btn-ikon'}, h(C.Ikon,{ad:'filtre', size:13})),
+            'Filtrele',
+            aktifCipler.length>0 && h('span',{className:'btn-sayac'}, aktifCipler.length),
+            h('span',{className:'filtre-ok'}, ekAcik?'▴':'▾')),
+
+          // Seçili filtreler rozet olarak çubukta kalır, tek tek kaldırılabilir
+          aktifCipler.length>0 && h('div',{className:'filtre-cipler'},
+            aktifCipler.map(c=>h('button',{key:c.id, className:'filtre-cip',
+              onClick:c.sil, 'data-tip': c.sel.join(' · ')+' · kaldırmak için tıklayın'},
+              h('span',{className:'cip-alan'}, c.lab),
+              h('span',{className:'cip-deger'},
+                c.sel.length===1 ? c.sel[0] : c.sel.length+' seçili'),
+              h('span',{className:'cip-sil'},'×')))),
+
+          aktif>0 && h('button',{className:'chip-btn sessiz filtre-temizle', onClick:temizle},
             h('span',{className:'btn-ikon'}, h(C.Ikon,{ad:'kapat', size:12})),
             'Temizle', h('span',{className:'btn-sayac'}, aktif))),
 
-        ekAcik && h('div',{className:'filter-panel', style:{marginTop:8}},
-          h('div',{className:'filter-panel-label'}, h('span',{className:'txt-3'},'EK FİLTRE')),
-          h(C.MultiSelect,{label:'Peak Ay', options:ROLLING_LABELS, selected:peakAy,
-            onChange:setPeakAy, width:155}),
-          h(C.MultiSelect,{label:'Peak Çeyrek', options:U.quarterOptions(viewMode), selected:peakCeyrek,
-            onChange:setPeakCeyrek, width:150}),
-          h(C.MultiSelect,{label:'Mevsim Tipi', options:D.facetDegerleri.sinif||[], selected:mevsim,
-            onChange:setMevsim, width:160}),
-          h(C.MultiSelect,{label:'Hacim Aralığı', options:D.facetDegerleri.bucket||[], selected:bucket,
-            onChange:setBucket, width:175}),
-          EK.map(([alan,lab,w])=>(secenekler[alan]||[]).length>1 &&
-            h(C.MultiSelect,{key:alan, label:lab, options:secenekler[alan], width:w,
-              selected:filtre[alan]||[], onChange:sel=>setFiltre(f=>({...f,[alan]:sel}))}))),
+        ekAcik && h('div',{className:'filter-panel filtre-kutu', style:{marginTop:8}},
+          h('div',{className:'filtre-grup'},
+            h('div',{className:'filtre-grup-bas'},'Birincil kırılım'),
+            h('div',{className:'filtre-grup-alan'},
+              BIRINCIL.map(([alan,lab,w])=>(secenekler[alan]||[]).length>1 &&
+                h(C.MultiSelect,{key:alan, label:lab, options:secenekler[alan], width:w,
+                  selected:filtre[alan]||[], colorMap: alan==='spor'?window.SPOR_RENK:null,
+                  onChange:sel=>setFiltre(f=>({...f,[alan]:sel}))})))),
+          h('div',{className:'filtre-grup'},
+            h('div',{className:'filtre-grup-bas'},'Sezonsallık ve hacim'),
+            h('div',{className:'filtre-grup-alan'},
+              h(C.MultiSelect,{label:'Peak Ay', options:ROLLING_LABELS, selected:peakAy,
+                onChange:setPeakAy, width:155}),
+              h(C.MultiSelect,{label:'Peak Çeyrek', options:U.quarterOptions(viewMode), selected:peakCeyrek,
+                onChange:setPeakCeyrek, width:150}),
+              h(C.MultiSelect,{label:'Mevsim Tipi', options:D.facetDegerleri.sinif||[], selected:mevsim,
+                onChange:setMevsim, width:160}),
+              h(C.MultiSelect,{label:'Hacim Aralığı', options:D.facetDegerleri.bucket||[], selected:bucket,
+                onChange:setBucket, width:175}))),
+          h('div',{className:'filtre-grup'},
+            h('div',{className:'filtre-grup-bas'},'Ek analitik'),
+            h('div',{className:'filtre-grup-alan'},
+              EK.map(([alan,lab,w])=>(secenekler[alan]||[]).length>1 &&
+                h(C.MultiSelect,{key:alan, label:lab, options:secenekler[alan], width:w,
+                  selected:filtre[alan]||[], onChange:sel=>setFiltre(f=>({...f,[alan]:sel}))}))))),
 
         h('div',{className:'filter-panel', style:{marginTop:8}},
           h('div',{className:'filter-panel-label'}, h('span',{className:'txt-3'},'GÖRÜNÜM')),

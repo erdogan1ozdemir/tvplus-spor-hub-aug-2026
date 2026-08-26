@@ -1,5 +1,5 @@
 {
- "_aciklama": "Ajan taramasından çıkan oyuncu listesi düzeltmeleri. tip: KULUP | JENERIK | KISI_OYUNCU_DEGIL | ORGANIZASYON | SUPHELI",
+ "_aciklama": "Ajan taramasından çıkan oyuncu listesi düzeltmeleri. tip: KULUP | JENERIK | KISI_OYUNCU_DEGIL | ORGANIZASYON | MUKERRER | SPOR_DALI | SUPHELI. BEKLEYEN_EMEKLI kovası bilinçli olarak UYGULANMAZ: emekli sporcuların listeden çıkarılacağı mı yoksa pasif etiketiyle tutulacağı mı kullanıcı kararı bekliyor.",
  "KULUP": {
   "atletico madrid": {
    "org": "La Liga",
@@ -316,6 +316,34 @@
   "alba berlin": {
    "org": "Diğer Avrupa Ligleri",
    "spor": "Basketbol"
+  },
+  "frosinone calcio": {
+   "org": "Serie A",
+   "spor": "Futbol"
+  },
+  "ec bahia": {
+   "org": "Diğer Ligler",
+   "spor": "Futbol"
+  },
+  "swindon town": {
+   "org": "Diğer Ligler",
+   "spor": "Futbol"
+  },
+  "kk partizan": {
+   "org": "EuroLeague",
+   "spor": "Basketbol"
+  },
+  "ratiopharm ulm": {
+   "org": "Diğer Ligler",
+   "spor": "Basketbol"
+  },
+  "cultural y deportiva leonesa": {
+   "org": "Diğer Ligler",
+   "spor": "Futbol"
+  },
+  "gremio fbpa": {
+   "org": "Diğer Ligler",
+   "spor": "Futbol"
   }
  },
  "JENERIK": {
@@ -475,7 +503,49 @@
   "yıldızlı": "TDK sıfatı",
   "bahadır": "Ad ve yerleşim",
   "williams": "Yaygın soyad ve marka",
-  "richards": "Soyad; en güçlü karşılık yorumcu"
+  "richards": "Soyad; en güçlü karşılık yorumcu",
+  "livingston": "yer adı ve İskoç kulübü",
+  "taşkın": "Türkçe ortak isim (sel)",
+  "mohammed": "çok yaygın erkek adı",
+  "birsen": "Türkçe kadın adı",
+  "spears": "Britney Spears",
+  "denizci": "Türkçe ortak isim",
+  "reeves": "Keanu Reeves",
+  "kıratlı": "Türk soyadı ve köy adı",
+  "turner": "Tina Turner, Turner medya markası",
+  "cheeks": "İngilizce ortak isim",
+  "coleman": "Coleman kamp ürünleri markası",
+  "değirmenci": "Türkçe ortak isim",
+  "outlaw": "İngilizce ortak isim",
+  "kowalski": "en yaygın Polonya soyadı",
+  "hudson": "Hudson Nehri, marka adı",
+  "o'neill": "O'Neill markası",
+  "nielsen": "Nielsen ölçümleme markası",
+  "porter": "İngilizce ortak isim (hamal, bira türü)",
+  "dosyası": "Wikipedia gezinme metni kalıntısı",
+  "durham": "İngiltere'de şehir ve üniversite",
+  "gerard": "yaygın erkek adı",
+  "flyers": "İngilizce ortak isim, Philadelphia Flyers",
+  "robert smith": "The Cure solisti",
+  "kayıkçı": "Türkçe ortak isim",
+  "woodman": "İngilizce ortak isim (oduncu)",
+  "tucker": "Tucker Carlson, ortak isim",
+  "atlantic": "coğrafi ve ortak sözcük",
+  "bronze": "ortak isim (bronz, madalya)",
+  "venison": "İngilizce ortak isim (geyik eti)",
+  "sanders": "Bernie Sanders, Colonel Sanders",
+  "favors": "İngilizce ortak isim",
+  "webster": "Webster sözlük markası",
+  "jefferson": "Thomas Jefferson",
+  "nbc news": "haber kanalı markası",
+  "breakers": "İngilizce ortak isim",
+  "bradley": "yaygın ad, Bradley Cooper",
+  "carlisle": "İngiltere'de şehir, Carlisle United",
+  "walther": "Walther marka adı",
+  "garland": "dekoratif süsleme ürünü (Google TR ilk 10'da sporcu yok)",
+  "payton": "Python yazım varyantı, Payton Group, fayton (Google TR ilk 10'da sporcu yok)",
+  "hauser": "Stjepan Hauser, çellist (Google TR ilk 10'un tamamı müzisyen)",
+  "thompson": "Thompson M1A1 makineli tüfek (Google TR baskın anlam)"
  },
  "KISI_OYUNCU_DEGIL": {
   "ismail kartal": "Teknik direktör",
@@ -590,7 +660,8 @@
   "yüksek": "İsmail Yüksek var; yaygın sıfat",
   "sinan kaya": "Sivasspor'daki oyuncu 'Muhammed Sinan Kaya'",
   "ferguson": "Lewis Ferguson aktif; Sir Alex Ferguson baskın",
-  "buongiorno": "Alessandro Buongiorno var; İtalyanca selamlama baskın"
+  "buongiorno": "Alessandro Buongiorno var; İtalyanca selamlama baskın",
+  "watanabe": "Google TR ilk 10'da Japon futbolcu Tsuyoshi Watanabe baskın, kayıt ise NBA'deki Yuta Watanabe. Tam ad kullanılması önerilir."
  },
  "MUKERRER": {
   "ilyasova": "ersan ilyasova",
@@ -605,7 +676,12 @@
   "vinicius": "vinicius junior",
   "nwaiwu": "chibuike nwaiwu",
   "ceballos": "dani ceballos",
-  "jabari smith jr.": "jabari smith jr"
+  "jabari smith jr.": "jabari smith jr",
+  "tracy mcgrady": "mcgrady",
+  "nick calathes": "calathes",
+  "michael porter jr.": "michael porter jr",
+  "hee-chan hwang": "hwang hee-chan",
+  "myles lewis-skelly": "lewis-skelly"
  },
  "ORGANIZASYON": {
   "nba all-star": {
@@ -616,5 +692,64 @@
    "org": "NBA",
    "spor": "Basketbol"
   }
+ },
+ "SPOR_DALI": {
+  "tilbe şenyürek": {
+   "spor": "Basketbol",
+   "org": "Kadınlar Basketbol Süper Ligi"
+  },
+  "alperi onar": {
+   "spor": "Basketbol",
+   "org": "Kadınlar Basketbol Süper Ligi"
+  },
+  "kayla mcbride": {
+   "spor": "Basketbol",
+   "org": "WNBA"
+  },
+  "emma meesseman": {
+   "spor": "Basketbol",
+   "org": "Kadınlar EuroLeague"
+  }
+ },
+ "BEKLEYEN_EMEKLI": {
+  "kevin garnett": "2016'da bıraktı, Hall of Fame",
+  "jimmy oliver": "emekli basketbolcu",
+  "spanoulis": "emekli, Yunanistan A Milli antrenörü",
+  "özer hurmacı": "2022'de bıraktı, yorumcu",
+  "bill russell": "2022'de vefat etti",
+  "mcgrady": "2013'te bıraktı",
+  "ergin keleş": "emekli futbolcu, analist",
+  "vince carter": "2020'de bıraktı",
+  "vladimir micov": "2022'de bıraktı, yönetici",
+  "oğuz savaş": "2024-25 sonunda bıraktı",
+  "hakeem olajuwon": "2002'de bıraktı",
+  "sinan güler": "2022'de veda etti",
+  "finley": "Michael Finley, 2010'da bıraktı",
+  "önder turacı": "emekli, teknik adam",
+  "brent price": "1990'lar oyuncusu",
+  "brian shaw": "2003'te bıraktı, antrenör",
+  "jose antonio reyes": "2019'da vefat etti",
+  "engin aksoy": "Vodafone Türkiye CEO'su",
+  "jesus navas": "2024 sonunda kariyerini kapattı",
+  "deniz barış": "emekli futbolcu",
+  "steve kerr": "Golden State Warriors başantrenörü",
+  "nate robinson": "aktif kariyeri bitti",
+  "pepe reina": "Temmuz 2025'te bıraktı",
+  "pau gasol": "2021'de bıraktı",
+  "gregg popovich": "hiç NBA oyunculuğu yok, yönetici",
+  "ekpe udoh": "Atlanta Hawks yardımcı antrenörü",
+  "achille polonara": "4 Mayıs 2026'da emekli oldu",
+  "isaiah thomas": "Boston Celtics scout'u (Mayıs 2026)",
+  "isiah thomas": "1994'te emekli, analist",
+  "dwight howard": "12 Mart 2026'da resmen emekli oldu",
+  "iman shumpert": "2021'de bıraktı",
+  "nate archibald": "1984'te emekli",
+  "carmelo anthony": "2022'de bıraktı",
+  "scottie pippen": "2004'te emekli",
+  "ted turner": "hiç basketbolcu olmadı, kulüp sahibi; 6 Mayıs 2026'da vefat etti",
+  "zeljko obradovic": "Panathinaikos başantrenörü",
+  "gianmarco pozzecco": "Galatasaray başantrenörü",
+  "ettore messina": "hiç profesyonel oyuncu olmadı, Olimpia Milano POBO",
+  "aydın örs": "emekli antrenör, basketbolcu değil"
  }
 }

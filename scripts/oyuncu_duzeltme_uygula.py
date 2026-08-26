@@ -13,6 +13,8 @@ from collections import Counter
 D = json.load(open("data/denetim/oyuncu_duzeltme.json", encoding="utf-8"))
 KULUP, ORG = D["KULUP"], D["ORGANIZASYON"]
 JEN, KISI, MUK = D["JENERIK"], D["KISI_OYUNCU_DEGIL"], D["MUKERRER"]
+SPOR = D.get("SPOR_DALI", {})   # varlık tipi doğru, yalnızca spor dalı düzeltilir
+# BEKLEYEN_EMEKLI bilinçli olarak okunmaz: emekli sporcuların ne olacağı karar bekliyor.
 sayac = Counter()
 
 for d in [x for x in sorted(glob.glob("data/raw/hacim_*.csv")) if not x.endswith("_elenen.csv")]:
@@ -56,6 +58,15 @@ for d in [x for x in sorted(glob.glob("data/raw/hacim_*.csv")) if not x.endswith
             r["mantik_denetim"] = "Mükerrer yazım (" + MUK[anahtar] + " ile aynı)"
             sayac["mükerrer işaretlendi"] += 1
 
+        if anahtar in SPOR:
+            v = SPOR[anahtar]
+            if r.get("spor_dali") != v["spor"] or r.get("organizasyon") != v["org"]:
+                r["faset_notu"] = ("Ajan taraması: " + (r.get("spor_dali") or "-") + " / "
+                                   + (r.get("organizasyon") or "-") + " yerine "
+                                   + v["spor"] + " / " + v["org"])
+                r["spor_dali"], r["organizasyon"] = v["spor"], v["org"]
+                sayac["spor dalı ve organizasyon düzeltildi"] += 1
+
     g = d + ".tmp"
     with open(g, "w", newline="", encoding="utf-8-sig") as f:
         w = csv.DictWriter(f, fieldnames=cols); w.writeheader(); w.writerows(rows)
@@ -65,3 +76,4 @@ print("AJAN DÜZELTMELERİ UYGULANDI")
 print("=" * 50)
 for k, n in sayac.most_common(): print(f"  {k:<40}{n:>6}")
 print(f"\n  Şüpheli (dokunulmadı): {len(D['SUPHELI'])} keyword")
+print(f"  Emekli/antrenör karar bekliyor (dokunulmadı): {len(D.get('BEKLEYEN_EMEKLI', {}))} keyword")

@@ -9,6 +9,46 @@
 
 ---
 
+## 2026-08-26
+
+### Takım faseti eklendi
+- `build-data.js` her satıra `takim` alanı üretiyor: takım satırında kendi kulüp anahtarı, oyuncu satırında kulübü. 15.863 satır dolu, 995 küme.
+- Filtre çubuğuna **Takım** seçicisi eklendi. Bir takım seçilince takım keywordleri ile o takımın oyuncu keywordleri birlikte geliyor: galatasaray 183 keyword (14 takım + 169 oyuncu), 679,0M.
+- `Organizasyon: undefined` hatası giderildi. Küme etiketi spor eki taşıdığı (`galatasaray  ·  Futbol`) için eşleşme tutmuyordu.
+- Küme anahtarı mantığının `tabs.jsx`'teki ikinci kopyası silindi, tek kaynak `build-data.js` oldu.
+
+### Keyword tablosunda Takım sütunu boş görünüyordu
+- Sütun `kulup` alanına bağlıydı, o alan yalnızca oyuncu satırlarında doluydu. Bu yüzden `galatasaray` gibi takım keywordlerinde boş, altındaki `osimhen` satırında dolu görünüyordu.
+- Sütun `takim` alanına bağlandı. 2.456 takım satırının tamamı, 13.420 oyuncu satırının 13.407'si dolu (kalan 13'ü kulüpsüz sporcu).
+
+### Türk Sporcu Var kapsamı daraltıldı
+- Etiketin amacı yabancı lig ve kulüplerdeki Türk sporcuları ayırt etmek olduğu için yerli organizasyonlar kapsam dışına alındı: takım sporunda "Türk Takımı Var", bireysel sporda "Yok". Süper Lig, Yağlı Güreş, İstanbul Maratonu ve Cumhurbaşkanlığı Bisiklet Turu'ndaki 12 satır düzeltildi. Etiket artık yalnızca 55 yabancı/global organizasyonda, 364 keyword.
+
+### Kırılım sekmesi eklendi
+- Spor Dalı → Organizasyon → Takım zincirinde hızlı bakış sekmesi. Trend, sezonsallık ve YoY gösterilmiyor; yalnızca hacim ve sayım.
+- İki gösterim: **Karo Şeridi** (yatay kaydırılan kart şeritleri) ve **Sütun Kırılımı** (yan yana üç sütun). Yol ve kontroller ikisinde ortak, gösterim değişince yer korunuyor; tercih localStorage'da.
+- Kapsam daraltıcı Tümü / Yalnız Takım / Yalnız Oyuncu; tüm sayılar seçime göre yeniden hesaplanıyor. Süper Lig'de yalnız oyuncu seçilince 41 takımdan 21'i kalıyor ve sıralama fenerbahçe'ye dönüyor (49,5M / 46,2M).
+- Sıralama hacim / keyword / alt kırılım / A-Z, ayrıca arama ve minimum hacim eşiği.
+- Karar öncesi dört gösterim varyantı ayrı bir HTML'de gerçek veriyle kuruldu (`.taslak/kirilim-varyantlari.html`); A ve B seçildi, tablo ve pay haritası dışarıda kaldı.
+
+### Filtre çubuğu tek düğmeye indi (Varyant C)
+- On altı faset seçicisi **Filtrele** panelinin içine taşındı, panel üç gruba ayrıldı: Birincil kırılım · Sezonsallık ve hacim · Ek analitik.
+- Çubukta arama, düğme, seçili filtre rozetleri ve Temizle kaldı. Filtre satırı ikiden bire indi.
+- Her rozet kendi alanını temizliyor; rozet metni tek seçimde değeri, çoklu seçimde "N seçili" gösteriyor.
+
+### 2. tur denetim: mekanik düzeltmeler
+- 42 jenerik kelime işaretlendi. Dördü (`garland`, `payton`, `hauser`, `thompson`) Google TR SERP doğrulamasıyla: ilk 10'da sporcu çıkmıyor, sırasıyla süsleme ürünü, fayton/Python, çellist ve makineli tüfek anlamı baskın.
+- 7 kulüp doğru varlık tipine taşındı: frosinone calcio, kk partizan, ratiopharm ulm, swindon town, ec bahia, gremio fbpa, cultural y deportiva leonesa.
+- 5 mükerrer yazım işaretlendi (mcgrady/tracy mcgrady, calathes/nick calathes gibi).
+- 4 sporcuda spor dalı **ve organizasyon birlikte** düzeltildi: basketbolcular voleybol liginde duruyordu (tilbe şenyürek, alperi onar, kayla mcbride, emma meesseman). İlk denemede yalnızca spor dalı değiştirilmiş, organizasyon Sultanlar Ligi'nde kalmıştı; uygulayıcı ikisini birlikte taşıyacak hale getirildi.
+- Güncel veri: 17.561 keyword, Son 12 Ay 3,637B.
+
+### Karar bekleyenler
+- **DataForSEO çekimi:** `hacim_takimlar.csv` 2026-07 onarımı, 1.892 keyword, 3 istek, ~$0,27.
+- **Sayfa tipi yeniden yapılandırması:** Kanal/Yayın + Canlı İzle birleşmesi (52,1M), yeni Lig/Turnuva Jenerik tipi (310,6M), yeni Spor Dalı/Branş tipi (103,6M).
+- **BEKLEYEN_EMEKLI:** 39 emekli/antrenör/yönetici kaydı. Listeden çıkarılsın mı, pasif etiketiyle tutulsun mu?
+- **SUPHELI:** 33 keyword, karar ağacı hazırlanacak.
+
 ## 2026-08-25
 
 **Talep:** Takım kümesi dağılımı chartlarının filtreye duyarlı çalışması, takımlara spor dalı etiketi, artifact yorumlarının tamamlanması, "sabah" gibi takım olmayan kayıtların bulunması ve tüm keyword listesinin mantık çerçevesinde denetlenmesi. Bu oturumda DFS çekimi öncesi her zaman onay istenmesi.

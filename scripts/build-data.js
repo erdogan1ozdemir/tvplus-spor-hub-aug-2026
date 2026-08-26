@@ -103,7 +103,7 @@ const FACET = {
   periyodiklik:'per', takvim_tipi:'tak', sayfa_tipi:'st', intent_katmani:'it',
   entity_tipi:'ent', marka_tipi:'marka', dil:'dil', sorgu_uzunlugu:'uzn',
   varyant_kodu:'vk', katman:'ktm', kurum_sorgusu:'kurum',
-  oyuncu_dogrulama:'odog', kulup:'kulup',
+  oyuncu_dogrulama:'odog', kulup:'kulup', guncellik:'guncel',
   oyuncu_ana_ad:'anaAd', mantik_denetim:'mden',
 };
 

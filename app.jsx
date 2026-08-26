@@ -27,6 +27,7 @@
                     ['st','Sayfa Tipi',170],['ent','Varlık Tipi',150]];
   // Ek analitik fasetler
   const EK = [['it','Intent',150],['hak','Yayın Hakkı',165],['mus','Müsabaka Tipi',175],
+              ['guncel','Eşleşme Güncelliği',185],
               ['cins','Cinsiyet',140],['sev','Lig Seviyesi',160],['cog','Coğrafya',150],
               ['ktm','Katman',145],['turk','Türk Bağlantısı',175]];
 

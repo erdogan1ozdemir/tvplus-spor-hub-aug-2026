@@ -107,11 +107,19 @@ with ThreadPoolExecutor(max_workers=3) as ex:
 
 VAR = [("{}","Oyuncu Jenerik","Bilgi"), ("{} kimdir","Oyuncu Bilgi","Bilgi"),
        ("{} hangi takımda","Oyuncu Bilgi","Bilgi"), ("{} istatistik","İstatistik","Bilgi")]
-rows, seen = [], set()
+rows, seen, elenen = [], set(), []
 for ad,(org,spor,cog,hak,oy) in sonuc.items():
     for p in oy:
         pl = p.strip().lower()
         if len(pl) < 4 or pl in seen: continue
+        # Tek kelimelik kayitlar denetimlerde agirlikla jenerik cikti: kadro
+        # sayfasindan oyuncu adi yerine ortak kelime, yer adi ya da pozisyon
+        # adi aliniyordu (features, forward, battle, eagles, parlak, saglam).
+        # Ancak hepsi cop degil: Brezilyali oyuncularin buyuk bolumu tek adla
+        # oynuyor (ederson, talisca, fabinho). Bu yuzden elenmez, denetime
+        # yonlendirilir; karar mantik denetimi asamasinda verilir.
+        tek_kelime = len(pl.split()) < 2
+        if tek_kelime: elenen.append((ad, pl))
         seen.add(pl)
         for tmpl, st_, it_ in VAR:
             kw = tmpl.format(pl)
@@ -126,12 +134,17 @@ for ad,(org,spor,cog,hak,oy) in sonuc.items():
                 "sayfa_tipi":st_,"intent_katmani":it_,"entity_tipi":"Oyuncu","marka_tipi":"Jenerik",
                 "dil":"İngilizce" if re.fullmatch(r"[a-z0-9 .\-']+",kw) else "Türkçe",
                 "sorgu_uzunlugu":"Head" if wc<=2 else ("Body" if wc<=4 else "Long-tail"),
-                "varyant_kodu":st_,"kulup":ad})
+                "varyant_kodu":st_,"kulup":ad,
+                "mantik_denetim":"Tek kelimelik ad, doğrulanmalı" if tek_kelime else "Geçerli"})
 
 with open("data/raw/seed_oyuncular.csv","w",newline="",encoding="utf-8") as f:
     w=csv.DictWriter(f,fieldnames=list(rows[0].keys())); w.writeheader(); w.writerows(rows)
 bos=[a for a,(o,s,c,h,oy) in sonuc.items() if not oy]
 print(f"\nKadro bulunan kulup: {len(sonuc)-len(bos)}/{len(sonuc)}")
 print(f"Tekil oyuncu: {len(seen)} | Keyword: {len(rows)}")
+if elenen:
+    print(f"Tek kelimelik kayit denetime işaretlendi: {len(elenen)}")
+    for k, v in elenen[:15]: print(f"    {v:<24} ({k})")
+    if len(elenen) > 15: print(f"    ... ve {len(elenen)-15} tane daha")
 if bos: print(f"Kadro bulunamayan ({len(bos)}): {bos[:15]}")
 print("Cikti: data/raw/seed_oyuncular.csv")

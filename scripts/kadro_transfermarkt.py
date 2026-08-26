@@ -74,9 +74,13 @@ def kadro(ad, lig=None):
         t = html.unescape(m.group(1)).strip()
         if t and t not in oy: oy.append(t)
     if len(oy) < 5:   # yedek desen: profil linkinin metni
+        # Bu desen Transfermarkt'in kisa ad gosterimini de yakaliyor ve tek
+        # kelimelik soyadlar uretebiliyordu. Tek kelimelik kayitlar denetimde
+        # surekli jenerik cikti (ortak kelime, yer adi, marka), bu yuzden
+        # burada da tam ad sarti aranir.
         for m in re.finditer(r'href="/[^"]+/profil/spieler/\d+"[^>]*>\s*([^<]{2,40})', s):
             t = html.unescape(m.group(1)).strip()
-            if t and t not in oy: oy.append(t)
+            if t and " " in t and t not in oy: oy.append(t)
     return oy
 
 if __name__ == "__main__":

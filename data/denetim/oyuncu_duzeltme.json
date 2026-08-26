@@ -1,0 +1,620 @@
+{
+ "_aciklama": "Ajan taramasından çıkan oyuncu listesi düzeltmeleri. tip: KULUP | JENERIK | KISI_OYUNCU_DEGIL | ORGANIZASYON | SUPHELI",
+ "KULUP": {
+  "atletico madrid": {
+   "org": "La Liga",
+   "spor": "Futbol"
+  },
+  "borussia dortmund": {
+   "org": "Bundesliga",
+   "spor": "Futbol"
+  },
+  "eintracht frankfurt": {
+   "org": "Bundesliga",
+   "spor": "Futbol"
+  },
+  "ferencvarosi tc": {
+   "org": "Diğer Avrupa Ligleri",
+   "spor": "Futbol"
+  },
+  "real betis": {
+   "org": "La Liga",
+   "spor": "Futbol"
+  },
+  "rayo vallecano": {
+   "org": "La Liga",
+   "spor": "Futbol"
+  },
+  "leipzig": {
+   "org": "Bundesliga",
+   "spor": "Futbol"
+  },
+  "rb leipzig": {
+   "org": "Bundesliga",
+   "spor": "Futbol"
+  },
+  "fiorentina": {
+   "org": "Serie A",
+   "spor": "Futbol"
+  },
+  "olympique lyonnais": {
+   "org": "Ligue 1",
+   "spor": "Futbol"
+  },
+  "panathinaikos b.c.": {
+   "org": "EuroLeague",
+   "spor": "Basketbol"
+  },
+  "como 1907": {
+   "org": "Serie A",
+   "spor": "Futbol"
+  },
+  "real sociedad": {
+   "org": "La Liga",
+   "spor": "Futbol"
+  },
+  "ogc nice": {
+   "org": "Ligue 1",
+   "spor": "Futbol"
+  },
+  "baskonia": {
+   "org": "EuroLeague",
+   "spor": "Basketbol"
+  },
+  "preston north end": {
+   "org": "Diğer Avrupa Ligleri",
+   "spor": "Futbol"
+  },
+  "racing de santander": {
+   "org": "Diğer Avrupa Ligleri",
+   "spor": "Futbol"
+  },
+  "real zaragoza": {
+   "org": "Diğer Avrupa Ligleri",
+   "spor": "Futbol"
+  },
+  "se palmeiras": {
+   "org": "Diğer Ligler",
+   "spor": "Futbol"
+  },
+  "angers sco": {
+   "org": "Ligue 1",
+   "spor": "Futbol"
+  },
+  "betis balompie": {
+   "org": "La Liga",
+   "spor": "Futbol"
+  },
+  "padova": {
+   "org": "Diğer Avrupa Ligleri",
+   "spor": "Futbol"
+  },
+  "watford": {
+   "org": "Diğer Avrupa Ligleri",
+   "spor": "Futbol"
+  },
+  "cremonese": {
+   "org": "Serie A",
+   "spor": "Futbol"
+  },
+  "trabzonspor bk": {
+   "org": "Basketbol Süper Ligi",
+   "spor": "Basketbol"
+  },
+  "us sassuolo calcio": {
+   "org": "Serie A",
+   "spor": "Futbol"
+  },
+  "marseille": {
+   "org": "Ligue 1",
+   "spor": "Futbol"
+  },
+  "parma calcio 1913": {
+   "org": "Serie A",
+   "spor": "Futbol"
+  },
+  "sheffield united f.c.": {
+   "org": "Diğer Avrupa Ligleri",
+   "spor": "Futbol"
+  },
+  "wisła płock": {
+   "org": "Diğer Avrupa Ligleri",
+   "spor": "Futbol"
+  },
+  "bastia": {
+   "org": "Diğer Avrupa Ligleri",
+   "spor": "Futbol"
+  },
+  "olympique de marseille": {
+   "org": "Ligue 1",
+   "spor": "Futbol"
+  },
+  "leyton orient f.c.": {
+   "org": "Diğer Avrupa Ligleri",
+   "spor": "Futbol"
+  },
+  "virtus bologna": {
+   "org": "EuroLeague",
+   "spor": "Basketbol"
+  },
+  "omonia": {
+   "org": "Diğer Avrupa Ligleri",
+   "spor": "Futbol"
+  },
+  "botafogo fr": {
+   "org": "Diğer Ligler",
+   "spor": "Futbol"
+  },
+  "pfk cska": {
+   "org": "Diğer Avrupa Ligleri",
+   "spor": "Futbol"
+  },
+  "braunschweig": {
+   "org": "Diğer Avrupa Ligleri",
+   "spor": "Futbol"
+  },
+  "bournemouth": {
+   "org": "Premier Lig",
+   "spor": "Futbol"
+  },
+  "santos": {
+   "org": "Diğer Ligler",
+   "spor": "Futbol"
+  },
+  "acf fiorentina": {
+   "org": "Serie A",
+   "spor": "Futbol"
+  },
+  "espanyol": {
+   "org": "La Liga",
+   "spor": "Futbol"
+  },
+  "malaga": {
+   "org": "La Liga",
+   "spor": "Futbol"
+  },
+  "wolfsburg": {
+   "org": "Bundesliga",
+   "spor": "Futbol"
+  },
+  "everton f.c.": {
+   "org": "Premier Lig",
+   "spor": "Futbol"
+  },
+  "hoffenheim": {
+   "org": "Bundesliga",
+   "spor": "Futbol"
+  },
+  "cagliari calcio": {
+   "org": "Serie A",
+   "spor": "Futbol"
+  },
+  "bilbao": {
+   "org": "La Liga",
+   "spor": "Futbol"
+  },
+  "burnley f.c.": {
+   "org": "Diğer Avrupa Ligleri",
+   "spor": "Futbol"
+  },
+  "southampton f.c.": {
+   "org": "Diğer Avrupa Ligleri",
+   "spor": "Futbol"
+  },
+  "palmeiras": {
+   "org": "Diğer Ligler",
+   "spor": "Futbol"
+  },
+  "rcd mallorca": {
+   "org": "La Liga",
+   "spor": "Futbol"
+  },
+  "us cremonese": {
+   "org": "Serie A",
+   "spor": "Futbol"
+  },
+  "vfl wolfsburg": {
+   "org": "Bundesliga",
+   "spor": "Futbol"
+  },
+  "partizan": {
+   "org": "EuroLeague",
+   "spor": "Basketbol"
+  },
+  "udinese calcio": {
+   "org": "Serie A",
+   "spor": "Futbol"
+  },
+  "fortuna düsseldorf": {
+   "org": "Diğer Avrupa Ligleri",
+   "spor": "Futbol"
+  },
+  "valkyries": {
+   "org": "WNBA",
+   "spor": "Basketbol"
+  },
+  "vallecano": {
+   "org": "La Liga",
+   "spor": "Futbol"
+  },
+  "valencia bc": {
+   "org": "EuroLeague",
+   "spor": "Basketbol"
+  },
+  "valencia basket": {
+   "org": "EuroLeague",
+   "spor": "Basketbol"
+  },
+  "hamburger sv": {
+   "org": "Bundesliga",
+   "spor": "Futbol"
+  },
+  "rcd espanyol": {
+   "org": "La Liga",
+   "spor": "Futbol"
+  },
+  "tsg 1899 hoffenheim": {
+   "org": "Bundesliga",
+   "spor": "Futbol"
+  },
+  "olympiacos b.c.": {
+   "org": "EuroLeague",
+   "spor": "Basketbol"
+  },
+  "levante ud": {
+   "org": "La Liga",
+   "spor": "Futbol"
+  },
+  "zalgiris": {
+   "org": "EuroLeague",
+   "spor": "Basketbol"
+  },
+  "dubai basketball": {
+   "org": "EuroLeague",
+   "spor": "Basketbol"
+  },
+  "eintracht braunschweig": {
+   "org": "Diğer Avrupa Ligleri",
+   "spor": "Futbol"
+  },
+  "rosario central": {
+   "org": "Diğer Ligler",
+   "spor": "Futbol"
+  },
+  "stade brestois 29": {
+   "org": "Ligue 1",
+   "spor": "Futbol"
+  },
+  "saint-etienne": {
+   "org": "Diğer Avrupa Ligleri",
+   "spor": "Futbol"
+  },
+  "chargers": {
+   "org": "NFL",
+   "spor": "Amerikan Futbolu"
+  },
+  "philadelphia union": {
+   "org": "Diğer Ligler",
+   "spor": "Futbol"
+  },
+  "aj auxerre": {
+   "org": "Ligue 1",
+   "spor": "Futbol"
+  },
+  "broncos": {
+   "org": "NFL",
+   "spor": "Amerikan Futbolu"
+  },
+  "charleroi": {
+   "org": "Diğer Avrupa Ligleri",
+   "spor": "Futbol"
+  },
+  "olimpia milano": {
+   "org": "EuroLeague",
+   "spor": "Basketbol"
+  },
+  "alba berlin": {
+   "org": "Diğer Avrupa Ligleri",
+   "spor": "Basketbol"
+  }
+ },
+ "JENERIK": {
+  "bingöl": "İl adı",
+  "hannibal": "Dizi ve tarihî kişi",
+  "çankaya": "Ankara ilçesi",
+  "show": "Show TV kanalı",
+  "karataş": "Adana ilçesi",
+  "yıldırım": "Bursa ilçesi ve hava olayı",
+  "ceylan": "Şarkıcı ve hayvan adı",
+  "alişan": "Şarkıcı",
+  "sharks": "Genel kelime",
+  "birleşik krallık": "Ülke adı",
+  "topaloğlu": "Kuyumcu markası",
+  "taylor": "Taylor Swift ve gitar markası",
+  "jordan": "Nike Air Jordan markası",
+  "center": "Genel kelime ve mevki adı",
+  "austin": "ABD şehri ve ön ad",
+  "miss universe": "Güzellik yarışması",
+  "moscow": "Şehir adı",
+  "blanks": "Genel kelime",
+  "animation": "Genel kelime",
+  "christian": "Ön ad ve genel kelime",
+  "person": "Genel kelime",
+  "central": "Genel kelime ve mevki adı",
+  "dingil": "Türkçe genel kelime",
+  "çengel": "Türkçe genel kelime",
+  "konferansı": "Türkçe sözcük",
+  "liberty": "Marka ve WNBA takım kısaltması",
+  "franklin": "Yaygın soyad ve yer adı",
+  "entertainment": "Genel kelime",
+  "richmond": "Yer adı ve soyad",
+  "butcher": "Genel kelime",
+  "marble": "Genel kelime",
+  "george": "Yaygın ön ad",
+  "alexander": "Yaygın ön ad",
+  "burton": "Yer adı ve marka",
+  "smiley": "Genel kelime",
+  "maxwell": "Yaygın soyad ve marka",
+  "strong": "Genel kelime",
+  "states": "Genel kelime",
+  "resort": "Genel kelime",
+  "gibson": "Enstrüman markası",
+  "sailors": "Genel kelime",
+  "carpenter": "Genel kelime",
+  "bahamas": "Ülke adı",
+  "universal studios japan": "Tema parkı markası",
+  "phillip": "Yaygın ön ad",
+  "forward": "Mevki adı",
+  "monroe": "Yer adı ve medya figürü",
+  "cousins": "Genel kelime",
+  "würzburg": "Almanya'da şehir",
+  "rebels": "Genel kelime",
+  "kayalı": "Türkçe yer/sözcük",
+  "lafayette": "Yer adı",
+  "lorenzo": "Yaygın İtalyan ön adı",
+  "yugoslavia": "Eski ülke adı",
+  "napier": "Yer adı",
+  "hersek": "Yer adı",
+  "gamble": "Genel kelime",
+  "güleryüz": "Türkçe sözcük ve otobüs markası",
+  "panthers": "Takım lakabı",
+  "bedford": "Yer adı",
+  "counts": "Genel kelime",
+  "puerto": "İspanyolca sözcük",
+  "birleşik arap emirlikleri": "Ülke adı",
+  "images": "Genel kelime",
+  "forvet": "Mevki adı",
+  "forbes": "Dergi markası",
+  "dragons": "Genel kelime",
+  "newton": "Bilim insanı ve birim",
+  "amerika birleşik devletleri": "Ülke adı",
+  "süleyman": "Yaygın Türkçe ön ad",
+  "ekşioğlu": "Soyad ve aile/şirket adı",
+  "knight": "Genel kelime",
+  "benjamin": "Yaygın ön ad",
+  "holding": "İş dünyası sözcüğü",
+  "dessert": "Genel kelime",
+  "oakley": "Gözlük markası",
+  "lawrence": "Yaygın ad ve yer adı",
+  "waters": "Genel kelime",
+  "basket": "Spor dalı kısaltması",
+  "yılmaz": "En yaygın Türk soyadı",
+  "dereli": "Giresun ilçesi",
+  "summers": "Genel kelime",
+  "yardımcı": "Türkçe genel kelime",
+  "uğurlu": "Türkçe sıfat",
+  "new zealand": "Ülke adı",
+  "basketball": "Spor dalı adı",
+  "universal": "Medya/şirket adı",
+  "prince": "Genel kelime ve müzisyen",
+  "miller": "Yaygın soyad ve bira markası",
+  "channel": "Genel kelime",
+  "tosuncuk": "Türkçe lakap",
+  "czech republic": "Ülke adı",
+  "winchester": "Silah markası ve şehir",
+  "temple": "Genel kelime ve yer adı",
+  "holiday": "Genel kelime",
+  "holland": "Ülke adı",
+  "franks": "Ortak soyad",
+  "birlik": "Türkçe ortak isim",
+  "sarıkaya": "Yozgat ilçesi",
+  "çelenk": "Türkçe ortak isim",
+  "başkan": "Türkçe ortak isim",
+  "çeltik": "Bitki ve Konya ilçesi",
+  "petersburg": "Yer adı",
+  "angola": "Ülke adı",
+  "england": "Ülke adı",
+  "tarihi": "Türkçe kelime parçası",
+  "numarası": "Türkçe kelime parçası",
+  "şimşek": "Türkçe sözcük ve bakan adı",
+  "sierra leone": "Ülke adı",
+  "laguna": "Yer adı ve marka",
+  "kaftan": "Giysi adı",
+  "kaynak": "Türkçe ortak isim",
+  "buffaloes": "NCAA takım lakabı",
+  "kaliforniya": "Eyalet adı",
+  "behram": "Köy adı",
+  "eagles": "NFL takım lakabı",
+  "başaran": "Yaygın soyad",
+  "murat aydın": "Siyasetçi ve yaygın ad",
+  "rogers": "Marka ve yer adı",
+  "machine": "Genel kelime",
+  "hawkins": "Stranger Things kasabası ve marka",
+  "german": "Dil adı",
+  "johnson": "Yaygın soyad ve marka",
+  "cotton": "Genel kelime",
+  "holstein": "Bölge ve sığır ırkı",
+  "mickey": "Mickey Mouse",
+  "cem özdemir": "Alman siyasetçi",
+  "koyuncu": "Yaygın soyad ve müzisyen",
+  "universe": "Genel kelime",
+  "çalışkan": "TDK sıfatı",
+  "sağlam": "TDK sıfatı",
+  "mendes": "Shawn Mendes",
+  "battle": "Genel kelime",
+  "parlak": "TDK sıfatı",
+  "parsons": "Okul, şirket ve oyuncu karışımı",
+  "comics": "Genel kelime",
+  "ekinci": "Soyad ve köy adları",
+  "anderson": "Yaygın soyad",
+  "features": "Genel kelime",
+  "marcos": "Siyasi hanedan ve ön ad",
+  "güvenç": "Ad ve yerleşim adı",
+  "murphy": "Soyad ve deyim",
+  "grimes": "Müzisyen",
+  "moreno": "İspanyolca sıfat ve yer adı",
+  "seferi": "Fıkıh terimi",
+  "bektaş": "Hacı Bektaş Veli",
+  "shoulder": "Genel kelime",
+  "joseph": "Ön ad",
+  "orta afrika cumhuriyeti": "Ülke adı",
+  "oliver": "Ön ad",
+  "fernando": "Ön ad ve şarkı",
+  "elliot": "Ön ad",
+  "russell": "Marka ve ön ad",
+  "yıldızlı": "TDK sıfatı",
+  "bahadır": "Ad ve yerleşim",
+  "williams": "Yaygın soyad ve marka",
+  "richards": "Soyad; en güçlü karşılık yorumcu"
+ },
+ "KISI_OYUNCU_DEGIL": {
+  "ismail kartal": "Teknik direktör",
+  "volkan demirel": "Emekli kaleci, teknik direktör",
+  "emre belözoğlu": "Emekli, teknik direktör",
+  "alex de souza": "Emekli, teknik direktör",
+  "selçuk inan": "Emekli, teknik direktör",
+  "stephen graham": "Emekli, antrenör",
+  "alaçayır": "Emekli, teknik direktör",
+  "ömer onan": "Emekli, TBF yöneticisi",
+  "bobby brown": "Emekli, antrenör",
+  "şenol çorlu": "Altyapı koordinatörü",
+  "ömer aşık": "Emekli",
+  "deco": "Emekli, Barcelona sportif direktörü",
+  "umtiti": "Emekli",
+  "gheorghe muresan": "Emekli",
+  "diego lugano": "Emekli, kulüp yöneticisi",
+  "mehmet topuz": "Emekli",
+  "semih erden": "Emekli",
+  "bobby dixon": "Emekli, koç",
+  "ahmet dursun": "Emekli, sportif direktör ve yorumcu",
+  "yao ming": "Emekli, eski CBA başkanı",
+  "pablo laso": "Basketbol başantrenörü (Anadolu Efes)",
+  "mirsad türkcan": "Emekli, oyuncu menajeri",
+  "müjdat yetkiner": "Emekli, altyapı teknik adamı",
+  "ersan ilyasova": "Emekli basketbolcu",
+  "ilyasova": "Emekli basketbolcu (mükerrer)",
+  "chamberlain": "Wilt Chamberlain, vefat etti",
+  "obradovic": "Panathinaikos başantrenörü",
+  "tayfur havutçu": "Emekli, teknik direktör",
+  "ali gültiken": "Emekli, TRT Spor yorumcusu",
+  "mehmet özdilek": "Emekli, teknik direktör",
+  "marko jaric": "Emekli basketbolcu",
+  "allen iverson": "Emekli, Reebok yöneticisi",
+  "ersen martin": "2014'te bıraktı, 2023'te vefat etti",
+  "alan shearer": "Emekli, BBC yorumcusu",
+  "rakitic": "Emekli, Hajduk Split sportif yönetimi",
+  "kris humphries": "Emekli",
+  "o'neal": "Emekli, TV analisti",
+  "blake griffin": "Emekli",
+  "ted turner": "Kulüp sahibi, Mayıs 2026'da vefat etti",
+  "jan vesely": "Mayıs 2026'da emekli",
+  "gökhan ünal": "Emekli, teknik direktör",
+  "ali eren beşerler": "Kariyer sonu, yardımcı antrenör",
+  "shaquille o'neal": "Emekli, TV analisti",
+  "koray avcı": "Emekli futbolcu, ayrıca şarkıcı",
+  "gökhan gönül": "Emekli, U21 teknik direktörü",
+  "enes kanter": "2022'den beri oynamıyor",
+  "filipe luis": "Emekli, Monaco teknik direktörü",
+  "abdülkerim durmaz": "Emekli, yorumcu",
+  "ayhan akman": "Emekli, Galatasaray futbol direktörüydü",
+  "hennessey": "Emekli kaleci",
+  "palacio": "Emekli futbolcu",
+  "ismail köybaşı": "Emekli futbolcu",
+  "ali bilgin": "Emekli futbolcu; aynı adlı yönetmen",
+  "dariusz stanicki": "Emekli, Fenerbahçe voleybol sportif direktörü",
+  "dennis rodman": "Emekli NBA oyuncusu",
+  "mustafa cengiz": "Galatasaray eski başkanı, 2021'de vefat etti",
+  "selçuk şahin": "Eyüpspor teknik direktörü",
+  "diego costa": "Emekli",
+  "uğur uçar": "Teknik direktör",
+  "semih şentürk": "Emekli",
+  "thorsten fink": "Samsunspor teknik direktörü",
+  "ertuğrul sağlam": "Teknik direktör",
+  "feyyaz uçar": "Kulüp yöneticisi",
+  "rıza çalımbay": "Teknik direktör",
+  "jermaine jackson": "Emekli basketbolcu",
+  "gordon milne": "Eski teknik direktör, 89 yaşında",
+  "atkinson": "Cavaliers baş antrenörü",
+  "wilt chamberlain": "1999'da vefat etti",
+  "chris paul": "Şubat 2026'da emekli oldu",
+  "david silva": "Emekli",
+  "larry bird": "Emekli, Pacers danışmanı",
+  "ibrahim yavuz": "Emekli",
+  "recep çetin": "Emekli, teknik direktör",
+  "şehmus özer": "2016'da vefat etti",
+  "uğur boral": "Emekli",
+  "kayhan kaynak": "1994'te vefat etti",
+  "erdem özgenç": "Emekli",
+  "cenk akyol": "Emekli, yardımcı antrenör",
+  "derrick rose": "Emekli"
+ },
+ "SUPHELI": {
+  "santander": "Banka ve şehir adı baskın; Federico Santander adlı futbolcu da var",
+  "styles": "Callum Styles gerçek oyuncu ama Pisa ile bağı yok; Harry Styles ve genel kelime",
+  "carlos": "Cagliari kadrosunda Carlos yok; çok yaygın ön ad",
+  "tuncay": "Erzurumspor kadrosunda Tuncay yok; baskın karşılık emekli Tuncay Şanlı",
+  "amorim": "Genoa'da Alex Amorim var ama baskın karşılık Rúben Amorim (teknik direktör)",
+  "molinas": "Jack Molinas (vefat) ile 'molina' varyantı ayırt edilemiyor",
+  "martin": "Erzurumspor kadrosunda soyadı Martin yok; yaygın ön ad",
+  "campbell": "Yaygın soyad ve marka; aktif karşılık doğrulanamadı",
+  "walters": "Yaygın soyad; aktif karşılık doğrulanamadı",
+  "davinchi": "Getafe'de gerçek oyuncu var; hacim DaVinci Resolve'dan olabilir",
+  "bayındır": "Altay Bayındır var; İzmir ilçesi ve sağlık grubu da aynı ad",
+  "ahmet özer": "Futbolcu var ama Alanyaspor bağı eski; spor dışı kamu figürleri de var",
+  "marshall": "Naji Marshall var; Marshall boya ve ses sistemi markaları",
+  "akbaba": "Emre Akbaba var; kuş adı",
+  "hekimoğlu": "Beşiktaş altyapısında var; Kanal D dizisi",
+  "mercan": "Levent Mercan var; deniz canlısı, 'levent mercan' ayrıca kayıtlı",
+  "abdülhamid": "Saud Abdulhamid var; II. Abdülhamid",
+  "carter": "Inter kadrosunda yok; yaygın soyad",
+  "kafkas": "Nazlı Eda Kafkas var; Kafkasya bölgesi",
+  "sinan özen": "Genç stoper var; tanınmış şarkıcı",
+  "israel": "Franco Israel var; ülke adı",
+  "kabadayı": "Yusuf Kabadayı var; sözcük ve film",
+  "maldini": "Daniel Maldini aktif ama Cagliari'de değil; Paolo Maldini emekli",
+  "serdar": "Suat Serdar var; çok yaygın Türkçe ad",
+  "bülbül": "Ali Turap Bülbül var; kuş adı",
+  "oğuz yılmaz": "Futbolcu var ama Serikspor bağı doğrulanamadı; halk müziği sanatçısı",
+  "mckenzie": "Rockets kadrosunda yok; futbolda aktif Mark McKenzie var",
+  "dikmen": "Soner Dikmen var; Ankara semti",
+  "yüksek": "İsmail Yüksek var; yaygın sıfat",
+  "sinan kaya": "Sivasspor'daki oyuncu 'Muhammed Sinan Kaya'",
+  "ferguson": "Lewis Ferguson aktif; Sir Alex Ferguson baskın",
+  "buongiorno": "Alessandro Buongiorno var; İtalyanca selamlama baskın"
+ },
+ "MUKERRER": {
+  "ilyasova": "ersan ilyasova",
+  "giorgi mamardashvili": "giorgi mamardaşvili",
+  "kerkez": "milos kerkez",
+  "nba all star": "nba all-star",
+  "basket-ball": "basketball",
+  "brandon boston jr.": "brandon boston jr",
+  "bremer": "gleison bremer",
+  "valencia bc": "valencia basket",
+  "andrew robertson": "andy robertson",
+  "vinicius": "vinicius junior",
+  "nwaiwu": "chibuike nwaiwu",
+  "ceballos": "dani ceballos",
+  "jabari smith jr.": "jabari smith jr"
+ },
+ "ORGANIZASYON": {
+  "nba all-star": {
+   "org": "NBA",
+   "spor": "Basketbol"
+  },
+  "all-star": {
+   "org": "NBA",
+   "spor": "Basketbol"
+  }
+ }
+}

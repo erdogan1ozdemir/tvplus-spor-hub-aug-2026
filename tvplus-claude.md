@@ -230,9 +230,36 @@ Bunun için kırılım kapsamı ve aktif eksen hesabı `app.jsx`'e taşındı (`
 
 Doğrulama: Tüm portföy 3,68B → Futbol 3,28B → Süper Lig 2,27B, şeritten geri dönüş çalışıyor.
 
-**Güncel veri:** 18.038 keyword · Son 12 Ay 3,68B · YoY +%5,4 · dashboard.js 12,23 MB · artifact 12,63 MB
+### Dokuz ajanla tam keyword taraması
 
-**Güncel veri:** 18.038 keyword · Son 12 Ay 3,68B · YoY +%5,4 · dashboard.js 12,23 MB · artifact 12,63 MB
+Kullanıcının işaret ettiği `atletico madrid` ve `leipzig` hataları doğrulandı ve kök nedeni bulundu: `kulup` alanı sistematik olarak kaymış, kulüp adı bir sonraki kulübün oyuncusu gibi kaydedilmiş.
+
+**Neden önceki denetimler kaçırdı:** `atletico madrid`'in takım satırı derlemede eleniyor. Aynı keyword hem takım hem oyuncu dosyasında var; dedup yüksek hacimli olanı tutuyor ve oyuncu sürümü kazanıyor, yanlış fasetleriyle birlikte. Dashboard üzerinden yapılan çapraz kontrol bu yüzden yalnızca 5 eşleşme buluyordu; ham dosyalara inince 34 kesin vaka çıktı.
+
+**Tarama:** 8 ajan oyuncu listesinde (hacmin %95'ini kapsayan 1.600 keyword, parça başına 200), 1 ajan takım (812) ve organizasyon (632) listelerinde. Her keyword tek tek sınıflandırıldı, örnekleme yapılmadı.
+
+**Sonuç: 1.600 oyuncu keywordünün 351'i hatalı (%22).** Parça bazında hata oranı %15,5 ile %34 arasında değişti.
+
+| Kategori | Kayıt | Uygulanan |
+|---|---|---|
+| Kulüp adı oyuncu sanılmış | 79 | 312 satır takıma taşındı |
+| Oyuncu olmayan kişi (teknik direktör, emekli, yönetici, vefat etmiş) | 79 | 293 satır işaretlendi |
+| Jenerik kelime, marka, yer adı | 157 | 189 satır işaretlendi |
+| Mükerrer yazım | 13 | 46 satır işaretlendi |
+| Organizasyon adı | 2 | 8 satır taşındı |
+| Şüpheli (karar bekliyor) | 32 | dokunulmadı |
+
+**Takım ve organizasyon listesi:** 812 takım satırının 200'ü, 632 organizasyon satırının 99'u sorunlu. Uygulanan düzeltmeler: 48 lig düzeltmesi (hull city 7,29M La Liga'dan Premier Lig'e, benfica 6,43M Serie A'dan Portekiz Ligi'ne, istanbul başakşehir 3,89M Konferans Ligi Elemeleri'nden Süper Lig'e), 17 NBA ↔ EuroLeague karışması, 4 Unrivaled kadın basketbol takımı voleyboldan alındı, 3 Beşiktaş satırı futbola alındı, 65 satırda `Çoklu/Jenerik` spor değeri organizasyondan türetildi.
+
+**Ajanların bulduğu kök neden:** kaynak kazıma Wikipedia sayfa menüsü metnini de toplamış. `universe`, `comics`, `features`, `machine`, `battle`, `shoulder` gibi düz İngilizce sözcüklerin NBA kulüplerine bağlanması bundan. `rosario central` satırı Elche kadro tablosunun "kiralık gönderilenler" bölümünden sızmış.
+
+**Doğrulanıp reddedilen bir ajan iddiası:** `wimbledon` ve `roland garros` ikisi de tam 712.800, `eredivisie` ve `suudi arabistan ligi` ikisi de 311.200 olduğu için hacim çekiminde kopyalama şüphesi bildirildi. Kontrol edildi: bunlar Google Ads'in sabit hacim kovaları (60.500 ve 27.100 standart kova değerleri). İlgisiz iki terimin aynı kovaya düşmesi olağan, anomali değil.
+
+**Güncel veri:** 17.688 keyword · Son 12 Ay 3,65B · YoY +%5,4 · dashboard.js 11,98 MB · artifact 12,38 MB
+
+**Güncel veri:** 17.688 keyword · Son 12 Ay 3,65B · YoY +%5,4 · dashboard.js 11,98 MB · artifact 12,38 MB
+
+**Güncel veri:** 17.688 keyword · Son 12 Ay 3,65B · YoY +%5,4 · dashboard.js 11,98 MB · artifact 12,38 MB
 
 ## 2026-08-24
 

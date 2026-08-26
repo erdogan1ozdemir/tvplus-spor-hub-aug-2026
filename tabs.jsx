@@ -539,7 +539,7 @@ window.TABS = (function(){
             th('Keyword','kw'),
             !kompakt && th('Spor Dalı','spor'),
             !kompakt && th('Organizasyon','org'),
-            !kompakt && th('Takım','kulup', false, 'Oyuncu satırlarında oyuncunun kulübü'),
+            !kompakt && th('Takım','takim', false, 'Takım satırında kendi adı, oyuncu satırında kulübü'),
             !kompakt && th('Varlık','ent'),
             th(yil[0]+' Ort.','a24', true, yil[0]+' aylık ortalama arama hacmi'),
             th(yil[1]+' Ort.','a25', true, yil[1]+' aylık ortalama arama hacmi'),
@@ -567,7 +567,7 @@ window.TABS = (function(){
                     h('span',null, r.spor||'–'))),
                 !kompakt && h('td',{style:{fontSize:12,color:'var(--ink-2)'}}, r.org||'–'),
                 !kompakt && h('td',{style:{fontSize:12,color:'var(--ink-2)'}},
-                  r.kulup ? h('span',{className:'cat-pill'}, r.kulup) : '–'),
+                  r.takim ? h('span',{className:'cat-pill'}, r.takim) : '–'),
                 !kompakt && h('td',{style:{fontSize:12,color:'var(--ink-3)'}}, r.ent||'–'),
                 h('td',{className:'num', title: r.a24==null?null:fmtFull(r.a24)+' arama/ay'},
                   fmtNum(r.a24)),
@@ -598,7 +598,7 @@ window.TABS = (function(){
   const KW_CSV = [
     {label:'Keyword',key:'kw'},{label:'Spor Dalı',key:'spor'},{label:'Organizasyon',key:'org'},
     {label:'Sayfa Tipi',key:'st'},{label:'Intent',key:'it'},{label:'Varlık Tipi',key:'ent'},
-    {label:'Takım',key:'kulup'},{label:'Yayın Hakkı',key:'hak'},
+    {label:'Takım',key:'takim'},{label:'Oyuncu Kulübü',key:'kulup'},{label:'Yayın Hakkı',key:'hak'},
     {label:'2024 Ort.',key:'a24'},{label:'2025 Ort.',key:'a25'},{label:'2026 YTD Ort.',key:'a26'},
     {label:'Önceki 12 Ay',key:'p12'},{label:'Son 12 Ay',key:'r12'},
     {label:'YoY %',get:r=>r.ryoy==null?'':(r.ryoy*100).toFixed(1)},
@@ -834,35 +834,11 @@ window.TABS = (function(){
   // aramaları tek çatı altında toplanır. Sayfa açma kararı bu toplama bakar.
   // Sorgu kuyrukları: "galatasaray maçı ne zaman" gibi çok katmanlı ekler
   // tek geçişte inmiyordu, her biri ayrı küme oluyordu.
-  const KUYRUK = [' maçları',' maçı',' maçlari',' fikstürü',' fikstür',' puan durumu',
-    ' kadrosu',' kadro',' canlı izle',' şifresiz',' transferleri',' transfer',
-    ' oyuncuları',' ne zaman',' hangi kanalda',' saat kaçta',' maç sonucu',
-    ' sonucu',' skoru',' skor',' haberleri',' son dakika',' istatistikleri',
-    ' istatistik',' puanı',' sıralaması',' izle'];
-  // Resmî ad ekleri: "real madrid cf" ile "real madrid" aynı kulüptür.
-  const RESMI = [' spor kulübü',' f.c.',' a.ş.',' s.k.',' j.k.',' afc',' cf',' fc',' sk',' jk'];
-  function kulupAnahtar(kw){
-    let t = kw, degisti = true;
-    while(degisti){
-      degisti = false;
-      for(const suf of KUYRUK){
-        if(t.endsWith(suf) && t.length > suf.length + 2){
-          t = t.slice(0, -suf.length); degisti = true;
-        }
-      }
-    }
-    for(const suf of RESMI){
-      if(t.endsWith(suf) && t.length > suf.length + 2){ t = t.slice(0, -suf.length); break; }
-    }
-    return t.trim();
-  }
-
+  // Takım kümesi anahtarı build-data.js'te üretilip k.takim alanında geliyor.
   function takimKumeleri(rows){
     const m = new Map();
     for(const k of rows){
-      let takim = null;
-      if(k.ent==='Takım') takim = kulupAnahtar(k.kw);
-      else if(k.ent==='Oyuncu' && k.kulup) takim = k.kulup;
+      const takim = k.takim || null;
       if(!takim) continue;
       if(!m.has(takim)) m.set(takim, {label:takim, ust:takim, alan:'takim',
         rows:[], takimRows:[], oyuncuRows:[], r12:0, p12:0, kwCount:0,

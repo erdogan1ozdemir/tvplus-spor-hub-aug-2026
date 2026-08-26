@@ -442,7 +442,9 @@ window.TABS = (function(){
       eksen && h(SezonTakvimi,{rows, viewMode, baslik:'Sezonsallık',
         gruplarDis: kirilim, eksenDis: eksen,
         onSelectGroup: (_a, deger) => in_(deger),
-        onGrupDetay: deger => onSelectGroup(eksen==='takim' ? 'kulup' : eksen, deger)}),
+        onGrupDetay: deger => eksen==='takim'
+          ? onNavigateKw({alan:'takim', deger})
+          : onSelectGroup(eksen, deger)}),
 
       // ——— Karne (bağımsız ölçek) ———
       h(C.SectionHeader,{icon:'karne',
@@ -973,26 +975,6 @@ window.TABS = (function(){
           sub:'kümedeki oyuncu katkısı'})),
 
       gorunum==='kume' ? h(React.Fragment,null,
-        h(C.SectionHeader,{icon:'karne', title:'Takım Kümesi Dağılımı',
-          desc: kapsam==='takim' ? 'yalnızca takımın kendi aramaları'
-              : kapsam==='oyuncu' ? 'yalnızca takımın oyuncularının aramaları'
-              : 'takımın kendi aramaları ile oyuncularının aramaları birlikte'}),
-        h('div',{className:'card'},
-          h(C.SmallMultiples,{yScale:'independent', toplamEtiket:'Son 12 Ay',
-            monthsLabels:ROLLING_LABELS,
-            items: kumeler.slice(0,16).map(function(g){
-              return {label: g.label + '  ·  ' + (g.spor||''),
-                values: viewMode==='calendar'?g.cal25:g.roll,
-                prevValues: viewMode==='calendar'?g.cal24:g.prev,
-                yoy: yoyFor(g,viewMode),
-                metrics: kartMetrikleri(g, viewMode),
-                color:(window.SPOR_RENK||{})[g.spor]||'#BAB0AC',
-                title:[g.label + (g.spor?' · '+g.spor:''), g.org||'',
-                  'Takım araması: '+fmtFull(g.takimVol)+' ('+g.takimKw+' kw)',
-                  'Oyuncu araması: '+fmtFull(g.oyuncuVol)+' ('+g.oyuncuKw+' kw)',
-                  'Toplam: '+fmtFull(g.r12)].join('\n')};
-            }),
-            onClick: it => onSelectGroup('org', (kumeler.find(x=>x.label===it.label)||{}).org)})),
         h(C.SectionHeader,{icon:'takvim', title:'Takım Kümesi Sezonsallığı',
           desc:'satır = takım kümesi, sütun = ay'}),
         h('div',{className:'card'},
@@ -1007,9 +989,12 @@ window.TABS = (function(){
                   peakIdx: viewMode==='calendar' ? g.peakIdxCal : g.peakIdx,
                   title:[g.label,'Takım: '+fmtFull(g.takimVol),'Oyuncu: '+fmtFull(g.oyuncuVol),
                     'Toplam: '+fmtFull(g.r12)].join('\n')};
-              })})),
+              }),
+              // Satıra tıklandığında o takımın keyword'leri açılır:
+              // takım aramaları ve oyuncularının aramaları birlikte.
+              onClickCell:(row)=>onNavigateKw({alan:'takim', deger:row.label})})),
           h('div',{className:'txt-3', style:{fontSize:10.5, marginTop:8}},
-            kumeler.length.toLocaleString('tr-TR')+' takım kümesi · tablo kendi içinde kaydırılabilir')),
+            kumeler.length.toLocaleString('tr-TR')+' takım kümesi · satıra tıklayın, o takımın keywordleri açılır')),
         h(C.SectionHeader,{icon:'liste', title:'Takım Kümesi Tablosu',
           desc:'takım araması ve oyuncu araması ayrı kolonlarda',
           actions: h('button',{className:'chip-btn', style:{padding:'6px 12px',borderRadius:999},
@@ -1036,7 +1021,7 @@ window.TABS = (function(){
               h('tbody',null, kumeler.slice(0,200).map(function(g){
                 const pay = g.r12 ? g.oyuncuVol/g.r12 : 0;
                 return h('tr',{key:g.label, className:'clickable',
-                  onClick:()=>onNavigateKw({alan:'kulup', deger:g.label})},
+                  onClick:()=>onNavigateKw({alan:'takim', deger:g.label})},
                   h('td',{className:'kw-cell'},
                     h('div',{style:{display:'flex',alignItems:'center',gap:7}},
                       h('div',{style:{width:8,height:8,borderRadius:2,flexShrink:0,

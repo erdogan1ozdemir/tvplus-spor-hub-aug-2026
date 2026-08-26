@@ -74,6 +74,27 @@ function ceyrekBayrak(m12){
   return { pq: q.map(v => (mx>0 && v===mx) ? 1 : 0), qSum:q };
 }
 
+// ——— Takım kümesi anahtarı
+// Takım aramaları ile o takımın oyuncu aramaları tek bir eksende toplanabilsin
+// diye türetilir. Takım satırında keyword'ün ana adı, oyuncu satırında kulüp.
+const KUYRUK = [' maçları',' maçı',' maçlari',' fikstürü',' fikstür',' puan durumu',
+  ' kadrosu',' kadro',' canlı izle',' şifresiz',' transferleri',' transfer',
+  ' oyuncuları',' ne zaman',' hangi kanalda',' saat kaçta',' maç sonucu',
+  ' sonucu',' skoru',' skor',' haberleri',' son dakika',' istatistikleri',
+  ' istatistik',' puanı',' sıralaması',' izle',' kimdir',' hangi takımda'];
+const RESMI = [' spor kulübü',' f.c.',' a.ş.',' s.k.',' j.k.',' afc',' cf',' fc',' sk',' jk'];
+function kulupAnahtar(kw){
+  let t = kw, degisti = true;
+  while(degisti){
+    degisti = false;
+    for(const suf of KUYRUK)
+      if(t.endsWith(suf) && t.length > suf.length + 2){ t = t.slice(0, -suf.length); degisti = true; }
+  }
+  for(const suf of RESMI)
+    if(t.endsWith(suf) && t.length > suf.length + 2){ t = t.slice(0, -suf.length); break; }
+  return t.trim();
+}
+
 // CSV kolonu → DATA kısa adı
 const FACET = {
   organizasyon:'org', spor_dali:'spor', musabaka_tipi:'mus', lig_seviyesi:'sev',
@@ -161,10 +182,25 @@ for(const o of kwMap.values()){
     peakYm: peakIR>=0 ? monthsR12[peakIR] : null,
     dipYm: dipI>=0 ? AY[dipI] : null,
     bucket: bant(r12 ? Math.round(r12/12) : o.sv),
+    takim: null,   // aşağıda varlık tipine göre doldurulur
+
     sinif: sz.sinif, cv: sz.cv, pd: sz.pd,
     trend: ryoy==null ? 'Veri Yok' : ryoy>0.05 ? 'Yükselen' : ryoy<-0.05 ? 'Düşen' : 'Stabil',
     kaynak:o.kaynak };
   for(const kisa of Object.values(FACET)) if(o[kisa]!==undefined) k[kisa]=o[kisa];
+  // Takım kümesi: takım satırında kendi adı, oyuncu satırında kulübü
+  k.takim = k.ent==='Takım' ? kulupAnahtar(k.kw)
+          : (k.ent==='Oyuncu' && k.kulup) ? k.kulup : null;
+  if(!k.takim) delete k.takim;
+
+  // "Türk Sporcu Var" yalnızca yabancı organizasyonlar için anlamlıdır:
+  // amaç yabancı lig ve kulüplerdeki Türk sporcuları ayırt edebilmek.
+  // Yerli organizasyonlarda etiket, takım sporunda "Türk Takımı Var"a,
+  // bireysel sporda "Yok"a çekilir.
+  if(k.turk==='Türk Sporcu Var' && (k.cog==='Türkiye' || k.yer==='Yerli')){
+    k.turk = k.tb==='Takım Sporu' ? 'Türk Takımı Var' : 'Yok';
+  }
+
   // Özdilek uyumluluk alanları
   k.brand   = (k.ent==='Takım'||k.ent==='Oyuncu') ? k.kw : null;
   k.catalog = k.hak==='TV+ Var' ? 'Var' : k.hak==='TV+ Yok' ? 'Yok' : '';
@@ -180,6 +216,9 @@ for(const kisa of Object.values(FACET)){
   if(s.size && s.size<600) facetDegerleri[kisa] = [...s].sort((a,b)=>String(a).localeCompare(String(b),'tr'));
 }
 facetDegerleri.sinif  = [...new Set(keywords.map(k=>k.sinif))].sort();
+// Takım kümesi çok değerli bir eksen; filtre için tamamı taşınır
+facetDegerleri.takim = [...new Set(keywords.map(k=>k.takim).filter(Boolean))]
+  .sort((a,b)=>String(a).localeCompare(String(b),'tr'));
 facetDegerleri.bucket = ['< 1.000','1.000 – 4.999','5.000 – 19.999','20.000 – 99.999','100.000 – 999.999','1M+']
   .filter(b=>keywords.some(k=>k.bucket===b));
 facetDegerleri.trend  = ['Yükselen','Stabil','Düşen'];
@@ -216,7 +255,7 @@ const DATA = {
 // ——————————————————————————————————————————— dize sözlüğü
 // Faset değerleri satır başına tekrar ettiği için dosya gereksiz büyüyor.
 // Değerler sözlüğe alınıp indeksle saklanır, tarayıcıda yüklenirken geri açılır.
-const SOZLUK_ALAN = Object.values(FACET).concat(['sinif','bucket','trend','kaynak','catalog']);
+const SOZLUK_ALAN = Object.values(FACET).concat(['sinif','bucket','trend','kaynak','catalog','takim']);
 const sozluk = {};
 for(const alan of SOZLUK_ALAN){
   const set = new Set();

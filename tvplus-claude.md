@@ -255,11 +255,34 @@ Kullanıcının işaret ettiği `atletico madrid` ve `leipzig` hataları doğrul
 
 **Doğrulanıp reddedilen bir ajan iddiası:** `wimbledon` ve `roland garros` ikisi de tam 712.800, `eredivisie` ve `suudi arabistan ligi` ikisi de 311.200 olduğu için hacim çekiminde kopyalama şüphesi bildirildi. Kontrol edildi: bunlar Google Ads'in sabit hacim kovaları (60.500 ve 27.100 standart kova değerleri). İlgisiz iki terimin aynı kovaya düşmesi olağan, anomali değil.
 
-**Güncel veri:** 17.688 keyword · Son 12 Ay 3,65B · YoY +%5,4 · dashboard.js 11,98 MB · artifact 12,38 MB
+### Mekanik bütünlük denetimi
 
-**Güncel veri:** 17.688 keyword · Son 12 Ay 3,65B · YoY +%5,4 · dashboard.js 11,98 MB · artifact 12,38 MB
+İkinci tur ajan taraması API oturum limitine takıldı (18:30'a kadar yeni ajan çalıştırılamıyor). Bu sırada ajan gerektirmeyen, veri setinin kendi içinden kanıtlanabilen kural bazlı denetim yapıldı (`scripts/mekanik_denetim.py`).
 
-**Güncel veri:** 17.688 keyword · Son 12 Ay 3,65B · YoY +%5,4 · dashboard.js 11,98 MB · artifact 12,38 MB
+**Soyadı kuralı uygulandı.** İki formu da oyuncuya çıkan soyadlar korunuyor (`osimhen` 5,80M + `victor osimhen` 5,17M). Başka anlamı da olanlarda tam ad korunup soyadı eleniyor: `bayındır` → `altay bayındır`, `buongiorno` → `alessandro buongiorno`, `yüksek` → `ismail yüksek`. Veri setinde 2.285 soyad/tam ad çifti var ve tam %50-50 bölünüyor, bu yüzden toplu silme uygulanmadı; yalnızca belirsiz 26 soyadı elendi.
+
+**Bulunan ve düzeltilen çelişkiler**
+
+| Bulgu | Önce | Sonra |
+|---|---|---|
+| Sayfa tipi keyword metniyle çelişiyor | 78 | 0 |
+| Aynı keyword birden çok varlık tipinde | 40 | 0 |
+| Yazım varyantı mükerreri | 135 | 0 |
+| Kulüp adı hâlâ oyuncu etiketli | 9 | 0 |
+| Kulüp alanı keywordün kendisi | 1 | 0 |
+| Organizasyon birden çok spor dalında | 3 | 1 |
+
+Uygulanan: 229 sayfa tipi düzeltmesi (keyword metninden türetildi), 135 yazım varyantı işaretlendi, 34 varlık tipi tekilleştirildi, 19 kişi adı oyuncuya geri alındı, 16 kulüp adı takıma taşındı, 12 `Çoklu/Jenerik` spor değeri organizasyondan türetildi.
+
+**Kişi adı takım listesine düşmüş olanlar geri alındı:** `milan skriniar`, `milan vukotic`, `rafa silva`, `talisca`, `orkun kökçü`, `mason greenwood`, `anderson talisca` ve 12 kişi daha. Bunlar bir önceki turda ajan raporlarında takım listesinde tespit edilmişti.
+
+**Güncel veri:** 17.616 keyword · Son 12 Ay 3,64B · YoY +%5,5 · dashboard.js 11,93 MB · artifact 12,33 MB
+
+**Güncel veri:** 17.616 keyword · Son 12 Ay 3,64B · YoY +%5,5 · dashboard.js 11,93 MB · artifact 12,33 MB
+
+**Güncel veri:** 17.616 keyword · Son 12 Ay 3,64B · YoY +%5,5 · dashboard.js 11,93 MB · artifact 12,33 MB
+
+**Güncel veri:** 17.616 keyword · Son 12 Ay 3,64B · YoY +%5,5 · dashboard.js 11,93 MB · artifact 12,33 MB
 
 ## 2026-08-24
 

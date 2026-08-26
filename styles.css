@@ -1737,15 +1737,20 @@ button.action-card:hover { border-color: currentColor; transform: translateY(-1p
 @media (prefers-reduced-motion: reduce) { .tipbox { transition: none; } }
 
 
-/* ————————————————————————— Kırılım iz şeridi */
+/* ————————————————————————— Kırılım iz şeridi
+   Görünüm satırının sağında durur; kendi kartı yoktur, satırın içine oturur. */
+.gorunum-sag {
+  margin-left: auto; display: flex; align-items: center; gap: 12px;
+  flex-wrap: wrap; justify-content: flex-end; min-width: 0;
+}
 .iz-seridi {
   display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-  padding: 9px 14px; margin-bottom: 14px;
+  padding: 5px 10px;
   background: var(--bg-card); border: 1px solid var(--line);
-  border-radius: var(--r-md); box-shadow: var(--shadow-card);
+  border-radius: var(--r-pill); box-shadow: var(--shadow-card);
 }
 .iz-adim {
-  border: 0; background: transparent; cursor: pointer; padding: 3px 7px;
+  border: 0; background: transparent; cursor: pointer; padding: 2px 7px;
   border-radius: 6px; font: inherit; font-size: 12.5px; font-weight: 600;
   color: var(--ink-2); transition: background .12s, color .12s;
 }
@@ -1757,12 +1762,12 @@ button.action-card:hover { border-color: currentColor; transform: translateY(-1p
   text-transform: uppercase; color: var(--coral);
 }
 .iz-hacim {
-  margin-left: auto; font-family: 'Bricolage Grotesque', sans-serif;
-  font-weight: 700; font-size: 14px; color: var(--ink); font-variant-numeric: tabular-nums;
+  font-family: 'Bricolage Grotesque', sans-serif; padding-left: 4px;
+  font-weight: 700; font-size: 13.5px; color: var(--ink); font-variant-numeric: tabular-nums;
 }
 .iz-geri {
   border: 1px solid var(--line); background: var(--bg-card); cursor: pointer;
-  padding: 4px 10px; border-radius: 999px; font: inherit; font-size: 11.5px;
+  padding: 3px 9px; border-radius: 999px; font: inherit; font-size: 11.5px;
   font-weight: 600; color: var(--ink-2);
 }
 .iz-geri:hover { background: var(--line-soft); color: var(--ink); }
@@ -1916,3 +1921,8 @@ button.action-card:hover { border-color: currentColor; transform: translateY(-1p
 
 [data-theme="dark"] .chip-btn.birincil { background: var(--accent); border-color: var(--accent); color: #12100C; }
 [data-theme="dark"] .chip-btn.birincil:hover { background: var(--accent-deep); border-color: var(--accent-deep); }
+
+@media (max-width: 900px) {
+  /* Dar ekranda şerit kendi satırına iner, taşma yapmaz */
+  .gorunum-sag { margin-left: 0; width: 100%; justify-content: flex-start; }
+}

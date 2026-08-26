@@ -222,6 +222,14 @@ Onarım sonucu, daha önce "talep yok" görünen varlıklar:
 
 **Çekilmeyen kalem:** `hacim_takimlar.csv` 2026-07 onarımı (1.892 keyword, 3 istek). Oyuncu seed boşluğu tahmin edilenden büyük çıktığı için (1.243 yerine 3.279) onaylanan 6 isteklik zarf ilk üç kalemle doldu. Bu kalem ayrı onay bekliyor.
 
+### Kırılım şeridi görünüm satırına taşındı
+
+Şerit kendi kartında ayrı bir satır kaplıyordu; GÖRÜNÜM satırının sağına alındı. Kart yerine hap biçimli, satır içi bir öğe oldu; tarih aralığı metni solunda kaldı. Sayfa dikeyde bir satır kazandı.
+
+Bunun için kırılım kapsamı ve aktif eksen hesabı `app.jsx`'e taşındı (`yoluUygula` ve `aktifEksen` zaten dışarı açıktı); böylece hem şerit hem Özet aynı değerleri kullanıyor, ikisi birbirinden sapamaz. Şerit yalnızca Özet sekmesinde görünüyor, çünkü kırılım yolu orada çalışıyor. Dar ekranda kendi satırına iniyor.
+
+Doğrulama: Tüm portföy 3,68B → Futbol 3,28B → Süper Lig 2,27B, şeritten geri dönüş çalışıyor.
+
 **Güncel veri:** 18.038 keyword · Son 12 Ay 3,68B · YoY +%5,4 · dashboard.js 12,23 MB · artifact 12,63 MB
 
 **Güncel veri:** 18.038 keyword · Son 12 Ay 3,68B · YoY +%5,4 · dashboard.js 12,23 MB · artifact 12,63 MB

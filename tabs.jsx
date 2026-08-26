@@ -330,7 +330,6 @@ window.TABS = (function(){
           h(YoY,{v:k.ryoy})))));
 
     return h('div',{className:'tab-content-anim'},
-      h(IzSeridi,{yol:izYolu, setYol, eksen, kapsamHacim:r12}),
       h(C.Explainer,{title:'Bu rapor ne anlatıyor?',
         sub:'veri kaynağı, dönem tanımı ve okuma notu', icon:'sinyal'},
         h('p',null,'Türkiye spor arama talebi ', h('strong',null, M.toplamKeyword.toLocaleString('tr-TR')),
@@ -1487,5 +1486,6 @@ window.TABS = (function(){
   return { OzetTab, GruplarTab, KeywordTab, TrendlerTab, SayfaTipiTab, EntityTab,
            HakDisiTab, KararTab, MasterTab, KeywordModal,
            SezonTakvimi, GrupTablosu, KeywordTablosu,
-           ZINCIR, ZINCIR_ETIKET, aktifEksen, yoluUygula, kirilimGruplari, takimKumeleri };
+           ZINCIR, ZINCIR_ETIKET, aktifEksen, yoluUygula, kirilimGruplari, takimKumeleri,
+           IzSeridi };
 })();

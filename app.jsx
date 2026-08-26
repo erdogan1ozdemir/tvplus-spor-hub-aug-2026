@@ -131,6 +131,13 @@
       return r;
     },[filtre, arama, peakAy, peakCeyrek, mevsim, bucket, trend]);
 
+    // Kırılım kapsamı ve aktif eksen burada hesaplanır; hem görünüm satırındaki
+    // iz şeridi hem Özet aynı değerleri kullanır.
+    const kapsamRows = React.useMemo(()=>T.yoluUygula(rows, yol), [rows, yol]);
+    const aktifEksen = React.useMemo(()=>T.aktifEksen(kapsamRows, yol), [kapsamRows, yol]);
+    const kapsamR12  = React.useMemo(
+      ()=>kapsamRows.reduce((a,k)=>a+(k.r12||0),0), [kapsamRows]);
+
     const aktif = Object.values(filtre).reduce((a,v)=>a+(v?v.length:0),0)
       + peakAy.length + peakCeyrek.length + mevsim.length + bucket.length
       + (trend?1:0) + (arama?1:0);
@@ -223,8 +230,13 @@
               onClick:()=>setViewMode('rolling')},'Rolling 12 Ay'),
             h('button',{className: viewMode==='calendar'?'active':'',
               onClick:()=>setViewMode('calendar')},'Takvim Yılı')),
-          h('div',{className:'txt-3', style:{fontSize:10.5, marginLeft:'auto'}},
-            'Son 12 Ay: ', ROLLING_LABELS[0], ' – ', ROLLING_LABELS[11])),
+          // Kırılım şeridi görünüm satırının sağında durur: hangi kapsamdayız
+          // sorusu görünüm ayarlarıyla aynı yerde cevaplanır.
+          h('div',{className:'gorunum-sag'},
+            h('span',{className:'txt-3', style:{fontSize:10.5}},
+              'Son 12 Ay: ', ROLLING_LABELS[0], ' – ', ROLLING_LABELS[11]),
+            tab==='ozet' && h(T.IzSeridi,{yol, setYol, eksen: aktifEksen,
+              kapsamHacim: kapsamR12}))),
 
         aktif>0 && h('div',{className:'filter-chips'},
           h('span',{className:'lbl'},'Seçili:'),

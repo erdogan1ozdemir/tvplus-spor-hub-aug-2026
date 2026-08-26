@@ -6,3 +6,4 @@ data/raw/_*.txt
 __pycache__/
 *.pyc
 .artifact/
+.taslak/

@@ -1,0 +1,70 @@
+{
+ "_aciklama": "Maç ve etkinlik keyword denetiminin mekanik bulguları. Yalnızca dosya içi tutarsızlıklar: aynı kulübün diğer satırları zaten doğru organizasyonu taşıyor, bu satırlar geride kalmış. Sayfa tipi birleştirmeleri, milli takım varlık tipi ve ölü eşleşmeler karar beklediği için burada değil.",
+ "ORGANIZASYON": {
+  "real madrid maçı canlı izle": "La Liga",
+  "real madrid maçı saat kaçta": "La Liga",
+  "real madrid maçı nerede izlenir": "La Liga",
+  "barcelona maçı canlı izle": "La Liga",
+  "barcelona maçı saat kaçta": "La Liga",
+  "barcelona maçı nerede izlenir": "La Liga",
+  "arsenal maçı canlı izle": "Premier Lig",
+  "arsenal maçı saat kaçta": "Premier Lig",
+  "arsenal maçı nerede izlenir": "Premier Lig",
+  "liverpool maçı canlı izle": "Premier Lig",
+  "liverpool maçı saat kaçta": "Premier Lig",
+  "manchester united maçı canlı izle": "Premier Lig",
+  "manchester united maçı saat kaçta": "Premier Lig",
+  "juventus maçı canlı izle": "Serie A",
+  "juventus maçı saat kaçta": "Serie A",
+  "milan maçı canlı izle": "Serie A",
+  "milan maçı saat kaçta": "Serie A",
+  "inter maçı canlı izle": "Serie A",
+  "inter maçı saat kaçta": "Serie A",
+  "beşiktaş basketbol maçı hangi kanalda": "Basketbol Süper Ligi",
+  "beşiktaş basketbol maçı ne zaman": "Basketbol Süper Ligi",
+  "beşiktaş basketbol fikstür": "Basketbol Süper Ligi",
+  "beşiktaş basketbol canlı izle": "Basketbol Süper Ligi",
+  "fenerbahçe beko beşiktaş basketbol maçı": "Basketbol Süper Ligi",
+  "fenerbahçe beko beşiktaş basketbol": "Basketbol Süper Ligi",
+  "fenerbahçe beko beşiktaş basketbol hangi kanalda": "Basketbol Süper Ligi",
+  "anadolu efes beşiktaş basketbol": "Basketbol Süper Ligi",
+  "anadolu efes beşiktaş basketbol maçı": "Basketbol Süper Ligi",
+  "beşiktaş voleybol fikstür": "Efeler Ligi",
+  "türk hava yolları voleybol maçı hangi kanalda": "Efeler Ligi",
+  "türk hava yolları voleybol fikstür": "Efeler Ligi"
+ },
+ "ORG_SPOR": {
+  "filenin sultanları maçı ne zaman": {
+   "org": "Kadın Voleybol Milli Takımı",
+   "spor": "Voleybol"
+  },
+  "filenin sultanları maçı hangi kanalda": {
+   "org": "Kadın Voleybol Milli Takımı",
+   "spor": "Voleybol"
+  },
+  "filenin sultanları canlı izle": {
+   "org": "Kadın Voleybol Milli Takımı",
+   "spor": "Voleybol"
+  },
+  "filenin sultanları maçı saat kaçta": {
+   "org": "Kadın Voleybol Milli Takımı",
+   "spor": "Voleybol"
+  },
+  "filenin sultanları maçı canlı izle": {
+   "org": "Kadın Voleybol Milli Takımı",
+   "spor": "Voleybol"
+  },
+  "filenin sultanları maçı nerede izlenir": {
+   "org": "Kadın Voleybol Milli Takımı",
+   "spor": "Voleybol"
+  }
+ },
+ "VARLIK_TAKIM": {
+  "inter milan": "Takım Jenerik",
+  "inter milan maçı": "Takvim/Saat",
+  "inter milan hangi kanalda": "Kanal/Yayın",
+  "inter milan canlı izle": "Canlı İzle",
+  "inter milan saat kaçta": "Takvim/Saat",
+  "inter milan istatistikleri": "İstatistik"
+ }
+}

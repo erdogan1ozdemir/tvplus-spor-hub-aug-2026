@@ -2135,3 +2135,75 @@ button.action-card:hover { border-color: currentColor; transform: translateY(-1p
   box-shadow: var(--shadow-pop); opacity: 1; transition: opacity .35s ease;
 }
 .indir-uyari.git { opacity: 0; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   ISI MATRİSİ · responsive
+   Matris yatayda kaydırılıyordu. İki kademe: orta genişlikte sütunlar
+   daralarak ekrana sığar, dar ekranda satırlar aşağı doğru listelenir.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Kademe 1 · orta genişlik: hücre alt sınırı kalkar, matris daralarak sığar */
+@media (max-width: 1180px) {
+  .heatmap.with-yoy { grid-template-columns: 132px repeat(12, minmax(0, 1fr)); }
+  .matrix-scroll .hm-row-label { padding-left: 10px; padding-right: 10px; }
+  .heatmap .hm-cell.with-yoy .hm-val { font-size: 11px; }
+  .heatmap .hm-cell.with-yoy .hm-yoy { font-size: 9px; }
+}
+
+/* Kademe 2 · dar ekran: her spor dalı bir blok, ayları altında listelenir */
+@media (max-width: 860px) {
+  .matrix-scroll { max-height: none; overflow-x: hidden; }
+  .heatmap, .heatmap.with-yoy { grid-template-columns: 1fr; gap: 0; }
+  .heatmap .hm-head { display: none; }
+
+  .heatmap .hm-row-label {
+    position: static; box-shadow: none;
+    flex-direction: row; align-items: baseline; justify-content: flex-start;
+    gap: 8px; text-align: left;
+    min-height: 0; padding: 14px 14px 7px;
+    border-bottom: 1px solid var(--line);
+    font-size: 13.5px; font-weight: 600;
+    background: var(--line-soft);
+  }
+  .heatmap .hm-row-label > span { display: flex; align-items: baseline; gap: 8px; }
+  .heatmap .hm-row-label .txt-3 { font-weight: 500; }
+
+  .heatmap .hm-cell,
+  .heatmap.with-yoy .hm-cell {
+    aspect-ratio: auto; min-height: 0;
+    display: grid; grid-template-columns: 58px 1fr auto;
+    align-items: center; gap: 10px;
+    border-radius: 0; padding: 8px 14px;
+    border-bottom: 1px solid rgba(255,255,255,.35);
+    /* Isı rengi satırda korunur: matrisin taşıdığı bilgi renktir, dar
+       düzende de okunmalı. Metin rengi zaten kontrasta göre hesaplanıyor. */
+  }
+  .heatmap .hm-cell:hover { transform: none; box-shadow: none; }
+  .heatmap .hm-cell::before {
+    content: attr(data-ay);
+    font-size: 10.5px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: .06em; opacity: .62;
+  }
+  .heatmap .hm-cell.peak::after {
+    position: static; width: auto; height: auto; border-radius: 0;
+    background: none; content: 'peak';
+    font-size: 9px; font-weight: 700; letter-spacing: .06em;
+    color: var(--accent-deep); text-transform: uppercase;
+  }
+  .heatmap .hm-cell .hm-val,
+  .heatmap .hm-cell.with-yoy .hm-val {
+    font-size: 14px; font-variant-numeric: tabular-nums; text-align: left;
+  }
+  .heatmap .hm-cell.with-yoy .hm-yoy { font-size: 10.5px; justify-self: end; }
+  .heatmap .hm-cell.dim { display: none; }
+  .heatmap .hm-corner { display: none; }
+}
+
+/* Kart başlık şeridi dar ekranda: açıklama metni tek karakterlik sütuna
+   sıkışıyordu, satırlar alt alta akar ve tam genişliği kullanır */
+@media (max-width: 860px) {
+  .card-title-row { flex-wrap: wrap; }
+  .card-title-row > * { min-width: 0; }
+  .card-title-row .meta-sag { margin-left: 0; text-align: left; width: 100%; }
+  .kirilim-not, .card-title-row > .txt-3 { flex: 1 1 100%; }
+}

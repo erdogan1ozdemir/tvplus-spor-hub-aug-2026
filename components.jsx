@@ -197,6 +197,9 @@ window.C = (function(){
         grid.push(h('div',{
           key:`c${ri}-${i}`,
           className:'hm-cell'+(isPeak&&showPeakDot?' peak':'')+(showYoY?' with-yoy':''),
+          // Dar ekranda matris yatay kaydırma yerine aşağı doğru listelenir;
+          // o düzende ay adı sütun başlığından değil bu öznitelikten okunur
+          'data-ay': monthsLabels[i],
           style:{ background: hmColor(t), color: hmText(t) },
           onMouseEnter: (e) => {
             const rect = e.currentTarget.getBoundingClientRect();

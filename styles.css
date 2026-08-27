@@ -2124,3 +2124,14 @@ button.action-card:hover { border-color: currentColor; transform: translateY(-1p
   letter-spacing: .07em; color: var(--ink-3); margin-bottom: 8px;
 }
 .filtre-grup-alan { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+/* İndirme uyarısı: artifact görünümünde dosya kaydetme reddedilirse */
+.indir-uyari {
+  position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%);
+  z-index: 9999; max-width: 380px;
+  padding: 10px 16px; border-radius: var(--r-pill);
+  background: var(--ink); color: var(--bg-card);
+  font-family: 'Outfit', system-ui, sans-serif; font-size: 12.5px; font-weight: 500;
+  box-shadow: var(--shadow-pop); opacity: 1; transition: opacity .35s ease;
+}
+.indir-uyari.git { opacity: 0; }

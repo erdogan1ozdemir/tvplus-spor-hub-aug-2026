@@ -161,12 +161,48 @@ window.U = (function(){
     for (const r of rows) lines.push(headers.map(h => esc(typeof h.get==='function'?h.get(r):r[h.key])).join(','));
     return lines.join('\n');
   }
-  function downloadCSV(name, csv) {
+  // Artifact olarak yayınlandığında tarayıcının kendi indirme yolu kapalıdır;
+  // dosya yalnızca downloads yetenegi uzerinden izleyiciye sunulabilir.
+  // Yetenek yoksa (yerel sunucu, dosya acilisi) eski yola dusulur.
+  let _kaydedici;
+  function _kaydediciAl() {
+    if (_kaydedici !== undefined) return _kaydedici;
+    _kaydedici = (typeof window !== 'undefined' && window.claude && window.claude.use)
+      ? window.claude.use('downloads').catch(()=>null)
+      : null;
+    return _kaydedici;
+  }
+  function _tarayiciyaIndir(name, csv) {
     const blob = new Blob(['\uFEFF' + csv], {type:'text/csv;charset=utf-8'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url; a.download = name; a.click();
     setTimeout(()=>URL.revokeObjectURL(url), 500);
+  }
+  function _uyar(mesaj) {
+    const el = document.createElement('div');
+    el.className = 'indir-uyari';
+    el.textContent = mesaj;
+    document.body.appendChild(el);
+    setTimeout(()=>{ el.classList.add('git'); setTimeout(()=>el.remove(), 400); }, 3600);
+  }
+  function downloadCSV(name, csv) {
+    const s = _kaydediciAl();
+    if (!s) { _tarayiciyaIndir(name, csv); return; }
+    Promise.resolve(s).then(function(d) {
+      if (!d) { _tarayiciyaIndir(name, csv); return; }
+      return d.save({filename:name, data:'\uFEFF' + csv}).catch(function(e) {
+        const kod = e && e.code;
+        if (kod === 'declined' || kod === 'rate_limited') return;   // izleyici kararı
+        if (kod === 'extension_not_enabled') {
+          // CSV bu görünümde kapalı; aynı içerik düz metin olarak sunulur
+          return d.save({filename:name.replace(/\.csv$/i,'') + '.txt', data:'\uFEFF' + csv})
+                  .catch(function(){ _uyar('Dosya indirme bu görünümde kullanılamıyor.'); });
+        }
+        if (kod === 'too_large') { _uyar('Dosya 16 MB sınırını aşıyor, filtreyi daraltın.'); return; }
+        _uyar('Dosya indirme bu görünümde kullanılamıyor.');
+      });
+    });
   }
 
   // Simple debounce

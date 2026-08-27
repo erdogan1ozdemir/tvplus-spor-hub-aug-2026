@@ -2242,3 +2242,14 @@ button.action-card:hover { border-color: currentColor; transform: translateY(-1p
 /* Grup tablosunda satır sonu eylem sütunu */
 .tbl .col-eylem { width: 1%; white-space: nowrap; text-align: right; }
 .tbl .tbl-eylem { height: 26px; padding: 0 10px; font-size: 11.5px; }
+
+/* Kırılımda seçili seviye teke düşer; seçimi kaldırma düğmesi başlıkta durur */
+.kr-serit.daralmis .kr-izgara { grid-template-columns: minmax(168px, 260px); }
+.kr-geri { height: 22px; padding: 0 9px; font-size: 11px; }
+.kr-sutun-geri {
+  border: 0; background: transparent; padding: 0; height: auto;
+  font-family: 'Outfit', system-ui, sans-serif;
+  font-size: 10.5px; font-weight: 700; letter-spacing: .04em;
+  color: var(--accent-deep); cursor: pointer; box-shadow: none;
+}
+.kr-sutun-geri:hover { color: var(--ink); transform: none; box-shadow: none; }

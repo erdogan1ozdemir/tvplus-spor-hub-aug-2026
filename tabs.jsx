@@ -1593,17 +1593,19 @@ window.TABS = (function(){
       });
     }, [kapsam, sira, q, esik]);
 
-    // Bir düğüme tıklandığında: alt kırılımı varsa in, yoksa keyword'lere git
     React.useEffect(function(){ setAcikSeviye({}); }, [kapsam, sira, q, esik]);
 
+    // Bir düğüme tıklandığında: alt kırılımı varsa in, yoksa keyword'lere git.
+    // Zaten seçili olan düğüme tekrar tıklamak seçimi kaldırır ve o seviye
+    // yeniden tüm kayıtlarıyla listelenir.
     function tikla(seviye, dugum){
-      const yeniYol = yol.slice(0, seviye).concat(dugum.n);
+      if(yol[seviye] === dugum.n){ setYol(yol.slice(0, seviye)); return; }
       if(seviye>=2 || !dugum.c.length){
         const alan = KIRILIM_SEVIYE[Math.min(seviye,2)][0];
         onNavigateKw({alan, deger:dugum.n});
         return;
       }
-      setYol(yeniYol);
+      setYol(yol.slice(0, seviye).concat(dugum.n));
     }
 
     const kapsamAd = ['tüm aramalar','takım araması','oyuncu araması'][kapsam];
@@ -1633,13 +1635,21 @@ window.TABS = (function(){
           'Bu kapsam ve eşikte gösterilecek kayıt bulunmuyor.')); break; }
         const secili = yol[lv]||null;
         const acik = !!acikSeviye[lv];
+        // Bu seviyede bir seçim varsa yalnızca seçili kayıt gösterilir;
+        // karta tekrar tıklamak ya da "Seçimi kaldır" listeyi geri getirir.
+        const gosterilen = secili ? c.filter(x=>x.n===secili) : c;
         seritler.push(
-          h('div',{key:lv, className:'kr-serit'},
+          h('div',{key:lv, className:'kr-serit'+(secili?' daralmis':'')},
             h('div',{className:'kr-serit-bas'},
               h('span',{className:'kr-serit-ad'}, KIRILIM_SEVIYE[lv][1]),
-              h('span',{className:'kr-serit-sayi'}, c.length.toLocaleString('tr-TR')+' kayıt')),
+              secili
+                ? h('button',{className:'chip-btn sessiz kr-geri',
+                    onClick:()=>setYol(yol.slice(0, lv))},
+                    '✕ Seçimi kaldır · '+c.length.toLocaleString('tr-TR')+' kayıt')
+                : h('span',{className:'kr-serit-sayi'},
+                    c.length.toLocaleString('tr-TR')+' kayıt')),
             h('div',{className:'kr-izgara'},
-              c.slice(0, acik ? c.length : KIRILIM_SINIR).map(function(d){
+              gosterilen.slice(0, acik ? gosterilen.length : KIRILIM_SINIR).map(function(d){
                 const alt = d.c.length;
                 return h('button',{key:d.n, className:'kr-karo'+(d.n===secili?' secili':''),
                   onClick:()=>tikla(lv,d),
@@ -1652,10 +1662,11 @@ window.TABS = (function(){
                     (alt ? ' · '+alt+' '+(lv===0?'org':'takım') : '')),
                   h(PayCubugu,{d}));
               })),
-            c.length > KIRILIM_SINIR && h('button',{className:'chip-btn sessiz kr-daha',
+            gosterilen.length > KIRILIM_SINIR && h('button',{className:'chip-btn sessiz kr-daha',
               onClick:()=>setAcikSeviye(o=>({...o, [lv]: !acik}))},
               acik ? '↑ İlk '+KIRILIM_SINIR+' kaydı göster'
-                   : '↓ Kalan '+(c.length-KIRILIM_SINIR).toLocaleString('tr-TR')+' kaydı göster')));
+                   : '↓ Kalan '+(gosterilen.length-KIRILIM_SINIR).toLocaleString('tr-TR')
+                     +' kaydı göster')));
         if(!secili) break;
       }
       return seritler;
@@ -1672,13 +1683,19 @@ window.TABS = (function(){
             liste = d.c;
           }
           const c = (!kopuk && lv<=yol.length) ? cocuklar(liste) : [];
+          const sec = yol[lv]||null;
+          const gost = sec ? c.filter(x=>x.n===sec) : c;
           return h('div',{key:sv[0], className:'kr-sutun'},
             h('div',{className:'kr-sutun-bas'},
               h('span',null, sv[1]),
-              h('span',null, c.length ? c.length.toLocaleString('tr-TR') : '–')),
+              sec
+                ? h('button',{className:'kr-sutun-geri', 'data-tip':'Seçimi kaldır',
+                    onClick:()=>setYol(yol.slice(0, lv))},
+                    '✕ '+c.length.toLocaleString('tr-TR'))
+                : h('span',null, c.length ? c.length.toLocaleString('tr-TR') : '–')),
             h('div',{className:'kr-sutun-liste'},
-              c.length
-                ? c.map(d=>h('button',{key:d.n, className:'kr-sat'+(yol[lv]===d.n?' secili':''),
+              gost.length
+                ? gost.map(d=>h('button',{key:d.n, className:'kr-sat'+(yol[lv]===d.n?' secili':''),
                     onClick:()=>tikla(lv,d),
                     'data-tip': d.k[kapsam].toLocaleString('tr-TR')+' keyword'},
                     h('span',{className:'kr-sat-ad', title:d.n}, d.n),

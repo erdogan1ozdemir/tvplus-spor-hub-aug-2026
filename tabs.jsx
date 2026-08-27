@@ -899,12 +899,16 @@ window.TABS = (function(){
   // Sorgu kuyrukları: "galatasaray maçı ne zaman" gibi çok katmanlı ekler
   // tek geçişte inmiyordu, her biri ayrı küme oluyordu.
   // Takım kümesi anahtarı build-data.js'te üretilip k.takim alanında geliyor.
-  function takimKumeleri(rows){
+  // alan: 'takim' kulüp kümesi, 'milli' milli takım kümesi. İkisi ayrı
+  // üyeliktir; bir oyuncu hem kulübünün hem milli takımının kümesinde sayılır,
+  // satır çoğaltılmadığı için toplam hacim iki kez sayılmaz.
+  function takimKumeleri(rows, alan){
+    alan = alan || 'takim';
     const m = new Map();
     for(const k of rows){
-      const takim = k.takim || null;
+      const takim = k[alan] || null;
       if(!takim) continue;
-      if(!m.has(takim)) m.set(takim, {label:takim, ust:takim, alan:'takim',
+      if(!m.has(takim)) m.set(takim, {label:takim, ust:takim, alan:alan,
         rows:[], takimRows:[], oyuncuRows:[], r12:0, p12:0, kwCount:0,
         org:k.org, spor:k.spor});
       const g = m.get(takim);
@@ -934,7 +938,8 @@ window.TABS = (function(){
   const BOS_ESIK = 0.60;   // bu oranın üstünde boş kova varsa seviye atlanır
 
   function kirilimGruplari(rows, eksen){
-    return eksen==='takim' ? takimKumeleri(rows) : groupBy(rows, eksen);
+    return (eksen==='takim' || eksen==='milli')
+      ? takimKumeleri(rows, eksen) : groupBy(rows, eksen);
   }
 
   function eksenUygun(rows, eksen){
@@ -959,8 +964,8 @@ window.TABS = (function(){
   function yoluUygula(rows, yol){
     let r = rows;
     for(const adim of (yol||[])){
-      if(adim.eksen==='takim'){
-        const k = takimKumeleri(r).find(g=>g.label===adim.deger);
+      if(adim.eksen==='takim' || adim.eksen==='milli'){
+        const k = takimKumeleri(r, adim.eksen).find(g=>g.label===adim.deger);
         r = k ? k.rows : [];
       } else {
         r = r.filter(k => k[adim.eksen] === adim.deger);
@@ -979,6 +984,9 @@ window.TABS = (function(){
     // Kapsam seçimi kümelere de yansır: yalnız takım / yalnız oyuncu seçilince
     // hacimler, chart'lar ve sezonsallık matrisi o kapsamla yeniden hesaplanır.
     const kumeler = React.useMemo(()=>takimKumeleri(kapsamli), [kapsamli]);
+    // Milli takım kümesi ayrı üyelikten gelir; kulüp kümesiyle çakışmaz.
+    const milliKumeler = React.useMemo(
+      ()=>takimKumeleri(kapsamli, 'milli'), [kapsamli]);
     const toplam = kumeler.reduce((a,g)=>a+g.r12,0) || 1;
     kumeler.forEach(g=>{ g.share = g.r12/toplam; });
     // KPI'lar da kapsam seçimine uyar
@@ -1013,6 +1021,44 @@ window.TABS = (function(){
         h(C.Kpi,{label:'Oyuncu Payı',
           value:'%'+(100*oyTop/((tkTop+oyTop)||1)).toFixed(1).replace('.',','),
           sub:'kümedeki oyuncu katkısı'})),
+
+      // Milli takım kümesi kulüp kümesinden ayrı durur: bir oyuncu hem
+      // kulübünün hem milli takımının altında sayılır, hacim çift sayılmaz.
+      gorunum==='kume' && milliKumeler.length>0 && h(React.Fragment,null,
+        h(C.SectionHeader,{icon:'karne', title:'Milli Takım Kümeleri',
+          desc:'takım araması ile milli takım oyuncularının aramaları birlikte · '
+            + 'oyuncular kulüp kümelerinde de sayılmayı sürdürür'}),
+        h('div',{className:'tbl-wrap', style:{marginBottom:18}},
+          h('table',{className:'tbl'},
+            h('thead',null,h('tr',null,
+              h('th',null,'Milli Takım'),
+              h('th',{className:'num'},'Takım Araması'),
+              h('th',{className:'num col-hide-sm'},'Takım KW'),
+              h('th',{className:'num'},'Oyuncu Araması'),
+              h('th',{className:'num col-hide-sm'},'Oyuncu KW'),
+              h('th',{className:'num'},'Toplam'),
+              h('th',{className:'num'},'Oyuncu Payı'))),
+            h('tbody',null,
+              milliKumeler.slice().sort((a,b)=>b.r12-a.r12).map(function(g){
+                const t = g.r12 || 0;
+                const pay = t ? 100*(g.oyuncuVol||0)/t : 0;
+                return h('tr',{key:g.label, className:'clickable',
+                  'data-tip':'Bu milli takımın keyword listesini aç',
+                  onClick:()=>onNavigateKw({alan:'milli', deger:g.label})},
+                  h('td',null, g.label),
+                  h('td',{className:'num'}, fmtNum(g.takimVol)),
+                  h('td',{className:'num col-hide-sm'}, (g.takimKw||0).toLocaleString('tr-TR')),
+                  h('td',{className:'num'}, fmtNum(g.oyuncuVol)),
+                  h('td',{className:'num col-hide-sm'}, (g.oyuncuKw||0).toLocaleString('tr-TR')),
+                  h('td',{className:'num'}, h('strong',null, fmtNum(t))),
+                  h('td',{className:'num'},
+                    h('span',{style:{fontWeight:600,
+                      color: pay>=60 ? 'var(--accent-deep)' : 'var(--ink-2)'}},
+                      '%'+pay.toFixed(1).replace('.',','))));
+              })))),
+        h('div',{className:'txt-3', style:{fontSize:10.5, marginTop:-10, marginBottom:16}},
+          'Oyuncu payı yüksek olan milli takımlarda talep takım adından değil ',
+          'oyunculardan geliyor; sayfa mimarisi buna göre kurulabilir.')),
 
       gorunum==='kume' ? h(React.Fragment,null,
         h(C.SectionHeader,{icon:'takvim', title:'Takım Kümesi Sezonsallığı',

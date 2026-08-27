@@ -99,6 +99,20 @@ function kulupAnahtar(kw){
   return t.trim();
 }
 
+// Milli takım üyeliği. Bir oyuncu hem kulübünün hem milli takımının
+// kümesinde sayılabilmeli; kulüp kümesini bozmamak için ayrı alan tutulur.
+// Satır çoğaltılmaz, hacim iki kez sayılmaz.
+let MILLI_UYE = new Map();
+try {
+  const kadro = JSON.parse(fs.readFileSync(
+    path.join(__dirname, '..', 'data', 'denetim', 'milli_kadro.json'), 'utf8'));
+  for(const [takim, oyuncular] of Object.entries(kadro))
+    for(const o of oyuncular) MILLI_UYE.set(String(o).trim().toLowerCase(), takim);
+} catch(e) { /* kadro dosyası yoksa alan boş kalır */ }
+// Milli takım organizasyonları: takım ve lig satırları bu ada göre eşleşir.
+// "Milli Takım Karşılaşmaları" bir fikstür organizasyonudur, buraya girmez.
+const MILLI_TAKIMLAR = new Set(MILLI_UYE.size ? [...new Set(MILLI_UYE.values())] : []);
+
 // CSV kolonu → DATA kısa adı
 const FACET = {
   organizasyon:'org', spor_dali:'spor', musabaka_tipi:'mus', lig_seviyesi:'sev',
@@ -197,6 +211,17 @@ for(const o of kwMap.values()){
           : (k.ent==='Oyuncu' && k.kulup) ? k.kulup : null;
   if(!k.takim) delete k.takim;
 
+  // Milli takım üyeliği. Oyuncu satırında oyuncunun adından çözülür; takım ve
+  // organizasyon satırında satırın kendi organizasyonu bir milli takımsa ondan.
+  // Böylece küme hem takım aramasını hem oyuncu aramasını toplayabilir.
+  // Kulüp kümesi (k.takim) olduğu gibi kalır, satır çoğaltılmaz.
+  if(k.ent==='Oyuncu'){
+    const m = MILLI_UYE.get(String(k.anaAd || k.kw).trim().toLowerCase());
+    if(m) k.milli = m;
+  } else if(k.org && MILLI_TAKIMLAR.has(k.org)){
+    k.milli = k.org;
+  }
+
   // "Türk Sporcu Var" yalnızca yabancı organizasyonlar için anlamlıdır:
   // amaç yabancı lig ve kulüplerdeki Türk sporcuları ayırt edebilmek.
   // Yerli organizasyonlarda etiket, takım sporunda "Türk Takımı Var"a,
@@ -221,6 +246,8 @@ for(const kisa of Object.values(FACET)){
 }
 facetDegerleri.sinif  = [...new Set(keywords.map(k=>k.sinif))].sort();
 // Takım kümesi çok değerli bir eksen; filtre için tamamı taşınır
+facetDegerleri.milli = [...new Set(keywords.map(k=>k.milli).filter(Boolean))]
+  .sort((a,b)=>String(a).localeCompare(String(b),'tr'));
 facetDegerleri.takim = [...new Set(keywords.map(k=>k.takim).filter(Boolean))]
   .sort((a,b)=>String(a).localeCompare(String(b),'tr'));
 facetDegerleri.bucket = ['< 1.000','1.000 – 4.999','5.000 – 19.999','20.000 – 99.999','100.000 – 999.999','1M+']

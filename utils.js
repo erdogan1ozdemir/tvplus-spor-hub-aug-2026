@@ -236,7 +236,7 @@ window.U = (function(){
     dil:'Dil', uzn:'Sorgu Uzunluğu', ktm:'Katman', kurum:'Kurum Sorgusu',
     sinif:'Mevsim Tipi', bucket:'Hacim Aralığı', trend:'Trend', kulup:'Takım',
     a24:'2024 Ort.', a25:'2025 Ort.', a26:'2026 YTD Ort.',
-    takim:'Takım', guncel:'Eşleşme Güncelliği', mden:'Mantık Denetimi', anaAd:'Oyuncu Ana Adı',
+    takim:'Takım', milli:'Milli Takım', guncel:'Eşleşme Güncelliği', mden:'Mantık Denetimi', anaAd:'Oyuncu Ana Adı',
     odog:'Oyuncu Doğrulama',
   };
   // Kırılım hiyerarşisi: seviye 1 → 2 → 3 (Özdilek'teki Kat 1/2/3 karşılığı)

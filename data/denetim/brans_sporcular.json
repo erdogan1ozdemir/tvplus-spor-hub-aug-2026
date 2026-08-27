@@ -1,0 +1,610 @@
+{
+ "At Yarışı": [
+  {
+   "ad": "halis karataş",
+   "turk": true
+  },
+  {
+   "ad": "mehmet kaya",
+   "turk": true
+  },
+  {
+   "ad": "süleyman akdi",
+   "turk": true
+  },
+  {
+   "ad": "ahmet çelik",
+   "turk": true
+  },
+  {
+   "ad": "gökhan kocakaya",
+   "turk": true
+  },
+  {
+   "ad": "bay nalçakan",
+   "turk": true
+  }
+ ],
+ "Motor Sporları": [
+  {
+   "ad": "toprak razgatlıoğlu",
+   "turk": true
+  },
+  {
+   "ad": "deniz öncü",
+   "turk": true
+  },
+  {
+   "ad": "can öncü",
+   "turk": true
+  },
+  {
+   "ad": "max verstappen",
+   "turk": false
+  },
+  {
+   "ad": "lewis hamilton",
+   "turk": false
+  },
+  {
+   "ad": "lando norris",
+   "turk": false
+  },
+  {
+   "ad": "charles leclerc",
+   "turk": false
+  },
+  {
+   "ad": "oscar piastri",
+   "turk": false
+  },
+  {
+   "ad": "george russell",
+   "turk": false
+  },
+  {
+   "ad": "fernando alonso",
+   "turk": false
+  },
+  {
+   "ad": "kimi antonelli",
+   "turk": false
+  },
+  {
+   "ad": "carlos sainz",
+   "turk": false
+  },
+  {
+   "ad": "sergio perez",
+   "turk": false
+  },
+  {
+   "ad": "valtteri bottas",
+   "turk": false
+  },
+  {
+   "ad": "isack hadjar",
+   "turk": false
+  },
+  {
+   "ad": "marc marquez",
+   "turk": false
+  },
+  {
+   "ad": "francesco bagnaia",
+   "turk": false
+  },
+  {
+   "ad": "jorge martin",
+   "turk": false
+  },
+  {
+   "ad": "pedro acosta",
+   "turk": false
+  },
+  {
+   "ad": "fabio quartararo",
+   "turk": false
+  },
+  {
+   "ad": "alex marquez",
+   "turk": false
+  },
+  {
+   "ad": "marco bezzecchi",
+   "turk": false
+  },
+  {
+   "ad": "brad binder",
+   "turk": false
+  },
+  {
+   "ad": "joan mir",
+   "turk": false
+  },
+  {
+   "ad": "maverick vinales",
+   "turk": false
+  },
+  {
+   "ad": "jack miller",
+   "turk": false
+  },
+  {
+   "ad": "enea bastianini",
+   "turk": false
+  },
+  {
+   "ad": "fermin aldeguer",
+   "turk": false
+  },
+  {
+   "ad": "luca marini",
+   "turk": false
+  },
+  {
+   "ad": "ai ogura",
+   "turk": false
+  },
+  {
+   "ad": "johann zarco",
+   "turk": false
+  },
+  {
+   "ad": "pascal wehrlein",
+   "turk": false
+  },
+  {
+   "ad": "sebastien ogier",
+   "turk": false
+  },
+  {
+   "ad": "elfyn evans",
+   "turk": false
+  },
+  {
+   "ad": "oliver solberg",
+   "turk": false
+  },
+  {
+   "ad": "kalle rovanpera",
+   "turk": false
+  }
+ ],
+ "Dövüş Sporları": [
+  {
+   "ad": "rıza kayaalp",
+   "turk": true
+  },
+  {
+   "ad": "selahattin kılıçsallayan",
+   "turk": true
+  },
+  {
+   "ad": "erkan taş",
+   "turk": true
+  },
+  {
+   "ad": "feyzullah aktürk",
+   "turk": true
+  },
+  {
+   "ad": "busenaz sürmeneli",
+   "turk": true
+  },
+  {
+   "ad": "hatice akbaş",
+   "turk": true
+  },
+  {
+   "ad": "esra yıldız kahraman",
+   "turk": true
+  },
+  {
+   "ad": "nafia kuş aydın",
+   "turk": true
+  },
+  {
+   "ad": "merve dinçel kavurat",
+   "turk": true
+  },
+  {
+   "ad": "elif sude akgül",
+   "turk": true
+  },
+  {
+   "ad": "hakan reçber",
+   "turk": true
+  },
+  {
+   "ad": "bilal çiloğlu",
+   "turk": true
+  },
+  {
+   "ad": "hilal öztürk",
+   "turk": true
+  },
+  {
+   "ad": "islam makhachev",
+   "turk": false
+  },
+  {
+   "ad": "khamzat chimaev",
+   "turk": false
+  },
+  {
+   "ad": "conor mcgregor",
+   "turk": false
+  },
+  {
+   "ad": "justin gaethje",
+   "turk": false
+  },
+  {
+   "ad": "ilia topuria",
+   "turk": false
+  },
+  {
+   "ad": "alexander volkanovski",
+   "turk": false
+  },
+  {
+   "ad": "petr yan",
+   "turk": false
+  },
+  {
+   "ad": "ciryl gane",
+   "turk": false
+  },
+  {
+   "ad": "carlos ulberg",
+   "turk": false
+  },
+  {
+   "ad": "sean strickland",
+   "turk": false
+  },
+  {
+   "ad": "joshua van",
+   "turk": false
+  },
+  {
+   "ad": "alex pereira",
+   "turk": false
+  },
+  {
+   "ad": "merab dvalishvili",
+   "turk": false
+  },
+  {
+   "ad": "jack della maddalena",
+   "turk": false
+  },
+  {
+   "ad": "paddy pimblett",
+   "turk": false
+  },
+  {
+   "ad": "jiri prochazka",
+   "turk": false
+  },
+  {
+   "ad": "max holloway",
+   "turk": false
+  },
+  {
+   "ad": "alexandre pantoja",
+   "turk": false
+  },
+  {
+   "ad": "diego lopes",
+   "turk": false
+  }
+ ],
+ "Zihin Sporları": [
+  {
+   "ad": "ediz gürel",
+   "turk": true
+  },
+  {
+   "ad": "yağız kaan erdoğmuş",
+   "turk": true
+  },
+  {
+   "ad": "vahap şanal",
+   "turk": true
+  },
+  {
+   "ad": "mustafa yılmaz",
+   "turk": true
+  },
+  {
+   "ad": "cem kaan gökerkan",
+   "turk": true
+  },
+  {
+   "ad": "magnus carlsen",
+   "turk": false
+  },
+  {
+   "ad": "gukesh dommaraju",
+   "turk": false
+  },
+  {
+   "ad": "javokhir sindarov",
+   "turk": false
+  },
+  {
+   "ad": "hikaru nakamura",
+   "turk": false
+  },
+  {
+   "ad": "fabiano caruana",
+   "turk": false
+  }
+ ],
+ "E-Spor": [
+  {
+   "ad": "xantares",
+   "turk": true
+  },
+  {
+   "ad": "wicadia",
+   "turk": true
+  },
+  {
+   "ad": "woxic",
+   "turk": true
+  },
+  {
+   "ad": "maj3r",
+   "turk": true
+  },
+  {
+   "ad": "soulfly",
+   "turk": true
+  },
+  {
+   "ad": "brokenblade",
+   "turk": true
+  }
+ ],
+ "Tenis": [
+  {
+   "ad": "zeynep sönmez",
+   "turk": true
+  },
+  {
+   "ad": "jannik sinner",
+   "turk": false
+  },
+  {
+   "ad": "aryna sabalenka",
+   "turk": false
+  },
+  {
+   "ad": "elena rybakina",
+   "turk": false
+  },
+  {
+   "ad": "jessica pegula",
+   "turk": false
+  },
+  {
+   "ad": "coco gauff",
+   "turk": false
+  },
+  {
+   "ad": "iga swiatek",
+   "turk": false
+  },
+  {
+   "ad": "mirra andreeva",
+   "turk": false
+  },
+  {
+   "ad": "karolina muchova",
+   "turk": false
+  },
+  {
+   "ad": "linda noskova",
+   "turk": false
+  },
+  {
+   "ad": "elina svitolina",
+   "turk": false
+  },
+  {
+   "ad": "amanda anisimova",
+   "turk": false
+  }
+ ],
+ "Golf": [
+  {
+   "ad": "scottie scheffler",
+   "turk": false
+  },
+  {
+   "ad": "rory mcilroy",
+   "turk": false
+  },
+  {
+   "ad": "jon rahm",
+   "turk": false
+  },
+  {
+   "ad": "cameron young",
+   "turk": false
+  },
+  {
+   "ad": "matt fitzpatrick",
+   "turk": false
+  }
+ ],
+ "Amerikan Futbolu": [
+  {
+   "ad": "josh allen",
+   "turk": false
+  },
+  {
+   "ad": "lamar jackson",
+   "turk": false
+  },
+  {
+   "ad": "patrick mahomes",
+   "turk": false
+  },
+  {
+   "ad": "joe burrow",
+   "turk": false
+  },
+  {
+   "ad": "matthew stafford",
+   "turk": false
+  },
+  {
+   "ad": "justin herbert",
+   "turk": false
+  },
+  {
+   "ad": "drake maye",
+   "turk": false
+  },
+  {
+   "ad": "myles garrett",
+   "turk": false
+  },
+  {
+   "ad": "justin jefferson",
+   "turk": false
+  }
+ ],
+ "Kış Sporları": [
+  {
+   "ad": "fatih arda ipcioğlu",
+   "turk": true
+  },
+  {
+   "ad": "muhammed ali bedir",
+   "turk": true
+  },
+  {
+   "ad": "furkan akar",
+   "turk": true
+  },
+  {
+   "ad": "denis örs",
+   "turk": true
+  },
+  {
+   "ad": "irem dursun",
+   "turk": true
+  },
+  {
+   "ad": "abdullah yılmaz",
+   "turk": true
+  },
+  {
+   "ad": "ada hasırcı",
+   "turk": true
+  },
+  {
+   "ad": "thomas kaan önol lang",
+   "turk": true
+  }
+ ],
+ "Atletizm": [
+  {
+   "ad": "ismail nezir",
+   "turk": true
+  },
+  {
+   "ad": "şilan ayyıldız",
+   "turk": true
+  },
+  {
+   "ad": "necati er",
+   "turk": true
+  },
+  {
+   "ad": "yasemin can",
+   "turk": true
+  },
+  {
+   "ad": "salih korkmaz",
+   "turk": true
+  },
+  {
+   "ad": "meryem bekmez",
+   "turk": true
+  },
+  {
+   "ad": "hayrettin yıldız",
+   "turk": true
+  }
+ ],
+ "Halter": [
+  {
+   "ad": "muhammed furkan özbek",
+   "turk": true
+  }
+ ],
+ "Okçuluk": [
+  {
+   "ad": "mete gazoz",
+   "turk": true
+  },
+  {
+   "ad": "yasemin ecem anagöz",
+   "turk": true
+  }
+ ],
+ "Jimnastik": [
+  {
+   "ad": "ferhat arıcan",
+   "turk": true
+  },
+  {
+   "ad": "adem asil",
+   "turk": true
+  }
+ ],
+ "Yüzme": [
+  {
+   "ad": "kuzey tunçelli",
+   "turk": true
+  },
+  {
+   "ad": "merve tuncel",
+   "turk": true
+  },
+  {
+   "ad": "berkay ömer öğretir",
+   "turk": true
+  }
+ ],
+ "Paralimpik": [
+  {
+   "ad": "abdullah öztürk",
+   "turk": true
+  },
+  {
+   "ad": "ali öztürk",
+   "turk": true
+  },
+  {
+   "ad": "süleyman vural",
+   "turk": true
+  },
+  {
+   "ad": "olgun yıldırım",
+   "turk": true
+  }
+ ],
+ "Olimpiyatlar": [
+  {
+   "ad": "yusuf dikeç",
+   "turk": true
+  }
+ ]
+}

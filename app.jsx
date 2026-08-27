@@ -24,6 +24,7 @@
 
   // Birincil kırılım fasetleri (kademeli)
   const BIRINCIL = [['spor','Spor Dalı',175],['org','Organizasyon',200],['takim','Takım',175],
+                    ['milli','Milli Takım',180],
                     ['st','Sayfa Tipi',170],['ent','Varlık Tipi',150]];
   // Ek analitik fasetler
   const EK = [['it','Intent',150],['hak','Yayın Hakkı',165],['mus','Müsabaka Tipi',175],

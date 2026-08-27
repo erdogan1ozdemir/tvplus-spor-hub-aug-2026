@@ -183,7 +183,8 @@ window.TABS = (function(){
   }
 
   // ══════════════════════════════════════════ GRUP DETAY TABLOSU
-  function GrupTablosu({gruplar, seviye, onSelectGroup, viewMode, limit=400}){
+  function GrupTablosu({gruplar, seviye, onSelectGroup, onIn, inEtiket,
+                        viewMode, limit=400}){
     const [sira, setSira] = React.useState({k:'r12', y:-1});
     const veri = React.useMemo(()=>{
       const s=[...gruplar];
@@ -210,11 +211,15 @@ window.TABS = (function(){
           th('share','Pay','num col-hide-sm'),
           th('peakQ','Peak Ç.','col-hide-sm'),
           th('peakLabel','En yüksek ay','col-hide-sm'),
-          th('sezType','Mevsim Tipi','col-hide-sm'))),
+          th('sezType','Mevsim Tipi','col-hide-sm'),
+          onIn && h('th',{key:'ey', className:'col-eylem'},''))),
         h('tbody',null, veri.slice(0,limit).map((g,i)=>{
           const ust = ustDeger(g);
-          return h('tr',{key:g.label, className:'clickable', 'data-tip':grupAciklama(g, viewMode),
-            onClick:()=>onSelectGroup && onSelectGroup(seviye, g.ust)},
+          // Satır tıklaması bir alt kırılıma iner; detay kartı ayrı düğmede
+          const birincil = onIn ? ()=>onIn(g.ust) : (()=>onSelectGroup && onSelectGroup(seviye, g.ust));
+          return h('tr',{key:g.label, className:'clickable',
+            'data-tip': onIn ? (inEtiket||'Bir alt kırılıma in') : grupAciklama(g, viewMode),
+            onClick:birincil},
             h('td',null,
               h('div',{style:{display:'flex',alignItems:'center',gap:8}},
                 h('div',{style:{width:10,height:10,borderRadius:2,flexShrink:0,
@@ -240,7 +245,13 @@ window.TABS = (function(){
             h('td',{className:'col-hide-sm', style:{fontSize:13,color:'var(--ink-2)'}},
               g.peakLabel + ' · ' + fmtNum(Math.max(...g.roll))),
             h('td',{className:'col-hide-sm'},
-              h('span',{style:{color:SEZ_RENK[g.sezType], fontWeight:600}}, g.sezType)));
+              h('span',{style:{color:SEZ_RENK[g.sezType], fontWeight:600}}, g.sezType)),
+            // Alt kırılım varken detay kartı satır sonundaki düğmeye taşınır
+            onIn && h('td',{className:'col-eylem'},
+              h('button',{className:'chip-btn sessiz tbl-eylem',
+                'data-tip':'Detay kartını aç',
+                onClick:(e)=>{ e.stopPropagation();
+                  onSelectGroup && onSelectGroup(seviye, g.ust); }}, 'Detay')));
         }))));
   }
 
@@ -265,7 +276,7 @@ window.TABS = (function(){
   }
 
   function OzetTab({rows:tumRows, viewMode, setKeywordModal, onSelectGroup, onNavigateKw,
-                    yol, setYol}){
+                    gitSekme, yol, setYol}){
     const M = D().meta;
     const takvim = viewMode==='calendar';
     const yilAd = D().meta.yillar;
@@ -378,6 +389,37 @@ window.TABS = (function(){
         h(C.Kpi,{label:'Veri Sayfası Talebi', value:fmtNum(topR12(veriSayfa)),
           sub:'Google bileşeni cevabı veriyor'})),
 
+      // Kapsam eylemleri: seçili kırılım diğer sekmelerde de geçerli olduğu
+      // için buradan geçiş yapıldığında kapsam taşınır, yeniden kurulmaz.
+      h('div',{className:'kapsam-eylem'},
+        h('span',{className:'kapsam-ad'},
+          h('span',{className:'txt-3'},'Seçili kapsam'),
+          h('strong',null, izYolu.length
+            ? izYolu.map(a=>a.deger).join(' › ')
+            : 'Tüm portföy')),
+        h('span',{className:'kapsam-sayi'},
+          h('strong',null, rows.length.toLocaleString('tr-TR')), ' keyword · ',
+          h('strong',null, fmtNum(r12)), ' Son 12 Ay'),
+        h('button',{className:'chip-btn birincil',
+          'data-tip':'Bu kapsamın keyword listesini aç',
+          onClick:()=>gitSekme && gitSekme('keyword')},
+          h('span',{className:'btn-ikon'}, h(C.Ikon,{ad:'liste', size:13})),
+          'Keyword\'leri gör',
+          h('span',{className:'btn-sayac'}, fmtNum(rows.length))),
+        h('button',{className:'chip-btn',
+          'data-tip':'Bu kapsamı takım ve oyuncu kümelerinde aç',
+          onClick:()=>gitSekme && gitSekme('entity')},
+          'Takım & Oyuncu',
+          h('span',{className:'btn-sayac'},
+            fmtNum(rows.filter(k=>k.ent==='Takım'||k.ent==='Oyuncu').length))),
+        h('button',{className:'chip-btn',
+          'data-tip':'Bu kapsamı kırılım sekmesinde aç',
+          onClick:()=>gitSekme && gitSekme('kirilim')}, 'Kırılım'),
+        izYolu.length>0 && h('button',{className:'chip-btn sessiz',
+          onClick:()=>setYol([])},
+          h('span',{className:'btn-ikon'}, h(C.Ikon,{ad:'kapat', size:12})),
+          'Kapsamı kaldır')),
+
       h('div',{className:'insight-bar'},
         h('span',{className:'insight-arrow'},''),
         h('span',null,'Son 12 ayda toplam arama hacmi ', h('strong',null, fmtNum(r12)),
@@ -417,10 +459,13 @@ window.TABS = (function(){
               label:g.label, value:hacimFor(g,viewMode), color:renkAl(g)})),
               onSliceClick: d => in_(d.label)})),
           h('div',{className:'pay-scroll'},
-            h(C.ShareBars,{rows: kirilim.map(g=>({
-              label:g.label, value:hacimFor(g,viewMode), share:g.share, yoy:yoyFor(g,viewMode),
-              title:grupAciklama(g, viewMode), color:renkAl(g),
-              onClick: ()=>in_(g.label)}))})),
+            // ShareBars tıklamayı satır nesnesinden değil onClickRow'dan alır;
+            // satır içindeki onClick yok sayılıyordu, satırlar tıklanmıyordu.
+            h(C.ShareBars,{onClickRow: eksen ? in_ : null,
+              rows: kirilim.map(g=>({
+                label:g.label, value:hacimFor(g,viewMode), share:g.share,
+                yoy:yoyFor(g,viewMode),
+                title:grupAciklama(g, viewMode), color:renkAl(g)}))})),
           h('div',{className:'txt-3', style:{fontSize:10.5, marginTop:8}},
             kirilim.length+' '+(ZINCIR_ETIKET[eksen]||'grup').toLowerCase()+
             ' · satıra tıklayın, bir alt kırılıma iner'))),
@@ -609,8 +654,22 @@ window.TABS = (function(){
 
   // ══════════════════════════════════════════ GRUPLAR
   function GruplarTab({rows, viewMode, secili, setSecili, setKeywordModal, onSelectGroup,
-                        onNavigateKw, seviye, setSeviye, entFiltre, setEntFiltre, peakGizli, setPeakGizli}){
+                        onNavigateKw, seviye, setSeviye, entFiltre, setEntFiltre,
+                        peakGizli, setPeakGizli, yol, setYol}){
     const [altSeviye, setAltSeviye] = React.useState('');
+
+    // Bir gruba tıklanınca sekme değiştirmek yerine aynı sekmede bir alt
+    // kırılıma inilir: spor dalında futbol seçilince organizasyonlar,
+    // orada bir lig seçilince takımlar gelir. Yol tüm sekmelerde ortak
+    // olduğu için iz şeridinden geri alınabilir.
+    const zincirSira = ZINCIR.indexOf(seviye);
+    const altEksen = zincirSira >= 0 && zincirSira + 1 < ZINCIR.length
+      ? ZINCIR[zincirSira + 1] : null;
+    const inAlt = altEksen ? function(deger){
+      setYol(y => y.concat({eksen: seviye, deger}));
+      setSeviye(altEksen); setSecili(null);
+      window.scrollTo({top:0, behavior:'smooth'});
+    } : null;
     // Varlık filtresi hem sezonsallık matrisini hem alttaki grup tablosunu daraltır
     const rowsF = entFiltre ? rows.filter(r=>r.ent===entFiltre) : rows;
     const gruplar = React.useMemo(()=>groupBy(rowsF, seviye, altSeviye||null),
@@ -622,7 +681,7 @@ window.TABS = (function(){
         h('div',{className:'filter-panel-label'}, h('strong',null,'Kırılım')),
         h('div',{className:'segmented'},
           Object.entries(FACET_ETIKET).filter(([id])=>
-            ['spor','org','st','it','ent','hak','mus','sev','cins','cog','ktm','sinif','bucket'].includes(id)
+            ['spor','org','takim','st','it','ent','hak','mus','sev','cins','cog','ktm','sinif','bucket'].includes(id)
           ).map(([id,lab])=>h('button',{key:id, className: seviye===id?'active':'',
             onClick:()=>{setSeviye(id); setSecili(null);}}, lab))),
         h('div',{style:{marginLeft:'auto', display:'flex', gap:6, alignItems:'center'}},
@@ -674,15 +733,20 @@ window.TABS = (function(){
           'Bu grubun tüm keyword\'lerini gör',
           h('span',{className:'btn-ikon'}, h(C.Ikon,{ad:'okSag', size:13})))),
 
-      h(SezonTakvimi,{rows, viewMode, onSelectGroup, baslik:'Sezonsallık',
+      h(SezonTakvimi,{rows, viewMode, baslik:'Sezonsallık',
+        onSelectGroup: inAlt ? (_a, deger)=>inAlt(deger) : onSelectGroup,
+        onGrupDetay: inAlt ? (deger)=>onSelectGroup(seviye, deger) : null,
         seviye, setSeviye:(v)=>{setSeviye(v); setSecili(null);},
         entFiltre, setEntFiltre:(v)=>{setEntFiltre(v); setSecili(null);},
         aciklama:`${FACET_ETIKET[seviye]} kırılımı · alttaki tablo ve grafikler aynı eksene bağlıdır`}),
       h(C.SectionHeader,{icon:'liste', title:'Grup Detayları',
         desc:`${FACET_ETIKET[seviye]} ekseninde ${gruplar.length.toLocaleString('tr-TR')} grup`
           + (entFiltre ? ` · yalnızca ${entFiltre} satırları` : '')
-          + ' · satıra tıklayın, detay kartı açılır'}),
-      h(GrupTablosu,{gruplar, seviye, onSelectGroup, viewMode}),
+          + (altEksen ? ` · satıra tıklayın, ${FACET_ETIKET[altEksen]} kırılımına iner`
+                      : ' · satıra tıklayın, detay kartı açılır')}),
+      h(GrupTablosu,{gruplar, seviye, onSelectGroup, viewMode,
+        onIn: inAlt,
+        inEtiket: altEksen ? (FACET_ETIKET[altEksen]+' kırılımına in') : null}),
       h(Kaynak,{}));
   }
 
@@ -1453,6 +1517,7 @@ window.TABS = (function(){
      ═══════════════════════════════════════════════════════════════════ */
   const KIRILIM_SEVIYE = [['spor','Spor Dalı'],['org','Organizasyon'],['takim','Takım']];
   const KIRILIM_ESIK = [0, 10000, 50000, 250000, 1e6, 5e6, 25e6];
+  const KIRILIM_SINIR = 24;   // seviye başına ilk gösterilen karo sayısı
 
   // Üç seviyeli ağaç. Her düğümde hacim ve keyword sayısı
   // [tümü, yalnız takım araması, yalnız oyuncu araması] olarak tutulur.
@@ -1486,6 +1551,9 @@ window.TABS = (function(){
     const [q, setQ]           = React.useState('');
     const [esik, setEsik]     = React.useState(0);
     const [yol, setYol]       = React.useState([]);
+    // Karo ızgarası aşağı doğru aktığı için uzun seviyeler bir sonraki
+    // seviyeyi ekrandan itiyor; seviye başına açılıp kapanan bir sınır tutulur.
+    const [acikSeviye, setAcikSeviye] = React.useState({});
 
     React.useEffect(function(){
       try { localStorage.setItem('tvplus.kirilim.gorunum', gorunum); } catch(e){}
@@ -1526,6 +1594,8 @@ window.TABS = (function(){
     }, [kapsam, sira, q, esik]);
 
     // Bir düğüme tıklandığında: alt kırılımı varsa in, yoksa keyword'lere git
+    React.useEffect(function(){ setAcikSeviye({}); }, [kapsam, sira, q, esik]);
+
     function tikla(seviye, dugum){
       const yeniYol = yol.slice(0, seviye).concat(dugum.n);
       if(seviye>=2 || !dugum.c.length){
@@ -1562,13 +1632,14 @@ window.TABS = (function(){
         if(!c.length){ if(lv===0) seritler.push(h('div',{key:'bos', className:'kr-bos'},
           'Bu kapsam ve eşikte gösterilecek kayıt bulunmuyor.')); break; }
         const secili = yol[lv]||null;
+        const acik = !!acikSeviye[lv];
         seritler.push(
           h('div',{key:lv, className:'kr-serit'},
             h('div',{className:'kr-serit-bas'},
               h('span',{className:'kr-serit-ad'}, KIRILIM_SEVIYE[lv][1]),
               h('span',{className:'kr-serit-sayi'}, c.length.toLocaleString('tr-TR')+' kayıt')),
-            h('div',{className:'kr-kaydir'},
-              c.slice(0,80).map(function(d){
+            h('div',{className:'kr-izgara'},
+              c.slice(0, acik ? c.length : KIRILIM_SINIR).map(function(d){
                 const alt = d.c.length;
                 return h('button',{key:d.n, className:'kr-karo'+(d.n===secili?' secili':''),
                   onClick:()=>tikla(lv,d),
@@ -1580,9 +1651,11 @@ window.TABS = (function(){
                     d.k[kapsam].toLocaleString('tr-TR')+' kw' +
                     (alt ? ' · '+alt+' '+(lv===0?'org':'takım') : '')),
                   h(PayCubugu,{d}));
-              }),
-              c.length>80 && h('div',{key:'daha', className:'kr-daha'},
-                '+'+(c.length-80).toLocaleString('tr-TR')+' daha · arama ile daraltın'))));
+              })),
+            c.length > KIRILIM_SINIR && h('button',{className:'chip-btn sessiz kr-daha',
+              onClick:()=>setAcikSeviye(o=>({...o, [lv]: !acik}))},
+              acik ? '↑ İlk '+KIRILIM_SINIR+' kaydı göster'
+                   : '↓ Kalan '+(c.length-KIRILIM_SINIR).toLocaleString('tr-TR')+' kaydı göster')));
         if(!secili) break;
       }
       return seritler;
@@ -1625,7 +1698,7 @@ window.TABS = (function(){
           h('span',{className:'kr-grup'},
             h('span',{className:'kr-etiket'},'Gösterim'),
             h('div',{className:'segmented'},
-              [['karo','Karo Şeridi'],['sutun','Sütun Kırılımı']].map(g=>
+              [['karo','Karo Izgarası'],['sutun','Sütun Kırılımı']].map(g=>
                 h('button',{key:g[0], className: gorunum===g[0]?'active':'',
                   onClick:()=>setGorunum(g[0])}, g[1])))),
 

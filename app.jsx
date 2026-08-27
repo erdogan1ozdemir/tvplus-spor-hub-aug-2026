@@ -175,11 +175,17 @@
       if(ctx&&ctx.alan) setFiltre(f=>({...f,[ctx.alan]:[ctx.deger]}));
       setTab('keyword'); window.scrollTo({top:0, behavior:'smooth'});
     };
+    // Kırılım yolu zaten tüm sekmelerin kapsamı olduğu için sekme
+    // değiştirmek yeni bir filtre kurmayı gerektirmez, kapsam taşınır.
+    const gitSekme = id => { setTab(id); window.scrollTo({top:0, behavior:'smooth'}); };
 
     const S = SEKMELER.find(s=>s.id===tab) || SEKMELER[0];
-    const ortak = { rows, viewMode, setKeywordModal, onSelectGroup, onNavigateKw,
-      secili, setSecili, seviye, setSeviye, entFiltre, setEntFiltre,
-      peakGizli, setPeakGizli, yol, setYol };
+    // Kırılım yolu tüm sekmelerin kapsamıdır: Özet'te "Dövüş Sporları ›
+    // Taekwondo" seçiliyse Keyword ve Takım & Oyuncu da o kapsamı gösterir.
+    // İz şeridinden bir adım geri alınarak her yerde birlikte kaldırılır.
+    const ortak = { rows: kapsamRows, tumRows: rows, viewMode, setKeywordModal,
+      onSelectGroup, onNavigateKw, gitSekme, secili, setSecili, seviye, setSeviye,
+      entFiltre, setEntFiltre, peakGizli, setPeakGizli, yol, setYol };
 
     return h('div',{className:'app'},
       h('div',{className:'topbar'},
@@ -203,7 +209,7 @@
       h('div',{className:'tabs'},
         SEKMELER.map(s=>h('button',{key:s.id, className:'tab'+(tab===s.id?' active':''),
           onClick:()=>setTab(s.id)}, s.label,
-          s.rozet && h('span',{className:'badge'}, s.rozet(rows))))),
+          s.rozet && h('span',{className:'badge'}, s.rozet(kapsamRows))))),
 
       h('div',{className:'global-filter-wrap'+(scrolled?' scrolled':'')},
         // Varyant C: tüm faset seçicileri tek "Filtrele" düğmesinin altına iner.
@@ -281,7 +287,8 @@
           h('div',{className:'gorunum-sag'},
             h('span',{className:'txt-3', style:{fontSize:10.5}},
               'Son 12 Ay: ', ROLLING_LABELS[0], ' – ', ROLLING_LABELS[11]),
-            tab==='ozet' && h(T.IzSeridi,{yol, setYol, eksen: aktifEksen,
+            h(T.IzSeridi,{yol, setYol,
+              eksen: tab==='ozet' ? aktifEksen : null,
               kapsamHacim: kapsamR12}))),
 
         aktif>0 && h('div',{className:'filter-chips'},

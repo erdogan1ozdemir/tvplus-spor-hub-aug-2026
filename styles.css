@@ -2325,3 +2325,31 @@ button.action-card:hover { border-color: currentColor; transform: translateY(-1p
    geniş bir tablo varsa sütunu zorlayıp sayfayı yatay kaydırır. min-width:0
    bu davranışı keser, taşan içerik kendi kabında kaydırılır. */
 .grid > *, .grid-2 > *, .grid-3 > *, .grid-kpi > * { min-width: 0; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   BAŞLIK ŞERİTLERİ · sıkışma önlemi
+   Başlık ile eylem bloğu aynı satırdaydı ve eylem bloğunun daralma
+   sınırı yoktu; filtre rozetleri gibi geniş bir eylem seti başlığı tek
+   karakter genişliğine kadar eziyordu. Başlık artık bir taban genişliğin
+   altına inmez, eylem bloğu o noktada alt satıra geçer.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.section-header { flex-wrap: wrap; }
+.section-header .sh-text { flex: 1 1 260px; min-width: 0; }
+.section-header .sh-actions {
+  margin-left: auto; display: flex; flex-wrap: wrap;
+  align-items: center; gap: 6px; min-width: 0;
+}
+@media (max-width: 860px) {
+  .section-header .sh-actions {
+    margin-left: 0; flex-basis: 100%; justify-content: flex-start;
+  }
+  .section-header .sh-bar { height: auto; align-self: stretch; }
+}
+
+/* Kart başlık şeridi aynı kurala tabi */
+.card-title-row { flex-wrap: wrap; }
+.card-title-row > *:first-child { flex: 1 1 220px; min-width: 0; }
+
+/* Araç çubuğu: arama alanı bir taban genişliğin altına inmez */
+.toolbar .input-search { flex: 1 1 200px; min-width: 160px; }

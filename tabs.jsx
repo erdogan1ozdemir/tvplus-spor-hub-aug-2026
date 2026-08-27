@@ -294,9 +294,11 @@ window.TABS = (function(){
     }, [rows]);
     const renkAl = g => SPOR_RENK()[g.spor || g.ust] || SPOR_RENK()[kapsamSpor] || '#BAB0AC';
     // Bir gruba tıklandığında yol bir adım uzar; yaprakta detay açılır
+    // Kırılıma inerken sayfa başına atlanmaz: tıklanan bölüm sayfanın
+    // ortasındaysa kullanıcı bağlamını kaybediyordu. İz şeridi zaten
+    // hangi kapsamda olunduğunu gösteriyor.
     const in_ = (deger) => { if(!eksen) return;
-      setYol([...izYolu, {eksen, deger}]);
-      window.scrollTo({top:0, behavior:'smooth'}); };
+      setYol([...izYolu, {eksen, deger}]); };
     const r12 = takvim ? aggregateMonthly(rows,'m25').reduce((a,b)=>a+b,0) : topR12(rows);
     const p12 = takvim ? aggregateMonthly(rows,'m24').reduce((a,b)=>a+b,0) : topP12(rows);
     const ryoy = p12>0 ? (r12-p12)/p12 : null;

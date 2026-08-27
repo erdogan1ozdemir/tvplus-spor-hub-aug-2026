@@ -273,7 +273,27 @@
 
           aktif>0 && h('button',{className:'chip-btn sessiz filtre-temizle', onClick:temizle},
             h('span',{className:'btn-ikon'}, h(C.Ikon,{ad:'kapat', size:12})),
-            'Temizle', h('span',{className:'btn-sayac'}, aktif))),
+            'Temizle', h('span',{className:'btn-sayac'}, aktif)),
+
+          h('span',{className:'serit-ayrac'}),
+
+          h('div',{className:'segmented', title:'Trend filtresi'},
+            [['','Tüm Trend'],['Yükselen','↑ Yükselen'],['Stabil','→ Stabil'],['Düşen','↓ Düşen']]
+              .map(([v,l])=>h('button',{key:v||'all', className: trend===v?'active':'',
+                onClick:()=>setTrend(v)}, l))),
+          h('div',{className:'segmented',
+            title:`Rolling = Son 12 Ay (${ROLLING_LABELS[0]} – ${ROLLING_LABELS[11]}) vs Önceki 12 Ay · Takvim = ${M.yillar.join(' / ')} yıl çizgileri. Özet KPI ve YoY değerleri seçili görünüme göre hesaplanır; Yükselen ve Düşen sayıları her zaman rolling karşılaştırmadan gelir.`},
+            h('button',{className: viewMode==='rolling'?'active':'',
+              onClick:()=>setViewMode('rolling')},'Rolling 12 Ay'),
+            h('button',{className: viewMode==='calendar'?'active':'',
+              onClick:()=>setViewMode('calendar')},'Takvim Yılı')),
+
+          h('div',{className:'gorunum-sag'},
+            h('span',{className:'txt-3', style:{fontSize:10.5}},
+              'Son 12 Ay: ', ROLLING_LABELS[0], ' – ', ROLLING_LABELS[11]),
+            h(T.IzSeridi,{yol, setYol,
+              eksen: tab==='ozet' ? aktifEksen : null,
+              kapsamHacim: kapsamR12}))),
 
         ekAcik && h('div',{className:'filter-panel filtre-kutu', style:{marginTop:8}},
           h('div',{className:'filtre-grup'},
@@ -300,27 +320,6 @@
               EK.map(([alan,lab,w])=>(secenekler[alan]||[]).length>1 &&
                 h(C.MultiSelect,{key:alan, label:lab, options:secenekler[alan], width:w,
                   selected:gorunenFiltre[alan]||[], onChange:sel=>fasetDegis(alan, sel)}))))),
-
-        h('div',{className:'filter-panel', style:{marginTop:8}},
-          h('div',{className:'filter-panel-label'}, h('span',{className:'txt-3'},'GÖRÜNÜM')),
-          h('div',{className:'segmented', title:'Trend filtresi'},
-            [['','Tüm Trend'],['Yükselen','↑ Yükselen'],['Stabil','→ Stabil'],['Düşen','↓ Düşen']]
-              .map(([v,l])=>h('button',{key:v||'all', className: trend===v?'active':'',
-                onClick:()=>setTrend(v)}, l))),
-          h('div',{className:'segmented',
-            title:`Rolling = Son 12 Ay (${ROLLING_LABELS[0]} – ${ROLLING_LABELS[11]}) vs Önceki 12 Ay · Takvim = ${M.yillar.join(' / ')} yıl çizgileri. Özet KPI ve YoY değerleri seçili görünüme göre hesaplanır; Yükselen ve Düşen sayıları her zaman rolling karşılaştırmadan gelir.`},
-            h('button',{className: viewMode==='rolling'?'active':'',
-              onClick:()=>setViewMode('rolling')},'Rolling 12 Ay'),
-            h('button',{className: viewMode==='calendar'?'active':'',
-              onClick:()=>setViewMode('calendar')},'Takvim Yılı')),
-          // Kırılım şeridi görünüm satırının sağında durur: hangi kapsamdayız
-          // sorusu görünüm ayarlarıyla aynı yerde cevaplanır.
-          h('div',{className:'gorunum-sag'},
-            h('span',{className:'txt-3', style:{fontSize:10.5}},
-              'Son 12 Ay: ', ROLLING_LABELS[0], ' – ', ROLLING_LABELS[11]),
-            h(T.IzSeridi,{yol, setYol,
-              eksen: tab==='ozet' ? aktifEksen : null,
-              kapsamHacim: kapsamR12}))),
 
         // Faset rozetleri Varyant C ile filtre çubuğuna taşındı; buradaki
         // ikinci satır yalnızca çubuğa girmeyen görünüm filtrelerini gösterir.

@@ -2253,3 +2253,18 @@ button.action-card:hover { border-color: currentColor; transform: translateY(-1p
   color: var(--accent-deep); cursor: pointer; box-shadow: none;
 }
 .kr-sutun-geri:hover { color: var(--ink); transform: none; box-shadow: none; }
+
+/* Tek satırlık üst çubuk: arama, Filtrele, rozetler, trend, dönem ve iz şeridi */
+.filtre-serit .serit-ayrac {
+  width: 1px; height: 20px; background: var(--line);
+  margin: 0 2px; flex: none;
+}
+.filtre-serit .gorunum-sag {
+  display: flex; align-items: center; gap: 10px;
+  margin-left: auto; flex-wrap: wrap; justify-content: flex-end;
+}
+.filtre-serit .filtre-temizle { margin-left: 0; }
+@media (max-width: 1100px) {
+  .filtre-serit .serit-ayrac { display: none; }
+  .filtre-serit .gorunum-sag { margin-left: 0; width: 100%; justify-content: flex-start; }
+}

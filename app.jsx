@@ -98,17 +98,42 @@
       return ()=>{window.removeEventListener('scroll',onS); window.removeEventListener('hashchange',onH);};
     },[]);
 
-    // Kademeli seçenekler
+    // Kırılım yolu faset seçicilerde de görünür: kapsam "Futbol › La Liga"
+    // ise Spor Dalı seçicisi Futbol'u, Organizasyon seçicisi La Liga'yı
+    // seçili gösterir. Ayrı bir state tutulmaz, yol tek kaynak kalır.
+    const yolFiltre = React.useMemo(()=>{
+      const o={}; for(const a of yol) o[a.eksen] = [a.deger]; return o;
+    }, [yol]);
+    const gorunenFiltre = React.useMemo(
+      ()=>({...filtre, ...yolFiltre}), [filtre, yolFiltre]);
+
+    // Kademeli seçenekler: kapsam neyse seçenek listesi de o kapsamdan gelir.
+    // Yolun kendi belirlediği eksende liste bir üst kapsamdan alınır, yoksa
+    // seçili değerden başka seçenek kalmaz ve seçici kullanılamaz hale gelir.
     const secenekler = React.useMemo(()=>{
+      const kapsam = T.yoluUygula(D.keywords, yol);
       const out={};
       for(const [alan] of [...BIRINCIL, ...EK]){
+        const yolIdx = yol.findIndex(a=>a.eksen===alan);
+        const taban = yolIdx>=0 ? T.yoluUygula(D.keywords, yol.slice(0,yolIdx)) : kapsam;
         const diger={...filtre}; delete diger[alan];
-        const alt=applyFacets(D.keywords, diger, null);
+        const alt=applyFacets(taban, diger, null);
         out[alan]=[...new Set(alt.map(k=>k[alan]).filter(Boolean))]
           .sort((a,b)=>String(a).localeCompare(String(b),'tr'));
       }
       return out;
-    },[filtre]);
+    },[filtre, yol]);
+
+    // Bir eksen kırılım yolundan geliyorsa seçim değişince yol o adımdan
+    // kırpılır; böylece iz şeridi ile seçiciler hiçbir zaman ayrışmaz.
+    const fasetDegis = (alan, sel) => {
+      const yolIdx = yol.findIndex(a=>a.eksen===alan);
+      if(yolIdx >= 0){
+        setYol(y=>y.slice(0, yolIdx));
+        setSecili(null);
+      }
+      setFiltre(f=>({...f, [alan]: sel}));
+    };
 
     const rows = React.useMemo(()=>{
       let r = applyFacets(D.keywords, filtre, arama);
@@ -140,7 +165,8 @@
     const kapsamR12  = React.useMemo(
       ()=>kapsamRows.reduce((a,k)=>a+(k.r12||0),0), [kapsamRows]);
 
-    const aktif = Object.values(filtre).reduce((a,v)=>a+(v?v.length:0),0)
+    const aktif = Object.entries(gorunenFiltre)
+        .reduce((a,[,v])=>a+(v?v.length:0),0)
       + peakAy.length + peakCeyrek.length + mevsim.length + bucket.length
       + (trend?1:0) + (arama?1:0);
     const temizle = ()=>{ setFiltre({}); setArama(''); setPeakAy([]); setPeakCeyrek([]);
@@ -151,9 +177,13 @@
     const aktifCipler = React.useMemo(function(){
       const out = [];
       for(const [alan, lab] of [...BIRINCIL, ...EK]){
-        const sel = filtre[alan] || [];
-        if(sel.length) out.push({id:alan, lab, sel,
-          sil:()=>setFiltre(f=>({...f, [alan]:[]}))});
+        const yolIdx = yol.findIndex(a=>a.eksen===alan);
+        const sel = yolIdx>=0 ? [yol[yolIdx].deger] : (filtre[alan] || []);
+        if(!sel.length) continue;
+        out.push({id:alan, lab, sel, yolAdimi: yolIdx>=0,
+          sil: yolIdx>=0
+            ? ()=>{ setYol(y=>y.slice(0, yolIdx)); setSecili(null); }
+            : ()=>setFiltre(f=>({...f, [alan]:[]}))});
       }
       const ozel = [['peakAy','Peak Ay',peakAy,setPeakAy],
                     ['peakCeyrek','Peak Çeyrek',peakCeyrek,setPeakCeyrek],
@@ -163,7 +193,7 @@
         if(deger && deger.length) out.push({id, lab, sel:deger, sil:()=>setter([])});
       }
       return out;
-    }, [filtre, peakAy, peakCeyrek, mevsim, bucket]);
+    }, [filtre, yol, peakAy, peakCeyrek, mevsim, bucket]);
 
     const onSelectGroup = (alan, deger) => {
       setSecili({alan, deger});
@@ -250,8 +280,8 @@
             h('div',{className:'filtre-grup-alan'},
               BIRINCIL.map(([alan,lab,w])=>(secenekler[alan]||[]).length>1 &&
                 h(C.MultiSelect,{key:alan, label:lab, options:secenekler[alan], width:w,
-                  selected:filtre[alan]||[], colorMap: alan==='spor'?window.SPOR_RENK:null,
-                  onChange:sel=>setFiltre(f=>({...f,[alan]:sel}))})))),
+                  selected:gorunenFiltre[alan]||[], colorMap: alan==='spor'?window.SPOR_RENK:null,
+                  onChange:sel=>fasetDegis(alan, sel)})))),
           h('div',{className:'filtre-grup'},
             h('div',{className:'filtre-grup-bas'},'Sezonsallık ve hacim'),
             h('div',{className:'filtre-grup-alan'},
@@ -268,7 +298,7 @@
             h('div',{className:'filtre-grup-alan'},
               EK.map(([alan,lab,w])=>(secenekler[alan]||[]).length>1 &&
                 h(C.MultiSelect,{key:alan, label:lab, options:secenekler[alan], width:w,
-                  selected:filtre[alan]||[], onChange:sel=>setFiltre(f=>({...f,[alan]:sel}))}))))),
+                  selected:gorunenFiltre[alan]||[], onChange:sel=>fasetDegis(alan, sel)}))))),
 
         h('div',{className:'filter-panel', style:{marginTop:8}},
           h('div',{className:'filter-panel-label'}, h('span',{className:'txt-3'},'GÖRÜNÜM')),
@@ -291,12 +321,11 @@
               eksen: tab==='ozet' ? aktifEksen : null,
               kapsamHacim: kapsamR12}))),
 
-        aktif>0 && h('div',{className:'filter-chips'},
-          h('span',{className:'lbl'},'Seçili:'),
-          Object.entries(filtre).flatMap(([alan,ds])=>(ds||[]).map(d=>
-            h('button',{key:alan+d, className:'filter-chip',
-              onClick:()=>setFiltre(f=>({...f,[alan]:f[alan].filter(x=>x!==d)}))},
-              (FACET_ETIKET[alan]||alan)+': '+d, h('span',{className:'x'},'×')))),
+        // Faset rozetleri Varyant C ile filtre çubuğuna taşındı; buradaki
+        // ikinci satır yalnızca çubuğa girmeyen görünüm filtrelerini gösterir.
+        (peakAy.length || peakCeyrek.length || mevsim.length || bucket.length
+          || trend || arama) && h('div',{className:'filter-chips'},
+          h('span',{className:'lbl'},'Görünüm:'),
           peakAy.map(p=>h('button',{key:'pa'+p, className:'filter-chip',
             onClick:()=>setPeakAy(a=>a.filter(x=>x!==p))},'Peak: '+p, h('span',{className:'x'},'×'))),
           peakCeyrek.map(p=>h('button',{key:'pc'+p, className:'filter-chip',

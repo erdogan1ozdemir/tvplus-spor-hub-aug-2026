@@ -81,7 +81,11 @@ const KUYRUK = [' maçları',' maçı',' maçlari',' fikstürü',' fikstür',' p
   ' kadrosu',' kadro',' canlı izle',' şifresiz',' transferleri',' transfer',
   ' oyuncuları',' ne zaman',' hangi kanalda',' saat kaçta',' maç sonucu',
   ' sonucu',' skoru',' skor',' haberleri',' son dakika',' istatistikleri',
-  ' istatistik',' puanı',' sıralaması',' izle',' kimdir',' hangi takımda'];
+  ' istatistik',' puanı',' sıralaması',' izle',' kimdir',' hangi takımda',
+  // Denetimde küme anahtarına sızan sorgu ekleri: "galatasaray maçı nerede
+  // izlenir" gibi satırlar takım filtresinde ayrı bir küme gibi görünüyordu
+  ' nerede izlenir',' maç sonuçları',' bugün maç var mı',' maç var mı',
+  ' yayın akışı',' takvimi',' takvim',' özeti',' özet',' biletleri',' bilet'];
 const RESMI = [' spor kulübü',' f.c.',' a.ş.',' s.k.',' j.k.',' afc',' cf',' fc',' sk',' jk'];
 function kulupAnahtar(kw){
   let t = kw, degisti = true;

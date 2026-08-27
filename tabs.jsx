@@ -681,7 +681,9 @@ window.TABS = (function(){
     return h('div',{className:'tab-content-anim'},
       h('div',{className:'filter-panel', style:{marginBottom:14}},
         h('div',{className:'filter-panel-label'}, h('strong',null,'Kırılım')),
-        h('div',{className:'segmented'},
+        // 14 eksen düğmesi dar ekranda tek satıra sığmıyor ve sayfayı yatay
+        // kaydırıyordu; bu seçici satır kırabilen bir varyant kullanır.
+        h('div',{className:'segmented segmented-saran'},
           Object.entries(FACET_ETIKET).filter(([id])=>
             ['spor','org','takim','st','it','ent','hak','mus','sev','cins','cog','ktm','sinif','bucket'].includes(id)
           ).map(([id,lab])=>h('button',{key:id, className: seviye===id?'active':'',
@@ -774,7 +776,7 @@ window.TABS = (function(){
       h('div',{className:'toolbar'},
         h('input',{className:'input input-search', placeholder:'Keyword ara…', value:q,
           onChange:e=>setQ(e.target.value), style:{flex:1, minWidth:180}}),
-        h('div',{className:'segmented', title:'Varlık tipine göre daralt'},
+        h('div',{className:'segmented segmented-saran', title:'Varlık tipine göre daralt'},
           [['','Tümü'],['Takım','Takım'],['Oyuncu','Oyuncu'],['Maç','Maç'],
            ['Lig/Organizasyon','Lig']].map(function(e){
             return h('button',{key:e[0]||'all', className: entHizli===e[0]?'active':'',
@@ -1245,7 +1247,7 @@ window.TABS = (function(){
           'sorgularının organizasyon talebi içindeki payı) ve ', h('strong',null,'yayın hakkı durumu'),'.'),
         h('p',null,'Eşikler veriye göre kalibre edilmiştir ve marka tarafının stratejik ' +
           'önceliklerine göre güncellenebilir.')),
-      h('div',{className:'grid grid-kpi kpi-5'},
+      h('div',{className:'grid grid-kpi kpi-6 kova-izgara'},
         kovalar.map(k=>{
           const sec = orgRows.filter(o=>o.karar===k);
           return h('button',{key:k, className:'kpi kova-kpi'+(acikKova===k?' acik':''),

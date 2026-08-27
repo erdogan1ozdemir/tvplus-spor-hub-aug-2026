@@ -1,0 +1,319 @@
+{
+ "Hentbol": [
+  {
+   "ad": "mathias gidsel",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "baran nalbantoğlu",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "sadık emre herseklioğlu",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "doruk pehlivan",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "ediz aktaş",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "sedat yıldırım",
+   "turk": true,
+   "belirsiz": true
+  },
+  {
+   "ad": "ali emre babacan",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "diğdem hoşgör",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "ceylan aydemir",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "dönegül bozdoğan",
+   "turk": true,
+   "belirsiz": false
+  }
+ ],
+ "WWE": [
+  {
+   "ad": "cm punk",
+   "turk": false,
+   "belirsiz": true
+  },
+  {
+   "ad": "roman reigns",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "cody rhodes",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "rhea ripley",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "liv morgan",
+   "turk": false,
+   "belirsiz": true
+  },
+  {
+   "ad": "gunther",
+   "turk": false,
+   "belirsiz": true
+  },
+  {
+   "ad": "seth rollins",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "randy orton",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "brock lesnar",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "jey uso",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "becky lynch",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "kevin owens",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "finn balor",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "bron breakker",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "chad gable",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "baron corbin",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "raquel rodriguez",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "jacy jayne",
+   "turk": false,
+   "belirsiz": false
+  }
+ ],
+ "Kickboks": [
+  {
+   "ad": "rico verhoeven",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "serkan özçağlayan",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "tayfun özcan",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "jamal ben saddik",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "tarik khbabez",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "sergej maslobojev",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "levi rigters",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "cafer ahmet uysal",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "sabriye şengül",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "yağmur gölük",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "ahmet mirza erden",
+   "turk": true,
+   "belirsiz": false
+  }
+ ],
+ "Buz Hokeyi": [
+  {
+   "ad": "connor mcdavid",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "nathan mackinnon",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "auston matthews",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "nikita kucherov",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "macklin celebrini",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "sidney crosby",
+   "turk": false,
+   "belirsiz": false
+  }
+ ],
+ "Bisiklet": [
+  {
+   "ad": "tadej pogacar",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "tadej pogaçar",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "jonas vingegaard",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "remco evenepoel",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "mathieu van der poel",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "tom pidcock",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "isaac del toro",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "paul seixas",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "florian lipowitz",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "ahmet örken",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "serdar anıl depe",
+   "turk": true,
+   "belirsiz": false
+  }
+ ],
+ "Kış Sporları": [
+  {
+   "ad": "sturla holm lægreid",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "mikaela shiffrin",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "lindsey vonn",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "chloe kim",
+   "turk": false,
+   "belirsiz": true
+  },
+  {
+   "ad": "jessie diggins",
+   "turk": false,
+   "belirsiz": false
+  }
+ ]
+}

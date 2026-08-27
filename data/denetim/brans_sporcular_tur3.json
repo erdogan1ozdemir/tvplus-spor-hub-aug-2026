@@ -1,0 +1,684 @@
+{
+ "Tenis": [
+  {
+   "ad": "carlos alcaraz",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "alexander zverev",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "novak djokovic",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "felix auger-aliassime",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "daniil medvedev",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "taylor fritz",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "ben shelton",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "alex de minaur",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "flavio cobolli",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "arthur fils",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "frances tiafoe",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "rafael jodar",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "lorenzo musetti",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "learner tien",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "alexander bublik",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "brandon nakashima",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "jakub mensik",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "jiri lehecka",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "casper ruud",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "tommy paul",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "luciano darderi",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "valentin vacherot",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "andrey rublev",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "francisco cerundolo",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "cem ilkel",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "yankı erel",
+   "turk": true,
+   "belirsiz": false
+  }
+ ],
+ "Atletizm": [
+  {
+   "ad": "mondo duplantis",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "karsten warholm",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "sydney mclaughlin-levrone",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "noah lyles",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "berke akçam",
+   "turk": true,
+   "belirsiz": false
+  }
+ ],
+ "Dövüş Sporları": [
+  {
+   "ad": "kerem kamal",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "cengiz arslan",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "hakan büyükçıngıl",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "evin demirhan yavuz",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "buse tosun çavuşoğlu",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "elvira süleyman kamaloğlu",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "tuba demir",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "beyza nur akkuş",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "nesrin baş",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "yunus emre başar",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "muhammet karavuş",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "ahmet duman",
+   "turk": true,
+   "belirsiz": true
+  },
+  {
+   "ad": "zehra demirhan",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "zeynep yetgil kamal",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "ismail küçüksolak",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "ebru dağbaşı",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "kadriye aksoy koçak",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "murat fırat",
+   "turk": true,
+   "belirsiz": true
+  },
+  {
+   "ad": "doğan kaya",
+   "turk": true,
+   "belirsiz": true
+  },
+  {
+   "ad": "yasin yeşil",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "resul güne",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "buse naz çakıroğlu",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "büşra işıldar",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "şeyma düztaş",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "elif güneri",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "ece asude ediz",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "dilara sak",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "sude nur aslan",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "oleksandr usyk",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "daniel dubois",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "canelo alvarez",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "christian mbilli",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "vedat albayrak",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "tuğçe beder",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "kayra sayit",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "emine göğebakan",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "furkan ubeyde çamoğlu",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "hatice kübra ilgün",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "enes kaplan",
+   "turk": true,
+   "belirsiz": true
+  },
+  {
+   "ad": "işıl zafer",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "sude uzunçavdar",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "hüseyin demircioğlu",
+   "turk": true,
+   "belirsiz": false
+  }
+ ],
+ "Yüzme": [
+  {
+   "ad": "emre sakcı",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "viktoriya zeynep güneş",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "doruk yoğurtçuoğlu",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "ahmet mete boylu",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "berke saka",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "sudem denizli",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "polat uzer turnalı",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "nusrat allahverdi",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "kaan efe kaya",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "emre gürdenli",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "katie ledecky",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "leon marchand",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "summer mcintosh",
+   "turk": false,
+   "belirsiz": false
+  },
+  {
+   "ad": "caeleb dressel",
+   "turk": false,
+   "belirsiz": false
+  }
+ ],
+ "Jimnastik": [
+  {
+   "ad": "hatice gökçe emir",
+   "turk": true,
+   "belirsiz": false
+  }
+ ],
+ "Halter": [
+  {
+   "ad": "yusuf fehmi genç",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "gamze altun",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "cansel özkan",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "büşra çan",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "nuray güngör",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "kaan kahriman",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "hakan şükrü kurnaz",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "ferdi hardal",
+   "turk": true,
+   "belirsiz": false
+  }
+ ],
+ "Okçuluk": [
+  {
+   "ad": "hazal burun",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "emircan haney",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "elif berra gökkır",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "safiye sarıtürk temizdemir",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "çiğdem özyaman özenir",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "muhammet seyhun kaya",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "enver yıldırım",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "furkan yaman",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "nisanur erbil",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "aleyna ertürk",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "neslihan arın",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "yasemen bektaş",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "emre sönmez",
+   "turk": true,
+   "belirsiz": true
+  }
+ ],
+ "Zihin Sporları": [
+  {
+   "ad": "alexander ipatov",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "emre can satranç",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "dragan solak",
+   "turk": true,
+   "belirsiz": true
+  }
+ ],
+ "E-Spor": [
+  {
+   "ad": "rose",
+   "turk": true,
+   "belirsiz": true
+  },
+  {
+   "ad": "loita",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "lar0k",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "crewen",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "lovers rock",
+   "turk": true,
+   "belirsiz": true
+  },
+  {
+   "ad": "qraxs",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "s0pp",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "mrfalin",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "armut",
+   "turk": true,
+   "belirsiz": true
+  },
+  {
+   "ad": "bolulu",
+   "turk": true,
+   "belirsiz": true
+  },
+  {
+   "ad": "elramir",
+   "turk": true,
+   "belirsiz": false
+  }
+ ],
+ "Paralimpik": [
+  {
+   "ad": "umut ünlü",
+   "turk": true,
+   "belirsiz": true
+  },
+  {
+   "ad": "sevilay öztürk",
+   "turk": true,
+   "belirsiz": true
+  },
+  {
+   "ad": "öznur cüre girdi",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "aysel önder",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "fatma damla altın",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "abdullah kayapınar",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "besra duman",
+   "turk": true,
+   "belirsiz": false
+  },
+  {
+   "ad": "çağdaş kaya",
+   "turk": true,
+   "belirsiz": false
+  }
+ ],
+ "Motor Sporları": [
+  {
+   "ad": "cem bölükbaşı",
+   "turk": true,
+   "belirsiz": false
+  }
+ ]
+}

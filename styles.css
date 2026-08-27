@@ -2268,3 +2268,29 @@ button.action-card:hover { border-color: currentColor; transform: translateY(-1p
   .filtre-serit .serit-ayrac { display: none; }
   .filtre-serit .gorunum-sag { margin-left: 0; width: 100%; justify-content: flex-start; }
 }
+
+/* ——— Karar tablosu kova filtresi ——— */
+.karar-filtre { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.karar-filtre .chip-btn { height: 27px; padding: 0 11px; font-size: 11.5px; }
+
+/* ——— Gerekçe kartı ——— */
+.gerekce-kart .gerekce-olcut {
+  display: grid; grid-template-columns: auto 1fr; gap: 3px 14px;
+  margin: 10px 0 12px; padding: 10px 12px;
+  background: var(--line-soft); border-radius: var(--r-sm);
+}
+.gerekce-kart .gerekce-olcut dt {
+  font-size: 11px; font-weight: 600; color: var(--ink-2);
+  text-transform: uppercase; letter-spacing: .05em; align-self: center;
+}
+.gerekce-kart .gerekce-olcut dt.ipuclu {
+  cursor: help; text-decoration: underline dotted;
+  text-underline-offset: 3px; text-decoration-color: var(--ink-3);
+}
+.gerekce-kart .gerekce-olcut dd {
+  margin: 0; font-size: 13px; font-weight: 600; color: var(--ink);
+  font-variant-numeric: tabular-nums; text-align: right;
+}
+.gerekce-kart .gerekce-metin {
+  font-size: 12.5px; color: var(--ink); line-height: 1.55;
+}

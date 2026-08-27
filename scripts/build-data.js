@@ -113,6 +113,11 @@ try {
 // "Milli Takım Karşılaşmaları" bir fikstür organizasyonudur, buraya girmez.
 const MILLI_TAKIMLAR = new Set(MILLI_UYE.size ? [...new Set(MILLI_UYE.values())] : []);
 
+// Portföy kapsamı dışına alınan spor dalları. E-Spor TV+ yayın portföyünde
+// karşılığı olmadığı için kapsam dışıdır; satırlar kaynak dosyalarda durur,
+// yalnızca dashboard'a taşınmaz. Geri almak için listeden çıkarmak yeterli.
+const KAPSAM_DISI_SPOR = new Set(['E-Spor']);
+
 // CSV kolonu → DATA kısa adı
 const FACET = {
   organizasyon:'org', spor_dali:'spor', musabaka_tipi:'mus', lig_seviyesi:'sev',
@@ -142,6 +147,7 @@ for(const f of dosyalar){
 
   for(const r of rows){
     if(r.veri_var !== 'evet') continue;
+    if(KAPSAM_DISI_SPOR.has(r.spor_dali)) continue;
     const kw = (r.keyword||'').trim().toLowerCase();
     if(!kw) continue;
     const sv = parseInt(r.search_volume||'0',10) || 0;

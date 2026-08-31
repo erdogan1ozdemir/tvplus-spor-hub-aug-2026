@@ -32,7 +32,9 @@
     "rc celta de vigo": "celta vigo",
     "rc vigo": "celta vigo",
     "hull": "hull city",
-    "inter milan": "inter"
+    "inter milan": "inter",
+    "fenerbahçe basketball": "fenerbahçe beko",
+    "beşiktaş j.k.": "beşiktaş basketbol"
   },
   "_lig_notu": "2026-27 sezonu. Yukselenler: Erzurumspor, Amedspor, Corum FK (Super Lig); Hull City, Coventry, Ipswich (Premier Lig). Dusenler: Antalyaspor, Kayserispor, Fatih Karagumruk (TFF 1. Lig); West Ham, Burnley, Wolverhampton (Championship); Cremonese, Pisa, Hellas Verona (Serie B); Girona, Mallorca, Oviedo (Segunda). Takip edilmeyen alt ligler 'Diger Avrupa Ligleri' altinda toplanir.",
   "LIG_2627": {
@@ -196,5 +198,10 @@
     "beşiktaş",
     "galatasaray",
     "fenerbahçe"
-  ]
+  ],
+  "_cins_notu": "Keyword acikca kadin sporunu isaret ettigi halde cinsiyet faseti Erkek kalmis satirlar.",
+  "CINSIYET": {
+    "ufc kadın dövüşçüler": "Kadın",
+    "kadın ufc dövüşçüleri": "Kadın"
+  }
 }

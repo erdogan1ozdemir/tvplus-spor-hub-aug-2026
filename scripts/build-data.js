@@ -103,7 +103,7 @@ function kulupAnahtar(kw){
 // meşru çoklu yarışma ve Avrupa kupası ikincil üyeliği. Tek dosyadan okunur,
 // ham CSV'ler değişmez; kural değişirse yeniden çekim gerekmez.
 let ETIKET = {TAKIM_ESLE:{}, LIG_2627:{}, COKLU_MESRU:[], AVRUPA_2627:{},
-              OYUNCU_KULUP:{}, ORG_BIRLESTIR:{}, SPOR_AYIRMA_HARIC:[]};
+              OYUNCU_KULUP:{}, ORG_BIRLESTIR:{}, SPOR_AYIRMA_HARIC:[], CINSIYET:{}};
 try {
   ETIKET = Object.assign(ETIKET, JSON.parse(fs.readFileSync(
     path.join(__dirname, '..', 'data', 'denetim', 'etiket_duzelt.json'), 'utf8')));
@@ -227,6 +227,8 @@ for(const o of kwMap.values()){
   // Takım kümesi: takım satırında kendi adı, oyuncu satırında kulübü
   k.takim = k.ent==='Takım' ? kulupAnahtar(k.kw)
           : (k.ent==='Oyuncu' && k.kulup) ? k.kulup : null;
+  // Keyword açıkça kadın sporunu işaret ediyorsa cinsiyet ondan alınır
+  if(ETIKET.CINSIYET[k.kw]) k.cins = ETIKET.CINSIYET[k.kw];
   // Eleme turu ayrı organizasyon değil, aynı yarışmanın bir aşamasıdır
   if(ETIKET.ORG_BIRLESTIR[k.org]) k.org = ETIKET.ORG_BIRLESTIR[k.org];
   // Kupaya düşmüş kulüpsüz oyuncu satırı kendi kulübüne çekilir
@@ -303,6 +305,22 @@ for(const k of keywords){
   // Union Saint-Gilloise Şampiyonlar Ligi elemesinde oynayıp Avrupa Ligi lig
   // aşamasına düştü. Güncel üyelik avrupa alanındadır, org ondan alınır.
   if(k.avrupa && /^UEFA /.test(k.org || '') && k.org !== k.avrupa) k.org = k.avrupa;
+}
+
+// ——————————————————————————— Türk kulübü, Türk bağlantısı
+// Türk bağlantısı yarışmanın coğrafyasından türetiliyordu: Fenerbahçe Beko
+// EuroLeague'de oynadığı için "Avrupa / Yabancı / Türk bağlantısı yok"
+// çıkıyordu. Kulübün milliyeti yarışmadan değil, bir Türk liginde yer alıp
+// almadığından okunur.
+{
+  const TR_LIG = new Set(['Süper Lig','TFF 1. Lig','Basketbol Süper Ligi',
+    'Sultanlar Ligi','Efeler Ligi','Kadınlar Basketbol Süper Ligi','Türkiye Kupası']);
+  const trKulup = new Set();
+  for(const k of keywords) if(k.takim && TR_LIG.has(k.org)) trKulup.add(k.takim);
+  let n = 0;
+  for(const k of keywords)
+    if(k.takim && trKulup.has(k.takim) && k.turk === 'Yok'){ k.turk = 'Türk Takımı Var'; n++; }
+  if(n) console.log(`Etiket      : ${trKulup.size} Türk kulübünün ${n} satırında Türk bağlantısı düzeltildi`);
 }
 
 // ——————————————————————————— tek takım, tek organizasyon

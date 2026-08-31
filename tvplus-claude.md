@@ -810,3 +810,19 @@ Etkilenmeyenler (tasarım gereği): Keyword ve Master liste satır listeleridir,
 **Kupa çelişkisi kuralı.** Eleme birleştirmesi bir kulübü yanlış kupanın altına koyabiliyordu: Union Saint-Gilloise Şampiyonlar Ligi elemesinde oynayıp Avrupa Ligi lig aşamasına düştü. Güncel üyelik `avrupa` alanındadır, `org` ondan alınıyor. 16 satır düzeldi.
 
 **Etiket çakışma taraması (son durum):** oyuncu-kulüp organizasyon uyuşmazlığı 0 · Avrupa etiketi futbol dışı satırda 0 · kupa çelişkisi 0 · çoklu sporlu takım 1 (fenerbahçe opet, kasıtlı) · çoklu organizasyonlu takım 5 (hepsi gerçek çift üyelik).
+
+### Genel denetim: 17.880 keyword ve arayüz çaprazlaması
+**Keyword etiket denetimi (`scripts/keyword_denetim.js`).** Örnekleme yok: 17.880 satırın tamamı 10 kuraldan geçiyor, betik kapsamı sonda doğruluyor. Kurallar: spor dalı sözcüğü × faset, lig adı × organizasyon, takım adı × keyword, sayfa tipi sözcüğü × faset, izleme sorgusu × intent, cinsiyet sözcüğü × faset, Türk kulübü × Türk bağlantısı, boş zorunlu faset, oyuncu/maç satırı × sayfa tipi.
+
+İlk turda 84 satır işaretlendi; çoğu regex yanlış pozitifiydi (JS `\b` sınırı Türkçe harfleri sözcük karakteri saymıyor: "altunbaş" içinde `nba\b`, "donnarumma" içinde `mma\b` eşleşiyordu). Sınırlar Türkçe harfleri kapsayacak biçimde yeniden yazıldı, daha özel lig adı zaten atanmışsa bulgu sayılmaması eklendi.
+
+Gerçek bulgular ve düzeltmeleri:
+- **Türk bağlantısı (220 satır / 29,6M):** Fenerbahçe Beko, Beşiktaş Basketbol, Trabzonspor BK, Anadolu Efes gibi Türk kulüpleri "Avrupa / Yabancı / Türk bağlantısı yok" etiketliydi. Sebep: milliyet yarışmanın coğrafyasından türetilmiş, EuroLeague'de oynadıkları için yabancı sayılmışlar. Yeni kural: kulüp bir Türk liginde yer alıyorsa Türk bağlantısı ondan okunur. 79 kulüp.
+- **Cinsiyet (2 satır):** "ufc kadın dövüşçüler" ve "kadın ufc dövüşçüleri" Erkek etiketliydi.
+- **Ad varyantı (2 anahtar):** `fenerbahçe basketball` → `fenerbahçe beko`, `beşiktaş j.k.` → `beşiktaş basketbol`.
+
+Son durum: **1 satır** işaretli ("wimbledon kimdir", 130 hacim — AFC Wimbledon kulübü mü tenis turnuvası mı belirsiz, ihmal edilebilir).
+
+**Arayüz çaprazlama testi.** 14 senaryo × 10 sekme = 140 render. Senaryolar: tekli ve çoklu faset, takım katmanı bayrağı açık/kapalı, Rolling ve Takvim Yılı modu, kırılım yolu, çelişkili filtre (boş sonuç). Sonuç: boş sekme yok, konsol hatası yok, çelişkili senaryoda boş şerit doğru çıkıyor ve sekmeler yerinde kalıyor. Kırılım yolu ile filtre çipi senkron ("Tüm portföy › Süper Lig 188M" ↔ "Organizasyon: Süper Lig ×").
+
+Responsive: on sekme 375px ve 1440px'te temiz.

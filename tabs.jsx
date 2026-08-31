@@ -255,8 +255,10 @@ window.TABS = (function(){
                     h('span',null, fmtNum(g.r12), ' · ', g.peakLabel),
                     h('span',{className:'pill q'+(g.peakQ+1), style:{fontSize:10,padding:'1px 5px',marginLeft:6}},
                       qLabel(viewMode==='calendar'?g.peakQCal:g.peakQ, viewMode)))))),
-            h('td',{className:'num col-hide-sm'}, fmtFull(oncekiHacimFor(g, viewMode))),
-            h('td',{className:'num'}, h('strong',null, fmtFull(hacimFor(g, viewMode)))),
+            h('td',{className:'num col-hide-sm', title:fmtFull(oncekiHacimFor(g, viewMode))+' arama'},
+              fmtNum(oncekiHacimFor(g, viewMode))),
+            h('td',{className:'num', title:fmtFull(hacimFor(g, viewMode))+' arama'},
+              h('strong',null, fmtNum(hacimFor(g, viewMode)))),
             h('td',{className:'num'}, h(YoY,{v:yoyFor(g, viewMode), tip:yoyEtiketFor(viewMode)})),
             h('td',{className:'col-hide-sm', style:{width:110}},
               h(C.Sparkline,{values: viewMode==='calendar'?g.cal25:g.roll, w:100, h:28,
@@ -1153,11 +1155,12 @@ window.TABS = (function(){
                               color:(window.SPOR_RENK||{})[g.spor]||'var(--ink-2)'}}, g.spor)),
                         h('div',{className:'cat-cell'}, g.org||'')))),
                   h('td',{style:{fontSize:12,color:'var(--ink-2)'}}, g.org||'–'),
-                  h('td',{className:'num'}, fmtFull(g.takimVol),
+                  h('td',{className:'num', title:fmtFull(g.takimVol)+' arama'}, fmtNum(g.takimVol),
                     h('span',{className:'txt-3', style:{fontSize:10, marginLeft:5}}, g.takimKw+' kw')),
-                  h('td',{className:'num'}, fmtFull(g.oyuncuVol),
+                  h('td',{className:'num', title:fmtFull(g.oyuncuVol)+' arama'}, fmtNum(g.oyuncuVol),
                     h('span',{className:'txt-3', style:{fontSize:10, marginLeft:5}}, g.oyuncuKw+' kw')),
-                  h('td',{className:'num'}, h('strong',null, fmtFull(g.r12))),
+                  h('td',{className:'num', title:fmtFull(g.r12)+' arama'},
+                    h('strong',null, fmtNum(g.r12))),
                   h('td',{className:'num'}, '%'+(pay*100).toFixed(1).replace('.',',')),
                   h('td',{className:'num'}, h(YoY,{v:g.ryoy})),
                   h('td',{style:{width:110}}, h(C.Sparkline,{values:g.roll, w:100, h:26})),
@@ -1219,13 +1222,15 @@ window.TABS = (function(){
   // takımı eşiği geçen bir havuz (FA Cup alt ligleri, eleme turları) için
   // takım sayfası açılmıyor demektir; orada bütünlük de aranmaz.
   const LIG_TETIK = 3;
+  // Hub için organizasyonun kendi sayfasına ait asgari talep
+  const OMURGA_ESIK = 240000;
   function sezonDisi(roll){
     return [...(roll||[])].sort((a,b)=>a-b).slice(0,6).reduce((a,b)=>a+b,0);
   }
 
   // ══════════════════════════════════════════ KARAR AĞACI
   const KOVA_TANIM = {
-    'Hub': 'Çok sayfalı yapı. Organizasyonun hub sayfası altında puan durumu, fikstür, takım ve oyuncu sayfaları birlikte kurulur. Hem yüksek talep hem alt sayfa derinliği bulunan organizasyonlar için uygundur; iç bağlantı ağı lig, takım, oyuncu ve maç sayfaları arasında kapalı devre oluşturur. Futbol dikeyinde takım ve oyuncu katmanı organizasyonlar arasında paylaşımlıdır.',
+    'Hub': 'Çok sayfalı yapı. Organizasyonun hub sayfası altında puan durumu, fikstür, takım ve oyuncu sayfaları birlikte kurulur. Hem yüksek talep hem alt sayfa derinliği bulunan organizasyonlar için uygundur; iç bağlantı ağı lig, takım, oyuncu ve maç sayfaları arasında kapalı devre oluşturur. Futbol dikeyinde takım ve oyuncu katmanı organizasyonlar arasında paylaşımlıdır. Yayın hakkı bulunmayan organizasyonlar da bu kovada yer alabilir: lig sayfası, fikstür, puan durumu ve takım sayfaları hak gerektirmeyen bilgi katmanıdır. O durumda izleme katmanı yapının dışında kalır ve kurulan iç bağlantı ağı hak sahibi organizasyonlara köprü görevi görür.',
     'Landing': 'Tek güçlü sayfa. Talep anlamlı ancak alt sayfa derinliği sınırlı olduğunda tercih edilir. Sayfa izleme intent\'ine ("canlı izle", "nerede izlenir", "hangi kanalda") odaklanır; veri tabloları sayfa içinde modül olarak durur, ayrı URL açılmaz.',
     'Etkinlik Ölçekli · Sürekli Açık': 'Talep etkinlik penceresinde zirve yapar ancak sezon dışında da sürer. Sayfa yıl boyu açık tutulur: etkinlik döneminde fikstür, sonuç ve yayın modülleriyle derinleşir; dönem dışında kadro, geçmiş karşılaşmalar ve genel bilgi katmanına iner. Milli takımlar tipik örnektir, çünkü maç olmadığı dönemde de kadro, aday listesi ve gelecek maç sorguları aranmaya devam eder.',
     'Etkinlik Ölçekli': 'Aktif dönemde derinleşen, sezon dışında sadeleşen yapı. Talebin tek bir pencereye yığıldığı ve sezon dışı tabanın zayıf kaldığı organizasyonlar için uygundur. Etkinlik döneminde fikstür, sonuç ve yayın sayfaları açılır; dönem bitince yapı tek bir özet sayfaya iner.',
@@ -1238,15 +1243,30 @@ window.TABS = (function(){
     const sd = sezonDisi(o.roll);
     const surekli = sd >= SEZON_DISI_ESIK;
 
-    if(o.hak==='TV+ Yok')
+    // Yayın hakkı yokluğu tek başına sayfa açmayı engellemiyor: lig sayfası,
+    // fikstür, puan durumu ve takım sayfaları hak gerektirmeyen bilgi
+    // katmanıdır. Bu yüzden hak kontrolü derinlik kontrolünü atlamaz; derinlik
+    // ve omurga koşulları sağlanıyorsa hak dışı organizasyon da çok sayfalı
+    // yapıyı hak eder, yalnızca izleme katmanı dışarıda kalır.
+    const hubKosul = o.altPay>=0.12 && o.r12>=1200000 && o.omurga>=OMURGA_ESIK;
+    const hakDisi = o.hak==='TV+ Yok';
+    // Hak dışı organizasyon hub koşullarını karşılamıyorsa veri sayfası veya
+    // takip listesidir. Karşılıyorsa akışa devam eder: mevsimsellik ve
+    // derinlik kontrolleri hak sahibi organizasyonlarla aynı biçimde işler,
+    // yalnızca gerekçeye izleme katmanının dışarıda kaldığı notu eklenir.
+    if(hakDisi && !hubKosul)
       return o.r12>=6000000
-        ? {karar:'Veri Sayfası', gerekce:'Yayın hakkı bulunmuyor ancak talep çok yüksek. Puan durumu ve fikstür sayfaları hak gerektirmediğinden açılabilir; buradan yayın hakkı olan içeriğe köprü kurulur.'}
+        ? {karar:'Veri Sayfası', gerekce:'Yayın hakkı bulunmuyor ve alt sayfa derinliği çok sayfalı yapıyı karşılamıyor. Puan durumu ve fikstür sayfaları hak gerektirmediğinden açılabilir; buradan yayın hakkı olan içeriğe köprü kurulur.'}
         : {karar:'Şimdilik Değil', gerekce:'Yayın hakkı bulunmuyor ve talep büyüklüğü ayrı sayfa yatırımını gerektirecek seviyede değil.'};
 
     if(o.r12<240000)
       return {karar:'Şimdilik Değil', gerekce:'Talep hacmi ayrı sayfa seti için sınırlı kalmaktadır. Takip listesinde tutulabilir.'};
 
-    if(o.sezType==='Spike' && o.altPay<0.12){
+    // Mevsimsellik derinlikten önce gelir: talep tek pencereye yığılıyorsa
+    // yapı etkinlik ölçeklidir, alt sayfa derinliğinden bağımsız olarak.
+    // (Eski koşuldaki altPay<0.12 kısıtı, derinlik ölçütü takım katmanını da
+    // saymaya başlayınca hiç sağlanmaz oldu ve bu dalı kapatmıştı.)
+    if(o.sezType==='Spike'){
       if(surekli)
         return {karar:'Etkinlik Ölçekli · Sürekli Açık',
           gerekce:`Talep etkinlik penceresinde yığılıyor ancak sezon dışında da sürüyor: en sakin altı ayın toplamı ${fmtNum(sd)}. Sayfa yıl boyu açık tutulabilir; etkinlik döneminde fikstür, sonuç ve yayın modülleriyle derinleşir, dönem dışında kadro, geçmiş karşılaşmalar ve genel bilgi katmanına iner.`};
@@ -1255,11 +1275,12 @@ window.TABS = (function(){
           (o.km==='Milli Takım' ? ' Milli takım kalıcı bir varlık olduğundan sayfa tamamen kapatılmak yerine kadro, geçmiş karşılaşmalar ve gelecek maç takvimiyle ince bir katmanda açık tutulabilir.' : '')};
     }
 
-    if(o.altPay>=0.12 && o.r12>=1200000)
-      return {karar:'Hub',
+    if(hubKosul)
+      return {karar:'Hub', hakDisiHub:hakDisi,
         gerekce:'Hem yüksek talep hem alt sayfa derinliği mevcut. Puan durumu, fikstür, takım ve oyuncu katmanı birlikte kurulabilir. ' +
           'Takım katmanı açıldığında lig içindeki takımların tamamı kapsanır; fikstür ve puan durumu sayfaları her takıma bağlantı verdiğinden eksik bırakılan takım bu bağlantıların ucunu boş bırakır.' +
-          (o.spor==='Futbol' ? ' Takım ve oyuncu sayfaları futbol genelinde paylaşımlıdır; bir kez kurulduğunda bu organizasyonla birlikte diğer futbol organizasyonlarına da hizmet eder.' : '')};
+          (o.spor==='Futbol' ? ' Takım ve oyuncu sayfaları futbol genelinde paylaşımlıdır; bir kez kurulduğunda bu organizasyonla birlikte diğer futbol organizasyonlarına da hizmet eder.' : '') +
+          (hakDisi ? ' Yayın hakkı bulunmuyor; buna rağmen lig sayfası, fikstür, puan durumu ve takım sayfaları açılabilir, çünkü bunlar hak gerektirmeyen bilgi katmanıdır. Yapının dışında kalan tek katman izlemedir ("canlı izle", "hangi kanalda"). Kurulan iç bağlantı ağı, yayın hakkı bulunan organizasyonlara köprü görevi görür.' : '')};
 
     return {karar:'Landing',
       gerekce:'Talep anlamlı ancak alt sayfa derinliği sınırlı. Tek güçlü sayfa üzerinde izleme intent\'ine odaklanılabilir; veri tabloları sayfa içinde modül olarak durur.' +
@@ -1271,12 +1292,24 @@ window.TABS = (function(){
     // Karar tablosu kova filtresi: başlığın sağındaki rozetlerle daraltılır
     const [tabloKova, setTabloKova] = React.useState(null);
     const orgRows = React.useMemo(()=>groupBy(rows,'org').map(g=>{
-      const alt = topR12(g.rows.filter(k=>['Puan Durumu','Fikstür','Kadro','İstatistik'].includes(k.st)));
+      // Alt sayfa derinliği: hub altında ayrı URL hak eden her katman.
+      // Takım ve oyuncu katmanı da buraya dahildir; yalnızca veri sayfalarına
+      // bakmak takım ağırlıklı ligleri olduğundan sığ gösteriyordu (Süper Lig
+      // talebinin %80'i takım katmanındayken ölçüt %13 veriyordu).
+      const ALT_TIP = ['Puan Durumu','Fikstür','Kadro','İstatistik',
+                       'Takım Jenerik','Takım Bilgi','Oyuncu Jenerik','Oyuncu Bilgi'];
+      const alt = topR12(g.rows.filter(k=>ALT_TIP.includes(k.st)));
+      // Omurga: organizasyonun kendi sayfasına ait talep. Hub bir omurga ve
+      // ona bağlı dallardan oluşur; omurgası olmayan bir havuzda (eleme turu,
+      // "Diğer Avrupa Ligleri" gibi toplayıcılar) derinlik yüksek çıksa bile
+      // açılacak bir hub sayfası yoktur, takımlar kendi liglerine bağlanır.
+      const omurga = topR12(g.rows.filter(k=>
+        ['Lig Jenerik','Etkinlik Jenerik','Spor Dalı Jenerik'].includes(k.st)));
       const izl = topR12(g.rows.filter(k=>k.it==='İzleme'));
       const hak = (g.rows.find(k=>k.hak)||{}).hak || 'Doğrulanacak';
       const spor = (g.rows.find(k=>k.spor)||{}).spor || '';
       const km = (g.rows.find(k=>k.km)||{}).km || '';
-      const o = {...g, altPay: g.r12 ? alt/g.r12 : 0, izleme:izl, hak, spor, km};
+      const o = {...g, altPay: g.r12 ? alt/g.r12 : 0, omurga, izleme:izl, hak, spor, km};
       return {...o, ...kararVer(o)};
     }),[rows]);
     const tabloSatir = tabloKova ? orgRows.filter(o=>o.karar===tabloKova) : orgRows;
@@ -1458,8 +1491,10 @@ window.TABS = (function(){
                 h('td',null, h('span',{className:'pill', style:{
                   background:`color-mix(in srgb, ${RENK[o.karar]} 15%, transparent)`,
                   color:RENK[o.karar], fontWeight:600, whiteSpace:'nowrap'}}, o.karar)),
-                h('td',{className:'num'}, fmtFull(oncekiHacimFor(o, viewMode))),
-                h('td',{className:'num'}, fmtFull(hacimFor(o, viewMode))),
+                h('td',{className:'num', title:fmtFull(oncekiHacimFor(o, viewMode))+' arama'},
+                  fmtNum(oncekiHacimFor(o, viewMode))),
+                h('td',{className:'num', title:fmtFull(hacimFor(o, viewMode))+' arama'},
+                  fmtNum(hacimFor(o, viewMode))),
                 h('td',{className:'num'}, h(YoY,{v:yoyFor(o, viewMode), tip:yoyEtiketFor(viewMode)})),
                 h('td',{style:{width:110}}, h(C.Sparkline,{values:o.roll, w:100, h:26,
                   color:RENK[o.karar]})),
@@ -1559,7 +1594,8 @@ window.TABS = (function(){
             gk.map(function(o){
               // Alt sayfa payını oluşturan sayfa tipleri ve en büyük beş keyword
               const altRows = o.rows.filter(k=>
-                ['Puan Durumu','Fikstür','Kadro','İstatistik'].includes(k.st));
+                ['Puan Durumu','Fikstür','Kadro','İstatistik',
+                 'Takım Jenerik','Takım Bilgi','Oyuncu Jenerik','Oyuncu Bilgi'].includes(k.st));
               const tipDagilim = {};
               altRows.forEach(k=>{ tipDagilim[k.st]=(tipDagilim[k.st]||0)+(k.r12||0); });
               const tipMetin = Object.entries(tipDagilim).sort((a,b)=>b[1]-a[1])

@@ -3,12 +3,23 @@ window.U = (function(){
   const TR_MONTHS = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
   const TR_MONTHS_LONG = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
 
+  // Üç anlamlı basamak: 1.500 → 1,5K · 2.340.000 → 2,34M · 336.300.000 → 336M.
+  // Sabit ondalık yerine büyüklüğe göre basamak vermek küçük değerlerde
+  // bilgiyi koruyor, büyük değerlerde tabloyu gereksiz uzatmıyor.
+  function kisalt(n, birim, ek) {
+    const v = n / birim;
+    const a = Math.abs(v);
+    const basamak = a < 10 ? 2 : a < 100 ? 1 : 0;
+    let s = v.toFixed(basamak);
+    if (basamak) s = s.replace(/\.?0+$/, '');   // 1,50 → 1,5 · 2,00 → 2
+    return s.replace('.', ',') + ek;
+  }
   function fmtNum(n) {
     if (n == null || isNaN(n)) return '–';
     n = Math.round(n);
-    if (Math.abs(n) >= 1e9) return (n/1e9).toFixed(Math.abs(n)%1e9===0?0:2).replace('.',',') + 'B';
-    if (Math.abs(n) >= 1e6) return (n/1e6).toFixed(n%1e6===0?0:1).replace('.',',') + 'M';
-    if (Math.abs(n) >= 1e3) return (n/1e3).toFixed(n%1e3===0?0:1).replace('.',',') + 'K';
+    if (Math.abs(n) >= 1e9) return kisalt(n, 1e9, 'B');
+    if (Math.abs(n) >= 1e6) return kisalt(n, 1e6, 'M');
+    if (Math.abs(n) >= 1e3) return kisalt(n, 1e3, 'K');
     return n.toLocaleString('tr-TR');
   }
   function fmtFull(n) {

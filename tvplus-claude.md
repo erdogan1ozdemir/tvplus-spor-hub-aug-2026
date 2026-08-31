@@ -712,3 +712,11 @@ Kullanıcı geri bildirimi: görselleştirme, dinamizm ve YoY açısından eksik
 - Eşik (`TAKIM_KENDI_ESIK` 1M) sayfanın açılıp açılmayacağını değil gerekçesini ayırıyor. Tetikleyici koşul (`LIG_TETIK` 3): en az üç takımı kendi talebiyle eşiği geçen ligler kapsama girer. Bu olmadan FA Cup Alt Ligler 255 takım / 0'ı kendi talebiyle diye listeye giriyordu.
 - Kapsam dışı 9 lig / 617 takım ayrıca not olarak veriliyor.
 - Bulgu: Süper Lig (2,25B) Hub değil Veri Sayfası kovasında, çünkü yayın hakkı yok. Alt sayfa derinliği ölçütü de takım katmanını saymıyor; Süper Lig'in talebinin %80'i takım katmanında ama altPay %13,3 çıkıyor.
+
+### Alt sayfa derinliği takım katmanını da sayıyor, sayı biçimi kısaltıldı
+- **Derinlik ölçütü:** `altPay` artık Takım Jenerik, Takım Bilgi, Oyuncu Jenerik ve Oyuncu Bilgi'yi de sayıyor. Süper Lig %13,3 → **%63,2**. Hub kovası 6 → 15 organizasyon.
+- **Omurga koşulu:** Hub için organizasyonun kendi sayfasına ait asgari talep (Lig/Etkinlik/Spor Dalı Jenerik ≥ 240K) arandı. Bu olmadan eleme turları (Şampiyonlar Ligi Elemeleri, Konferans Ligi Elemeleri) %100 derinlikle Hub çıkıyordu; oysa kendi lig sorguları sıfır, açılacak hub sayfaları yok.
+- **Yayın hakkı artık derinlik kontrolünü atlamıyor.** Talep üzerine: Süper Lig'de hak olmasa da lig sayfası, fikstür, puan durumu ve takım sayfaları açılabilir; bunlar hak gerektirmeyen bilgi katmanı. Hak dışı organizasyon hub koşullarını karşılıyorsa Hub kovasına giriyor, gerekçesine izleme katmanının dışarıda kaldığı ve iç bağlantı ağının hak sahibi organizasyonlara köprü kurduğu notu ekleniyor. Süper Lig · Premier Lig · TFF 1. Lig artık Veri Sayfası değil Hub.
+- **Mevsimsellik dalı onarıldı:** `Spike` kontrolündeki `altPay<0.12` kısıtı, genişletilmiş derinlik ölçütüyle hiç sağlanmaz olmuş ve "Etkinlik Ölçekli · Sürekli Açık" kovasını boşaltmıştı. Kısıt kaldırıldı; mevsimsellik derinlikten önce geliyor.
+- **Sayı biçimi:** `fmtNum` üç anlamlı basamağa geçti (1.500 → 1,5K · 2.340.000 → 2,34M · 336.300.000 → 336M). Karar Ağacı, Gruplar, Yayın Hakkı Dışı ve Takım & Oyuncu tablolarındaki tam sayılar kısaltıldı; tam değer hücre tooltip'inde duruyor. Keyword tablosu değiştirilmedi.
+- Dokuz sekme 375px ve 1440px'te taşma/sıkışma denetiminden temiz geçti.

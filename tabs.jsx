@@ -819,9 +819,10 @@ window.TABS = (function(){
       h('div',{className:'grid grid-kpi kpi-4', style:{marginBottom:14}},
         h(C.Kpi,{label:'Filtrelenen KW', value:fmtNum(veri.length), accent:true,
           sub:`${D().meta.toplamKeyword.toLocaleString('tr-TR')} toplam içinden`}),
-        h(C.Kpi,{label:'Toplam Hacim', value:fmtNum(son),
+        h(C.Kpi,{label:'Aylık Ortalama', value:fmtNum(son/12),
           chip: yoy==null?null:fmtPct(yoy,1), chipClass: (yoy||0)>0?'pos':'neg',
-          sub: takvim ? (D().meta.yillar[1]+' toplam') : 'Son 12 Ay toplam'}),
+          sub: (takvim ? (D().meta.yillar[1]+' aylık ort.') : 'Son 12 Ay aylık ort.')
+               + ' · toplam '+fmtNum(son)}),
         h(C.Kpi,{label:'Yükselen', value:fmtNum(yuk), chip:'↑', chipClass:'pos', sub:'görünen içinde'}),
         h(C.Kpi,{label:'Düşen', value:fmtNum(dus), chip:'↓', chipClass:'neg', sub:'görünen içinde'})),
       h(KeywordTablosu,{rows:veri, setKeywordModal, viewMode, sayfaBoyu:50,
@@ -993,12 +994,15 @@ window.TABS = (function(){
   }
 
   // Satırları kırılım yoluna göre daraltır
-  function yoluUygula(rows, yol){
+  function yoluUygula(rows, yol, takimDahil){
     let r = rows;
     for(const adim of (yol||[])){
       if(adim.eksen==='takim' || adim.eksen==='milli'){
         const k = takimKumeleri(r, adim.eksen).find(g=>g.label===adim.deger);
         r = k ? k.rows : [];
+      } else if(takimDahil && adim.eksen==='org'){
+        // Organizasyon kırılımında o yarışmada oynayan kulüpler de kapsama girer
+        r = r.filter(k => k.org === adim.deger || k.avrupa === adim.deger);
       } else {
         r = r.filter(k => k[adim.eksen] === adim.deger);
       }
@@ -1283,11 +1287,21 @@ window.TABS = (function(){
         (surekli ? ` Sezon dışı taban güçlü (${fmtNum(sd)}), sayfa yıl boyu açık kalabilir.` : '')};
   }
 
-  function KararTab({rows, viewMode, onSelectGroup, setKeywordModal}){
+  function KararTab({rows, viewMode, onSelectGroup, setKeywordModal, takimDahil}){
     const [acikKova, setAcikKova] = React.useState(null);
     // Karar tablosu kova filtresi: başlığın sağındaki rozetlerle daraltılır
     const [tabloKova, setTabloKova] = React.useState(null);
-    const orgRows = React.useMemo(()=>groupBy(rows,'org').map(g=>{
+    // takimDahil açıkken bir yarışmada oynayan kulüplerin satırları o yarışmanın
+    // altında da sayılır. Kulüp kendi ülke liginde kalmaya devam eder; bu görünüm
+    // bilinçli olarak iki yerde birden sayar, çünkü soru "bu yarışma için sayfa
+    // açarsam ne kadar talep kapsanır" sorusudur.
+    const kararRows = React.useMemo(()=>{
+      if(!takimDahil) return rows;
+      const ek = rows.filter(k=>k.avrupa && k.avrupa !== k.org)
+                     .map(k=>({...k, org:k.avrupa}));
+      return ek.length ? rows.concat(ek) : rows;
+    },[rows, takimDahil]);
+    const orgRows = React.useMemo(()=>groupBy(kararRows,'org').map(g=>{
       // Alt sayfa derinliği: hub altında ayrı URL hak eden her katman.
       // Takım ve oyuncu katmanı da buraya dahildir; yalnızca veri sayfalarına
       // bakmak takım ağırlıklı ligleri olduğundan sığ gösteriyordu (Süper Lig
@@ -1307,7 +1321,7 @@ window.TABS = (function(){
       const km = (g.rows.find(k=>k.km)||{}).km || '';
       const o = {...g, altPay: g.r12 ? alt/g.r12 : 0, omurga, izleme:izl, hak, spor, km};
       return {...o, ...kararVer(o)};
-    }),[rows]);
+    }),[kararRows]);
     const tabloSatir = tabloKova ? orgRows.filter(o=>o.karar===tabloKova) : orgRows;
     const kovalar=['Hub','Landing','Etkinlik Ölçekli · Sürekli Açık','Etkinlik Ölçekli','Veri Sayfası','Şimdilik Değil'];
     const RENK={'Hub':'#2E7D32','Landing':'#4E79A7','Etkinlik Ölçekli · Sürekli Açık':'#59A14F',
@@ -1320,6 +1334,10 @@ window.TABS = (function(){
           'sorgularının organizasyon talebi içindeki payı) ve ', h('strong',null,'yayın hakkı durumu'),'.'),
         h('p',null,'Eşikler veriye göre kalibre edilmiştir ve marka tarafının stratejik ' +
           'önceliklerine göre güncellenebilir.')),
+      takimDahil && h('div',{className:'bos-serit'},
+        h('span',null,'Takım katmanı dahil: bir yarışmada oynayan kulüplerin kendi aramaları ',
+          'o yarışmanın altında da sayılıyor. Kulüp kendi ülke liginde kalmaya devam ediyor, ',
+          'bu yüzden bu görünümde toplamlar iki yerde birden görünür.')),
       h('div',{className:'grid grid-kpi kpi-6 kova-izgara'},
         kovalar.map(k=>{
           const sec = orgRows.filter(o=>o.karar===k);

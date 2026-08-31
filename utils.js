@@ -258,12 +258,18 @@ window.U = (function(){
   ];
 
   // Faset filtresi: {alan:[değerler]} — boş dizi = filtre yok
-  function applyFacets(rows, f, arama){
+  // takimDahil: bir organizasyon seçildiğinde o yarışmada oynayan kulüplerin
+  // kendi keyword'leri de kapsama girer. Kulüp satırları kendi ülke liginde
+  // durur (Real Madrid La Liga'da), ikincil üyelik alanı avrupa'da işaretlidir;
+  // bayrak açıkken org eşleşmesi bu alanı da kabul eder.
+  function applyFacets(rows, f, arama, takimDahil){
     let out = rows;
     for(const [alan, degerler] of Object.entries(f||{})){
       if(!degerler || !degerler.length) continue;
       const s = new Set(degerler);
-      out = out.filter(r => s.has(r[alan]));
+      out = (takimDahil && alan==='org')
+        ? out.filter(r => s.has(r.org) || s.has(r.avrupa))
+        : out.filter(r => s.has(r[alan]));
     }
     if(arama && arama.trim()){
       const q = arama.trim().toLowerCase();

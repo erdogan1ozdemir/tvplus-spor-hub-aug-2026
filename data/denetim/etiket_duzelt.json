@@ -152,5 +152,57 @@
     "fc thun": "UEFA Konferans Ligi",
     "pfc cska sofia": "UEFA Konferans Ligi",
     "mjällby aif": "UEFA Konferans Ligi"
-  }
+  },
+  "_oyuncu_notu": "Kupa organizasyonuna dusmus kulupsuz oyuncu satirlari. Cekim sirasinda oyuncu, kulubu yerine kulubunun katildigi kupaya baglanmisti (Talisca 2,4M 'Sampiyonlar Ligi Elemeleri'nde duruyordu). Kulup bilgisi guncel kaynaklardan dogrulandi (2026-08-31).",
+  "OYUNCU_KULUP": {
+    "talisca": {
+      "takim": "fenerbahçe",
+      "org": "Süper Lig"
+    },
+    "anderson talisca": {
+      "takim": "fenerbahçe",
+      "org": "Süper Lig"
+    },
+    "rafa silva": {
+      "takim": "benfica",
+      "org": "Portekiz Ligi"
+    },
+    "vangelis pavlidis": {
+      "takim": "benfica",
+      "org": "Portekiz Ligi"
+    },
+    "miha zajc": {
+      "takim": "gnk dinamo zagreb",
+      "org": "Diğer Avrupa Ligleri"
+    },
+    "danylo sikan": {
+      "takim": "rsc anderlecht",
+      "org": "Diğer Avrupa Ligleri"
+    },
+    "dor peretz": {
+      "takim": "maccabi tel aviv",
+      "org": "Diğer Avrupa Ligleri"
+    }
+  },
+  "_eleme_notu": "Eleme turlari ayri organizasyon degil, ayni yarismanin bir asamasidir. Ayri tutulunca hem karar cercevesinde omurgasiz havuz olarak gorunuyor hem de ayni takimin talebi ikiye bolunuyordu.",
+  "ORG_BIRLESTIR": {
+    "Şampiyonlar Ligi Elemeleri": "UEFA Şampiyonlar Ligi",
+    "Avrupa Ligi Elemeleri": "UEFA Avrupa Ligi",
+    "Konferans Ligi Elemeleri": "UEFA Konferans Ligi"
+  },
+  "_spor_haric_notu": "Ayni kulubun farkli branslari ayni adi tasiyorsa anahtar bolunmez; satirlar tek kumede kalir ve kulup her iki organizasyonda da sayilir. Bolme yalnizca gercekten farkli kulupler icin gecerlidir (tokat belediye plevne futbol kulubu ile voleybol kulubu gibi).",
+  "SPOR_AYIRMA_HARIC": [
+    "fenerbahçe opet",
+    "beşiktaş",
+    "galatasaray",
+    "fenerbahçe",
+    "olympiakos",
+    "panathinaikos",
+    "partizan",
+    "maccabi tel aviv",
+    "hapoel tel aviv",
+    "zalgiris",
+    "baskonia",
+    "bayern münih"
+  ]
 }

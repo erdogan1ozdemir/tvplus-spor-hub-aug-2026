@@ -759,3 +759,16 @@ Talep üzerine tüm takım ve organizasyon etiketleri güncel kaynaklardan doğr
 **Avrupa kupası ikincil üyeliği (yeni faset).** 2026-27 lig aşaması kadroları, kuralar 27-28 Ağustos 2026'da çekildi. 75 kulüp: Şampiyonlar Ligi 25 (1,60B) · Avrupa Ligi 26 (258,2M) · Konferans Ligi 24 (130,4M). Türk kulüpleri: Galatasaray ve Fenerbahçe UCL, Beşiktaş UEL, Trabzonspor UECL. Kulüp kendi liginde kalır, satır çoğaltılmaz; `milli` alanıyla aynı desen.
 
 **Sonuç:** 167 organizasyon, 930 takım kümesi, çok organizasyonlu takım 5 (hepsi meşru), çok sporlu organizasyon 2 (ikisi de "Diğer" kovası). Referans dashboard (`Sezonsallık/`, 8,1 MB) repodan çıkarıldı; kopyası skill'de duruyor.
+
+### Hatalı oyuncu eşleşmeleri, eleme birleştirmesi ve organizasyona takım ekleme
+**Talisca sınıfı düzeltildi.** Çekim sırasında bazı oyuncular kulüplerine değil kulüplerinin katıldığı kupaya bağlanmıştı: Talisca 2,4M "Şampiyonlar Ligi Elemeleri"nde kulüpsüz duruyordu. 7 oyuncunun kulübü güncel kaynaklardan doğrulanıp düzeltildi (Talisca ve Anderson Talisca → Fenerbahçe, Rafa Silva ve Vangelis Pavlidis → Benfica, Miha Zajc → Dinamo Zagreb, Danylo Sikan → Anderlecht, Dor Peretz → Maccabi Tel Aviv). Kalan 6 satır toplam 30K, dokunulmadı.
+
+**Eleme turları ana yarışmayla birleştirildi.** Şampiyonlar/Avrupa/Konferans Ligi Elemeleri ayrı organizasyon değil, aynı yarışmanın bir aşaması. UEFA Şampiyonlar Ligi 13 kw / 43,5M → 95 kw / 50,5M, 76 takım.
+
+**Aynı ad, iki branş.** Kulübün basketbol ve voleybol takımı aynı adı taşıyorsa anahtar bölünmüyor, kulüp her iki kümede de sayılıyor (`SPOR_AYIRMA_HARIC`). Bölme yalnızca gerçekten farklı kulüpler için kalıyor: tokat belediye plevne (futbol/voleybol), bologna (futbol/basketbol).
+
+**Toplam hacim → aylık ortalama.** Keyword sekmesindeki KPI 12 aylık toplam yerine aylık ortalama gösteriyor; toplam alt satırda duruyor.
+
+**Boş sonuç sekmeyi kaplamıyor.** Eskiden tüm ekran "Sonuç bulunamadı" olup kullanıcıyı tüm filtreleri temizlemeye itiyordu. Artık üstte ince bir şerit çıkıyor, sekme ve filtre çipleri yerinde kalıyor; hangi filtrenin daralttığı görülüp tek tek kaldırılabiliyor.
+
+**Yeni: "Organizasyona takımları ekle" düğmesi.** Bir yarışma seçiliyken o yarışmada oynayan kulüplerin kendi takım ve oyuncu aramaları da kapsama giriyor. Kulüp satırları kendi ülke liginde kalmaya devam ediyor (Real Madrid La Liga'da), ikincil `avrupa` alanı üzerinden eşleşiyor. Karar Ağacı'nda etki büyük: UEFA Şampiyonlar Ligi **50,5M → 1,66B** (Etkinlik Ölçekli → Hub), Avrupa Ligi 14,8M → 276M, Konferans Ligi 14,1M → 142M. Süper Lig değişmiyor, takımları zaten kendi ligindeydi. Görünüm bilinçli olarak iki yerde birden sayıyor; Karar Ağacı'nda bunu söyleyen bir şerit var.

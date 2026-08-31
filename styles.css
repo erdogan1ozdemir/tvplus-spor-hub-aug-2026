@@ -2353,3 +2353,13 @@ button.action-card:hover { border-color: currentColor; transform: translateY(-1p
 
 /* Araç çubuğu: arama alanı bir taban genişliğin altına inmez */
 .toolbar .input-search { flex: 1 1 200px; min-width: 160px; }
+
+/* Boş sonuç şeridi: sekmeyi kaplamaz, hangi filtrenin daralttığını görmek için
+   tablolar yerinde kalır. */
+.bos-serit{
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+  padding:10px 14px; margin-bottom:14px;
+  background:var(--gold-wash, #FFF6E5); border:1px solid var(--line);
+  border-radius:10px; font-size:12.5px; color:var(--ink-2);
+}
+.bos-serit .chip-btn{ margin-left:auto; }

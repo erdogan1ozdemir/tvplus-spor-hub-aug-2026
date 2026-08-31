@@ -39,6 +39,13 @@
     const [filtre, setFiltre] = React.useState(()=>{
       try{ return JSON.parse(localStorage.getItem(K('filtre')))||{}; }catch{ return {}; }});
     const [arama, setArama] = React.useState('');
+    // Organizasyona takım katmanını dahil etme bayrağı. Bir yarışma seçiliyken
+    // o yarışmada oynayan kulüplerin kendi keyword'lerini de kapsama alır:
+    // Real Madrid satırları La Liga'da durur ama Şampiyonlar Ligi'nin gerçek
+    // talep büyüklüğü ancak bu katman eklenince görünür.
+    const [takimDahil, setTakimDahil] = React.useState(
+      ()=>localStorage.getItem(K('takimDahil'))==='1');
+    React.useEffect(()=>{ localStorage.setItem(K('takimDahil'), takimDahil?'1':'0'); },[takimDahil]);
     const [peakAy, setPeakAy] = React.useState([]);
     const [peakCeyrek, setPeakCeyrek] = React.useState([]);
     const [mevsim, setMevsim] = React.useState([]);
@@ -112,18 +119,18 @@
     // Yolun kendi belirlediği eksende liste bir üst kapsamdan alınır, yoksa
     // seçili değerden başka seçenek kalmaz ve seçici kullanılamaz hale gelir.
     const secenekler = React.useMemo(()=>{
-      const kapsam = T.yoluUygula(D.keywords, yol);
+      const kapsam = T.yoluUygula(D.keywords, yol, takimDahil);
       const out={};
       for(const [alan] of [...BIRINCIL, ...EK]){
         const yolIdx = yol.findIndex(a=>a.eksen===alan);
-        const taban = yolIdx>=0 ? T.yoluUygula(D.keywords, yol.slice(0,yolIdx)) : kapsam;
+        const taban = yolIdx>=0 ? T.yoluUygula(D.keywords, yol.slice(0,yolIdx), takimDahil) : kapsam;
         const diger={...filtre}; delete diger[alan];
-        const alt=applyFacets(taban, diger, null);
+        const alt=applyFacets(taban, diger, null, takimDahil);
         out[alan]=[...new Set(alt.map(k=>k[alan]).filter(Boolean))]
           .sort((a,b)=>String(a).localeCompare(String(b),'tr'));
       }
       return out;
-    },[filtre, yol]);
+    },[filtre, yol, takimDahil]);
 
     // Bir eksen kırılım yolundan geliyorsa seçim değişince yol o adımdan
     // kırpılır; böylece iz şeridi ile seçiciler hiçbir zaman ayrışmaz.
@@ -137,7 +144,7 @@
     };
 
     const rows = React.useMemo(()=>{
-      let r = applyFacets(D.keywords, filtre, arama);
+      let r = applyFacets(D.keywords, filtre, arama, takimDahil);
       if(peakAy.length){
         const s=new Set(peakAy);
         r = r.filter(k=>{ const seri=U.rollingOf(k);
@@ -157,11 +164,11 @@
       if(bucket.length){ const s=new Set(bucket); r=r.filter(k=>s.has(k.bucket)); }
       if(trend) r = r.filter(k=>k.trend===trend);
       return r;
-    },[filtre, arama, peakAy, peakCeyrek, mevsim, bucket, trend]);
+    },[filtre, arama, peakAy, peakCeyrek, mevsim, bucket, trend, takimDahil]);
 
     // Kırılım kapsamı ve aktif eksen burada hesaplanır; hem görünüm satırındaki
     // iz şeridi hem Özet aynı değerleri kullanır.
-    const kapsamRows = React.useMemo(()=>T.yoluUygula(rows, yol), [rows, yol]);
+    const kapsamRows = React.useMemo(()=>T.yoluUygula(rows, yol, takimDahil), [rows, yol, takimDahil]);
     const aktifEksen = React.useMemo(()=>T.aktifEksen(kapsamRows, yol), [kapsamRows, yol]);
     const kapsamR12  = React.useMemo(
       ()=>kapsamRows.reduce((a,k)=>a+(k.r12||0),0), [kapsamRows]);
@@ -214,7 +221,7 @@
     // Kırılım yolu tüm sekmelerin kapsamıdır: Özet'te "Dövüş Sporları ›
     // Taekwondo" seçiliyse Keyword ve Takım & Oyuncu da o kapsamı gösterir.
     // İz şeridinden bir adım geri alınarak her yerde birlikte kaldırılır.
-    const ortak = { rows: kapsamRows, tumRows: rows, viewMode, setKeywordModal,
+    const ortak = { rows: kapsamRows, tumRows: rows, viewMode, setKeywordModal, takimDahil,
       onSelectGroup, onNavigateKw, gitSekme, secili, setSecili, seviye, setSeviye,
       entFiltre, setEntFiltre, peakGizli, setPeakGizli, yol, setYol };
 
@@ -261,6 +268,16 @@
             'Filtrele',
             aktifCipler.length>0 && h('span',{className:'btn-sayac'}, aktifCipler.length),
             h('span',{className:'filtre-ok'}, ekAcik?'▴':'▾')),
+
+          // Organizasyon seçiliyken o yarışmadaki kulüpleri de kapsama al
+          h('button',{className:'chip-btn'+(takimDahil?' birincil':''),
+            onClick:()=>setTakimDahil(o=>!o),
+            'aria-pressed': takimDahil ? 'true' : 'false',
+            'data-tip': takimDahil
+              ? 'Kapsam, seçili organizasyonda oynayan kulüplerin kendi aramalarını da içeriyor. Kapatmak için tıklayın.'
+              : 'Organizasyon seçiliyken o yarışmada oynayan kulüplerin takım ve oyuncu aramaları da kapsama eklenir. Kulüp satırları kendi ülke liginde kalır; hacim iki kez sayılmaz.'},
+            h('span',{className:'btn-ikon'}, h(C.Ikon,{ad:'karar', size:13})),
+            'Organizasyona takımları ekle'),
 
           // Seçili filtreler rozet olarak çubukta kalır, tek tek kaldırılabilir
           aktifCipler.length>0 && h('div',{className:'filtre-cipler'},
@@ -340,10 +357,13 @@
             '"'+arama+'"', h('span',{className:'x'},'×')))),
 
       h('div',{className:'content'},
-        rows.length===0
-          ? h(C.EmptyState,{icon:'', title:'Sonuç bulunamadı',
-              desc:'Seçili filtrelerle eşleşen keyword yok.', cta:'Filtreleri temizle', onCta:temizle})
-          : h(S.Comp, ortak)),
+        // Boş sonuç sekmeyi kaplamaz: tablolar kendi boş durumlarını gösterir,
+        // üstte yalnızca ince bir şerit çıkar. Böylece kullanıcı hangi filtreyi
+        // kaldıracağını seçebilir, hepsini temizlemek zorunda kalmaz.
+        rows.length===0 && h('div',{className:'bos-serit'},
+          h('span',null,'Seçili filtrelerle eşleşen keyword yok.'),
+          h('button',{className:'chip-btn', onClick:temizle},'Filtreleri temizle')),
+        h(S.Comp, ortak)),
 
       h('button',{className:'footer-logo-left', title:'Özet\'e dön',
         onClick:()=>{setTab('ozet'); window.scrollTo({top:0,behavior:'smooth'});}},

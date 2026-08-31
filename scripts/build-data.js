@@ -102,12 +102,14 @@ function kulupAnahtar(kw){
 // Etiket düzeltmeleri: takım anahtarı birleştirme, 2026-27 lig üyelikleri,
 // meşru çoklu yarışma ve Avrupa kupası ikincil üyeliği. Tek dosyadan okunur,
 // ham CSV'ler değişmez; kural değişirse yeniden çekim gerekmez.
-let ETIKET = {TAKIM_ESLE:{}, LIG_2627:{}, COKLU_MESRU:[], AVRUPA_2627:{}};
+let ETIKET = {TAKIM_ESLE:{}, LIG_2627:{}, COKLU_MESRU:[], AVRUPA_2627:{},
+              OYUNCU_KULUP:{}, ORG_BIRLESTIR:{}, SPOR_AYIRMA_HARIC:[]};
 try {
   ETIKET = Object.assign(ETIKET, JSON.parse(fs.readFileSync(
     path.join(__dirname, '..', 'data', 'denetim', 'etiket_duzelt.json'), 'utf8')));
 } catch(e) { console.warn('etiket_duzelt.json okunamadı, düzeltmeler uygulanmıyor'); }
 const COKLU_MESRU = new Set(ETIKET.COKLU_MESRU);
+const SPOR_HARIC  = new Set(ETIKET.SPOR_AYIRMA_HARIC);
 
 // Milli takım üyeliği. Bir oyuncu hem kulübünün hem milli takımının
 // kümesinde sayılabilmeli; kulüp kümesini bozmamak için ayrı alan tutulur.
@@ -225,6 +227,13 @@ for(const o of kwMap.values()){
   // Takım kümesi: takım satırında kendi adı, oyuncu satırında kulübü
   k.takim = k.ent==='Takım' ? kulupAnahtar(k.kw)
           : (k.ent==='Oyuncu' && k.kulup) ? k.kulup : null;
+  // Eleme turu ayrı organizasyon değil, aynı yarışmanın bir aşamasıdır
+  if(ETIKET.ORG_BIRLESTIR[k.org]) k.org = ETIKET.ORG_BIRLESTIR[k.org];
+  // Kupaya düşmüş kulüpsüz oyuncu satırı kendi kulübüne çekilir
+  {
+    const d = ETIKET.OYUNCU_KULUP[String(k.anaAd || k.kw).trim().toLowerCase()];
+    if(d && k.ent==='Oyuncu'){ k.takim = d.takim; k.org = d.org; }
+  }
   // Aynı kulübün farklı yazımları tek anahtarda toplanır (as roma → roma)
   if(k.takim && ETIKET.TAKIM_ESLE[k.takim]) k.takim = ETIKET.TAKIM_ESLE[k.takim];
   // Avrupa kupası ikincil üyeliği: kulüp kendi liginde kalır, satır çoğaltılmaz
@@ -273,7 +282,7 @@ keywords.sort((a,b)=>(b.r12||0)-(a.r12||0));
   const baskinSpor = {};
   for(const [takim, sp] of Object.entries(spor)){
     const ad = Object.keys(sp);
-    if(ad.length < 2) continue;
+    if(ad.length < 2 || SPOR_HARIC.has(takim)) continue;
     baskinSpor[takim] = ad.sort((x,y)=>sp[y]-sp[x])[0];
   }
   let ayrilan = 0;

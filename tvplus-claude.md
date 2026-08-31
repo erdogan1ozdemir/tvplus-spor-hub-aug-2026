@@ -738,3 +738,24 @@ Talep üzerine tüm repo tarandı. Bulunanlar ve yapılanlar:
 - Wikipedia kaynaklı 14 İngilizce takım anahtarı (4,6M) Türkçe adlarına eşlenmemiş: `vakıfbank s.k. (women's volleyball)`, `beşiktaş j.k. (basketball)`, `fenerbahçe basketball` gibi.
 - Küçük çapraz sızıntı: 43 takım birden çok organizasyonda (fenerbahçe Ligue 1'de 50,7K, trabzonspor Premier Lig'de 105,1K).
 - Portföyün yarısı (8.610 satır) 1.000 altında hacim taşıyor; 172 satır sıfır.
+
+### Etiket denetimi: güncel lig üyelikleri, ad çakışmaları, Avrupa kupası katmanı
+Talep üzerine tüm takım ve organizasyon etiketleri güncel kaynaklardan doğrulanarak elden geçirildi. Düzeltmeler `data/denetim/etiket_duzelt.json` üzerinden build sırasında uygulanıyor; ham CSV'ler değişmiyor.
+
+**Erzurumspor düzeltmesi geri alındı.** Araştırma, takımın düşmediğini **yükseldiğini** gösterdi: 2025-26 TFF 1. Lig şampiyonu olarak Süper Lig'e çıkmış. Önceki oturumda TFF 1. Lig'e taşımıştım, Süper Lig'e geri alındı.
+
+**2026-27 lig üyelikleri (araştırmayla doğrulandı):**
+- Süper Lig'e yükselen: Erzurumspor, Amedspor, Çorum FK
+- TFF 1. Lig'e düşen: Antalyaspor, Kayserispor, Fatih Karagümrük
+- Premier Lig'e yükselen: Hull City, Coventry, Ipswich · düşen: West Ham, Burnley, Wolverhampton
+- Serie B'ye düşen: Cremonese, Pisa, Hellas Verona · Segunda'ya düşen: Girona, Mallorca, Oviedo
+
+**Ad çakışması ayrımı (yeni kural).** Bir takım anahtarı birden çok spor dalına yayılıyorsa tek kulüp değil, adı çakışan iki kulüptür. 11 anahtar ayrıldı (235 satır): `fenerbahçe opet` hem kadın voleybol hem kadın basketbol satırlarını topluyordu, `olympiakos` / `panathinaikos` / `partizan` / `maccabi` / `zalgiris` / `baskonia` / `hapoel` futbol ve basketbol kulüplerini, `tokat belediye plevne` futbol ve voleybol kulübünü.
+
+**Anahtar birleştirme.** Aynı kulübün farklı yazımları tek anahtarda toplandı (31 eşleme): `as roma`→`roma`, `ssc napoli`→`napoli`, `rc celta de vigo`→`celta vigo`, `hull`→`hull city`. Hull City kümesi 3 parçadan tek kümeye indi: 21,9M.
+
+**Tek takım tek organizasyon.** 14 takım baskın organizasyonuna çekildi (65 satır). Kalan 5 çoklu takım gerçek çift üyelik (EuroLeague + Basketbol Süper Ligi).
+
+**Avrupa kupası ikincil üyeliği (yeni faset).** 2026-27 lig aşaması kadroları, kuralar 27-28 Ağustos 2026'da çekildi. 75 kulüp: Şampiyonlar Ligi 25 (1,60B) · Avrupa Ligi 26 (258,2M) · Konferans Ligi 24 (130,4M). Türk kulüpleri: Galatasaray ve Fenerbahçe UCL, Beşiktaş UEL, Trabzonspor UECL. Kulüp kendi liginde kalır, satır çoğaltılmaz; `milli` alanıyla aynı desen.
+
+**Sonuç:** 167 organizasyon, 930 takım kümesi, çok organizasyonlu takım 5 (hepsi meşru), çok sporlu organizasyon 2 (ikisi de "Diğer" kovası). Referans dashboard (`Sezonsallık/`, 8,1 MB) repodan çıkarıldı; kopyası skill'de duruyor.

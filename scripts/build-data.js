@@ -99,6 +99,16 @@ function kulupAnahtar(kw){
   return t.trim();
 }
 
+// Etiket düzeltmeleri: takım anahtarı birleştirme, 2026-27 lig üyelikleri,
+// meşru çoklu yarışma ve Avrupa kupası ikincil üyeliği. Tek dosyadan okunur,
+// ham CSV'ler değişmez; kural değişirse yeniden çekim gerekmez.
+let ETIKET = {TAKIM_ESLE:{}, LIG_2627:{}, COKLU_MESRU:[], AVRUPA_2627:{}};
+try {
+  ETIKET = Object.assign(ETIKET, JSON.parse(fs.readFileSync(
+    path.join(__dirname, '..', 'data', 'denetim', 'etiket_duzelt.json'), 'utf8')));
+} catch(e) { console.warn('etiket_duzelt.json okunamadı, düzeltmeler uygulanmıyor'); }
+const COKLU_MESRU = new Set(ETIKET.COKLU_MESRU);
+
 // Milli takım üyeliği. Bir oyuncu hem kulübünün hem milli takımının
 // kümesinde sayılabilmeli; kulüp kümesini bozmamak için ayrı alan tutulur.
 // Satır çoğaltılmaz, hacim iki kez sayılmaz.
@@ -215,6 +225,10 @@ for(const o of kwMap.values()){
   // Takım kümesi: takım satırında kendi adı, oyuncu satırında kulübü
   k.takim = k.ent==='Takım' ? kulupAnahtar(k.kw)
           : (k.ent==='Oyuncu' && k.kulup) ? k.kulup : null;
+  // Aynı kulübün farklı yazımları tek anahtarda toplanır (as roma → roma)
+  if(k.takim && ETIKET.TAKIM_ESLE[k.takim]) k.takim = ETIKET.TAKIM_ESLE[k.takim];
+  // Avrupa kupası ikincil üyeliği: kulüp kendi liginde kalır, satır çoğaltılmaz
+  if(k.takim && ETIKET.AVRUPA_2627[k.takim]) k.avrupa = ETIKET.AVRUPA_2627[k.takim];
   if(!k.takim) delete k.takim;
 
   // Milli takım üyeliği. Oyuncu satırında oyuncunun adından çözülür; takım ve
@@ -243,6 +257,69 @@ for(const o of kwMap.values()){
 }
 keywords.sort((a,b)=>(b.r12||0)-(a.r12||0));
 
+// ——————————————————————————— aynı ada sahip farklı kulüpler ayrılır
+// Bir takım anahtarı birden çok spor dalına yayılıyorsa bu tek kulüp değil,
+// adı çakışan iki kulüptür: "fenerbahçe opet" hem kadın voleybol hem kadın
+// basketbol satırlarını topluyordu, "tokat belediye plevne" hem futbol hem
+// voleybol kulübünü. Baskın spor anahtarı korur, diğerleri spor adıyla
+// ayrılır; böylece kümeler ve lig üyelikleri karışmaz.
+{
+  const spor = {};
+  for(const k of keywords){
+    if(!k.takim || !k.spor) continue;
+    (spor[k.takim] = spor[k.takim] || {})[k.spor] =
+      (spor[k.takim][k.spor] || 0) + (k.r12 || 0);
+  }
+  const baskinSpor = {};
+  for(const [takim, sp] of Object.entries(spor)){
+    const ad = Object.keys(sp);
+    if(ad.length < 2) continue;
+    baskinSpor[takim] = ad.sort((x,y)=>sp[y]-sp[x])[0];
+  }
+  let ayrilan = 0;
+  for(const k of keywords)
+    if(k.takim && baskinSpor[k.takim] && k.spor !== baskinSpor[k.takim]){
+      k.takim = `${k.takim} (${k.spor})`; ayrilan++;
+    }
+  if(ayrilan) console.log(`Etiket      : ${Object.keys(baskinSpor).length} takım adı spor dalına göre ayrıldı (${ayrilan} satır)`);
+}
+
+// 2026-27 lig üyeliği: yükselen/düşen takımlar güncel ligine çekilir.
+// Spor ayrımından sonra uygulanır ki ada çakışan diğer kulüp etkilenmesin.
+for(const k of keywords){
+  if(k.takim && ETIKET.LIG_2627[k.takim]) k.org = ETIKET.LIG_2627[k.takim];
+  if(k.takim && ETIKET.AVRUPA_2627[k.takim]) k.avrupa = ETIKET.AVRUPA_2627[k.takim];
+  else if(k.avrupa && !ETIKET.AVRUPA_2627[k.takim]) delete k.avrupa;
+}
+
+// ——————————————————————————— tek takım, tek organizasyon
+// Bir takım anahtarı birden çok organizasyonda görünüyorsa bu genellikle
+// etiketleme sızıntısıdır (fenerbahçe'nin birkaç satırının Ligue 1'de
+// kalması gibi). Baskın organizasyon o takımın tüm satırlarına yazılır.
+// İstisna COKLU_MESRU: basketbolda EuroLeague + ülke ligi gerçek bir çift
+// üyeliktir, oradaki takımlara dokunulmaz.
+{
+  const dagilim = {};
+  for(const k of keywords){
+    if(!k.takim || !k.org) continue;
+    (dagilim[k.takim] = dagilim[k.takim] || {})[k.org] =
+      (dagilim[k.takim][k.org] || 0) + (k.r12 || 0);
+  }
+  const baskin = {};
+  let tasinan = 0, etkilenen = 0;
+  for(const [takim, orgs] of Object.entries(dagilim)){
+    const ad = Object.keys(orgs);
+    if(ad.length < 2 || COKLU_MESRU.has(takim)) continue;
+    baskin[takim] = ad.sort((x,y)=>orgs[y]-orgs[x])[0];
+    etkilenen++;
+  }
+  for(const k of keywords)
+    if(k.takim && baskin[k.takim] && k.org !== baskin[k.takim]){
+      k.org = baskin[k.takim]; tasinan++;
+    }
+  console.log(`Etiket      : ${etkilenen} takım tek organizasyona çekildi (${tasinan} satır)`);
+}
+
 // ——————————————————————————————————————————— faset envanteri
 const facetDegerleri = {};
 for(const kisa of Object.values(FACET)){
@@ -253,6 +330,8 @@ for(const kisa of Object.values(FACET)){
 facetDegerleri.sinif  = [...new Set(keywords.map(k=>k.sinif))].sort();
 // Takım kümesi çok değerli bir eksen; filtre için tamamı taşınır
 facetDegerleri.milli = [...new Set(keywords.map(k=>k.milli).filter(Boolean))]
+  .sort((a,b)=>String(a).localeCompare(String(b),'tr'));
+facetDegerleri.avrupa = [...new Set(keywords.map(k=>k.avrupa).filter(Boolean))]
   .sort((a,b)=>String(a).localeCompare(String(b),'tr'));
 facetDegerleri.takim = [...new Set(keywords.map(k=>k.takim).filter(Boolean))]
   .sort((a,b)=>String(a).localeCompare(String(b),'tr'));
@@ -292,7 +371,7 @@ const DATA = {
 // ——————————————————————————————————————————— dize sözlüğü
 // Faset değerleri satır başına tekrar ettiği için dosya gereksiz büyüyor.
 // Değerler sözlüğe alınıp indeksle saklanır, tarayıcıda yüklenirken geri açılır.
-const SOZLUK_ALAN = Object.values(FACET).concat(['sinif','bucket','trend','kaynak','catalog','takim']);
+const SOZLUK_ALAN = Object.values(FACET).concat(['sinif','bucket','trend','kaynak','catalog','takim','milli','avrupa']);
 const sozluk = {};
 for(const alan of SOZLUK_ALAN){
   const set = new Set();

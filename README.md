@@ -10,7 +10,9 @@ eksenlerinde haritalanması; "hangi varlık kaç sayfa hak ediyor" sorusuna kara
 - Son 12 Ay **3,64B** arama · YoY %+5,5
 - **26 faset kolonu** — her satır spor dalı, organizasyon, müsabaka tipi, lig seviyesi,
   cinsiyet, coğrafya, yayın hakkı, sayfa tipi, intent, varlık tipi, marka tipi gibi
-  öznitelikleri taşır. Sabit hiyerarşi yoktur; herhangi bir faset kombinasyonuyla
+  öznitelikleri taşır. Takım kümesi, milli takım ve Avrupa kupası üyeliği ikincil
+  alanlardır: bir kulüp kendi liginde kalırken ayrıca Şampiyonlar Ligi kümesinde de
+  sayılabilir, satır çoğaltılmaz. Sabit hiyerarşi yoktur; herhangi bir faset kombinasyonuyla
   yeniden clusterlanabilir.
 - **10 sekme**: Özet · Gruplar · Takım & Oyuncu · Keyword · Kırılım · Karar Ağacı ·
   Sayfa Tipi & Intent · Trendler · Yayın Hakkı Dışı · Master Liste
@@ -110,7 +112,5 @@ Vercel'e statik, Railway'e Node olarak deploy edilebilir.
 
 ## Notlar
 
-- `Sezonsallık/` klasörü desenin kaynağı olan VitrA dashboard'unu referans olarak taşır;
-  bu uygulamanın çalışması için gerekli değildir.
 - `data/raw/_tm_cache/` ve `_wiki_kadro_cache/` kadro çıkarımının scrape önbelleğidir,
   git'te izlenmez.

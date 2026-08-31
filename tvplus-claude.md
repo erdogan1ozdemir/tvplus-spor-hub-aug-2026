@@ -691,3 +691,4 @@ Kullanıcı geri bildirimi: görselleştirme, dinamizm ve YoY açısından eksik
 - Bu iki sekmede matris satırına tıklamak sekme değiştiriyordu; artık aynı sekmede yol uzuyor ve matris bir alt eksene geçiyor.
 - Ortak `inisKur()` yardımcısı eklendi. Eksen sabit yazılmıyor, matrisin o anki kırılım ekseninden geliyor; sabit eksen yazıldığında kapsam sıfıra düşüyordu (Futbol sayfa tipi sanılıyordu).
 - Doğrulandı: Futbol → 74 organizasyon → Süper Lig → 24 takım; iz şeridi hacimleri doğru, sekme değişmiyor.
+- Yorumun ikinci maddesi ("Grup detay için de aynısı geçerli") için üç nokta daha bağlandı: Sayfa tipi karne kartları, Hak Dışı organizasyon tablosu ve her iki sekmenin matrisi. `inAlt` sekme gövdesine taşındı, dördü aynı işleyiciyi paylaşıyor.

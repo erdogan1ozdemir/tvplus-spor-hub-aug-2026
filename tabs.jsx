@@ -85,9 +85,22 @@ window.TABS = (function(){
   // ══════════════════════════════════════════ SEZONSALLIK MATRİSİ
   // Özdilek'teki "Kat 1 Sezon Takvimi" karşılığı: seviye seçimi, sıralama,
   // hücre içi YoY rozeti, kopyala + CSV.
+  // Matris satirina tiklandiginda ayni sekmede bir alt kirilima inen ortak
+  // davranis. Ozet ve Gruplar sekmelerinde zaten vardi; Sayfa Tipi ve Yayin
+  // Hakki Disi sekmeleri sekme degistiriyordu, bu tutarsizligi kapatir.
+  function inisKur(yol, setYol, setSecili){
+    if(!yol || !setYol) return null;
+    // Eksen matristen gelir: matrisin o anki kırılım ekseni neyse yol ona uzar
+    return function(eksen, deger){
+      if(!eksen || !deger) return;
+      setYol(yol.concat({eksen, deger}));
+      if(setSecili) setSecili(null);
+    };
+  }
+
   function SezonTakvimi({rows, viewMode, onSelectGroup, baslik, aciklama,
                           seviye:dSeviye, setSeviye:dSet, entFiltre:dEnt, setEntFiltre:dEntSet,
-                          gruplarDis, eksenDis, onGrupDetay}){
+                          gruplarDis, eksenDis, onGrupDetay, inisModu}){
     const [iSeviye, iSet] = React.useState('spor');
     const [iEnt, iEntSet] = React.useState('');
     const seviye = dSeviye || iSeviye;
@@ -96,6 +109,17 @@ window.TABS = (function(){
     const setEntFiltre = dEntSet || iEntSet;
     const rowsF = entFiltre ? rows.filter(r=>r.ent===entFiltre) : rows;
     const [sirala, setSirala] = React.useState('hacim');
+    // İniş modunda bir satıra tıklamak yolu uzatır ve matrisi bir alt eksene
+    // taşır: spor dalında Futbol seçilince organizasyonlar gelir. Eksen
+    // dışarıdan yönetiliyorsa (Özet) ilerletmeyi orası yapar.
+    const grupTikla = function(eks, deg){
+      if(!onSelectGroup) return;
+      onSelectGroup(eks, deg);
+      if(inisModu && !dSet){
+        const i = ZINCIR.indexOf(eks);
+        if(i >= 0 && i + 1 < ZINCIR.length) iSet(ZINCIR[i + 1]);
+      }
+    };
     const gruplar = React.useMemo(()=>{
       // Özet'te kırılım yolu ekseni belirler; gruplar dışarıdan hazır gelir.
       let g = gruplarDis || groupBy(rowsF, seviye);
@@ -165,7 +189,7 @@ window.TABS = (function(){
       h('div',{className:'matrix-scroll'},
         h(C.Heatmap,{rows:hmRows, monthsLabels:etiketler, showValues:true, showYoY:true,
           showPeakDot:true,
-          onClickCell:(row)=>onSelectGroup && onSelectGroup(seviye, row._g.ust),
+          onClickCell:(row)=>grupTikla(seviye, row._g.ust),
           rowAction: onGrupDetay
             ? {ipucu:'Bu grubu Gruplar sekmesinde aç', simge:'→',
                onClick:(row)=>onGrupDetay(row._g.ust)}
@@ -853,7 +877,7 @@ window.TABS = (function(){
   }
 
   // ══════════════════════════════════════════ SAYFA TİPİ & INTENT
-  function SayfaTipiTab({rows, viewMode, setKeywordModal, onSelectGroup}){
+  function SayfaTipiTab({rows, viewMode, setKeywordModal, onSelectGroup, yol, setYol}){
     const stG = groupBy(rows,'st'), itG = groupBy(rows,'it'), entG = groupBy(rows,'ent');
     const izleme = rows.filter(k=>k.it==='İzleme');
     const veri = rows.filter(k=>['Puan Durumu','Fikstür','Maç/Skor'].includes(k.st));
@@ -870,7 +894,12 @@ window.TABS = (function(){
         h(C.Kpi,{label:'Veri Sayfası Talebi', value:fmtNum(topR12(veri)), sub:'bileşen cevabı veriyor'}),
         h(C.Kpi,{label:'Bilgi Intent\'i', value:fmtNum(topR12(rows.filter(k=>k.it==='Bilgi')))}),
         h(C.Kpi,{label:'Ticari Intent', value:fmtNum(topR12(rows.filter(k=>k.it==='Ticari')))})),
-      h(SezonTakvimi,{rows, viewMode, onSelectGroup, baslik:'Sayfa tipi sezonsallığı'}),
+      (function(){
+        // Sayfa tipi seçilince tablo bir alt kırılıma iner, sekme değiştirmez
+        const inAlt = inisKur(yol, setYol);
+        return h(SezonTakvimi,{rows, viewMode, baslik:'Sayfa tipi sezonsallığı',
+          inisModu: !!inAlt, onSelectGroup: inAlt || onSelectGroup});
+      })(),
       h(C.SectionHeader,{icon:'karne', title:'Sayfa tipi karnesi',
         desc:'her sayfa tipi kendi ölçeğinde · Son 12 Ay'}),
       h('div',{className:'card'},
@@ -1145,7 +1174,7 @@ window.TABS = (function(){
   }
 
   // ══════════════════════════════════════════ YAYIN HAKKI DIŞI
-  function HakDisiTab({rows, viewMode, setKeywordModal, onSelectGroup}){
+  function HakDisiTab({rows, viewMode, setKeywordModal, onSelectGroup, yol, setYol}){
     const disi = rows.filter(k=>k.hak==='TV+ Yok');
     const orgG = groupBy(disi,'org');
     const toplam = topR12(rows)||1;
@@ -1162,7 +1191,11 @@ window.TABS = (function(){
         h(C.Kpi,{label:'Organizasyon', value:orgG.length}),
         h(C.Kpi,{label:'Keyword', value:fmtNum(disi.length)}),
         h(C.Kpi,{label:'İzleme Talebi', value:fmtNum(topR12(disi.filter(k=>k.it==='İzleme')))})),
-      h(SezonTakvimi,{rows:disi, viewMode, onSelectGroup, baslik:'Hak dışı talep sezonsallığı'}),
+      (function(){
+        const inAlt = inisKur(yol, setYol);
+        return h(SezonTakvimi,{rows:disi, viewMode, baslik:'Hak dışı talep sezonsallığı',
+          inisModu: !!inAlt, onSelectGroup: inAlt || onSelectGroup});
+      })(),
       h(C.SectionHeader,{icon:'sinyal', title:'Hakkı olmayan organizasyonlar'}),
       h(GrupTablosu,{gruplar:orgG, seviye:'org', onSelectGroup, viewMode}),
       h(C.SectionHeader,{icon:'anahtar', title:'En yüksek talepli keyword\'ler',

@@ -674,3 +674,20 @@ Kullanıcı geri bildirimi: görselleştirme, dinamizm ve YoY açısından eksik
 - İlk denemede eşik fazla dardı ve Trossard, Bailey gibi gerçek oyuncular eleniyordu; oran eşiği 4x'ten 20x'e çekildi, blokaj listesi yalnızca marka/ünlü çakışmalarıyla sınırlandı. Son durumda 15.087 satırın yalnızca **17'si** işaretli (cumhuriyeti, watson, karaca, mcdonald, network, stanley, kartal, özdilek, vikings, yeşil burun adaları gibi).
 - **Dize sözlüğü:** faset değerleri satır başına tekrar ettiği için `data/dashboard.js` gereksiz büyüyordu. Değerler sözlüğe alınıp indeksle saklanıyor, tarayıcıda yüklenirken geri açılıyor. Dosya 14,01 MB → **10,27 MB**, artifact 14,38 MB → **10,64 MB**.
 - Güncel veri: 15.087 keyword, Son 12 Ay 3,69B, YoY +%4,8, 31 aylık seri. Takım araması 2,17B, oyuncu araması 468,7M.
+
+## 2026-08-31
+
+### UFC dövüşçü katmanı çekildi
+- Talep: "UFC tarafında dövüşçüleri de daha detaylı araştır, atladığımız bir şey var mı" → ardından "çekimi yap, emekliler dahil edilmesin".
+- Ahrefs, web ve SERP araştırması ile aktif kadro çıkarıldı; `data/denetim/ufc_katman.json` oluşturuldu: 134 aktif dövüşçü (sıklet bazında), 8 Türk dövüşçü, 12 kısaltma, 21 küme, 19 etkinlik. 17 emekli/beklemede isim **kapsam dışı** bırakıldı.
+- `scripts/ufc_seed.py` yazıldı. Belirsiz adlarda çıplak biçim üretilmiyor (`ddp`, `jdm`, `mvp`, `dc`, `gsp` yalnızca `X ufc` biçiminde); aksi halde varlığa ait olmayan hacim portföye giriyordu.
+- 602 keyword çekildi (1 istek, 0,09 USD), 216'sı veri döndürdü → `data/raw/hacim_ufc.csv`.
+- Sonuç: UFC **51 kw / 8,59M / 19 dövüşçü → 267 kw / 13,19M / 157 dövüşçü**.
+- Türk dövüşçüler portföye girdi: ibo aslan 275,6K · islam dulatov 61,2K · yakhyaev 23,2K · gökhan sarıçam 22,1K · abdul rakhman yakhyaev 13,3K.
+- Portföy toplamı: 17.880 keyword, Son 12 Ay 3,645B.
+
+### Sayfa Tipi ve Yayın Hakkı Dışı sekmelerinde iniş düzeltildi
+- Artifact yorumundaki açık madde: "Spor dalı, organizasyon vb. seçildiğinde bu kısımdaki tablo bir alt kırılıma güncellenmeli."
+- Bu iki sekmede matris satırına tıklamak sekme değiştiriyordu; artık aynı sekmede yol uzuyor ve matris bir alt eksene geçiyor.
+- Ortak `inisKur()` yardımcısı eklendi. Eksen sabit yazılmıyor, matrisin o anki kırılım ekseninden geliyor; sabit eksen yazıldığında kapsam sıfıra düşüyordu (Futbol sayfa tipi sanılıyordu).
+- Doğrulandı: Futbol → 74 organizasyon → Süper Lig → 24 takım; iz şeridi hacimleri doğru, sekme değişmiyor.

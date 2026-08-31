@@ -1,0 +1,724 @@
+{
+ "AKTIF": {
+  "Ağır": [
+   {
+    "ad": "tom aspinall",
+    "belirsiz": false
+   },
+   {
+    "ad": "alexander volkov",
+    "belirsiz": false
+   },
+   {
+    "ad": "sergei pavlovich",
+    "belirsiz": false
+   },
+   {
+    "ad": "josh hokit",
+    "belirsiz": false
+   },
+   {
+    "ad": "waldo cortes-acosta",
+    "belirsiz": true
+   },
+   {
+    "ad": "curtis blaydes",
+    "belirsiz": false
+   },
+   {
+    "ad": "rizvan kuniev",
+    "belirsiz": false
+   },
+   {
+    "ad": "vitor petrino",
+    "belirsiz": false
+   },
+   {
+    "ad": "serghei spivac",
+    "belirsiz": false
+   },
+   {
+    "ad": "ante delija",
+    "belirsiz": false
+   },
+   {
+    "ad": "derrick lewis",
+    "belirsiz": false
+   },
+   {
+    "ad": "mario pinto",
+    "belirsiz": false
+   }
+  ],
+  "Yarı Ağır": [
+   {
+    "ad": "magomed ankalaev",
+    "belirsiz": false
+   },
+   {
+    "ad": "khalil rountree",
+    "belirsiz": false
+   },
+   {
+    "ad": "navajo stirling",
+    "belirsiz": true
+   },
+   {
+    "ad": "paulo costa",
+    "belirsiz": false
+   },
+   {
+    "ad": "jamahal hill",
+    "belirsiz": false
+   },
+   {
+    "ad": "azamat murzakanov",
+    "belirsiz": false
+   },
+   {
+    "ad": "jan blachowicz",
+    "belirsiz": false
+   },
+   {
+    "ad": "dominick reyes",
+    "belirsiz": false
+   },
+   {
+    "ad": "robert whittaker",
+    "belirsiz": false
+   },
+   {
+    "ad": "johnny walker",
+    "belirsiz": true
+   },
+   {
+    "ad": "bogdan guskov",
+    "belirsiz": false
+   },
+   {
+    "ad": "nikita krylov",
+    "belirsiz": false
+   }
+  ],
+  "Orta": [
+   {
+    "ad": "dricus du plessis",
+    "belirsiz": false
+   },
+   {
+    "ad": "nassourdine imavov",
+    "belirsiz": false
+   },
+   {
+    "ad": "brendan allen",
+    "belirsiz": false
+   },
+   {
+    "ad": "caio borralho",
+    "belirsiz": false
+   },
+   {
+    "ad": "joe pyfer",
+    "belirsiz": false
+   },
+   {
+    "ad": "gregory rodrigues",
+    "belirsiz": false
+   },
+   {
+    "ad": "anthony hernandez",
+    "belirsiz": false
+   },
+   {
+    "ad": "israel adesanya",
+    "belirsiz": false
+   },
+   {
+    "ad": "christian leroy duncan",
+    "belirsiz": false
+   },
+   {
+    "ad": "jared cannonier",
+    "belirsiz": false
+   },
+   {
+    "ad": "bo nickal",
+    "belirsiz": false
+   },
+   {
+    "ad": "michael venom page",
+    "belirsiz": false
+   },
+   {
+    "ad": "baisangur susurkaev",
+    "belirsiz": false
+   },
+   {
+    "ad": "ateba gautier",
+    "belirsiz": false
+   },
+   {
+    "ad": "mansur abdul-malik",
+    "belirsiz": false
+   }
+  ],
+  "Welter": [
+   {
+    "ad": "ian machado garry",
+    "belirsiz": false
+   },
+   {
+    "ad": "carlos prates",
+    "belirsiz": false
+   },
+   {
+    "ad": "michael morales",
+    "belirsiz": false
+   },
+   {
+    "ad": "gabriel bonfim",
+    "belirsiz": false
+   },
+   {
+    "ad": "sean brady",
+    "belirsiz": false
+   },
+   {
+    "ad": "belal muhammad",
+    "belirsiz": false
+   },
+   {
+    "ad": "leon edwards",
+    "belirsiz": false
+   },
+   {
+    "ad": "kamaru usman",
+    "belirsiz": false
+   },
+   {
+    "ad": "joaquin buckley",
+    "belirsiz": false
+   },
+   {
+    "ad": "yaroslav amosov",
+    "belirsiz": false
+   },
+   {
+    "ad": "shavkat rakhmonov",
+    "belirsiz": false
+   },
+   {
+    "ad": "jacobe smith",
+    "belirsiz": false
+   }
+  ],
+  "Hafif": [
+   {
+    "ad": "arman tsarukyan",
+    "belirsiz": false
+   },
+   {
+    "ad": "charles oliveira",
+    "belirsiz": false
+   },
+   {
+    "ad": "benoit saint denis",
+    "belirsiz": false
+   },
+   {
+    "ad": "mauricio ruffy",
+    "belirsiz": false
+   },
+   {
+    "ad": "quillan salkilld",
+    "belirsiz": false
+   },
+   {
+    "ad": "mateusz gamrot",
+    "belirsiz": false
+   },
+   {
+    "ad": "dan hooker",
+    "belirsiz": true
+   },
+   {
+    "ad": "renato moicano",
+    "belirsiz": false
+   },
+   {
+    "ad": "rafael fiziev",
+    "belirsiz": false
+   },
+   {
+    "ad": "beneil dariush",
+    "belirsiz": false
+   },
+   {
+    "ad": "tom nolan",
+    "belirsiz": false
+   }
+  ],
+  "Tüy": [
+   {
+    "ad": "movsar evloev",
+    "belirsiz": false
+   },
+   {
+    "ad": "lerone murphy",
+    "belirsiz": false
+   },
+   {
+    "ad": "aljamain sterling",
+    "belirsiz": false
+   },
+   {
+    "ad": "yair rodriguez",
+    "belirsiz": false
+   },
+   {
+    "ad": "jean silva",
+    "belirsiz": false
+   },
+   {
+    "ad": "arnold allen",
+    "belirsiz": false
+   },
+   {
+    "ad": "youssef zalal",
+    "belirsiz": false
+   },
+   {
+    "ad": "kevin vallejos",
+    "belirsiz": false
+   },
+   {
+    "ad": "steve garcia",
+    "belirsiz": false
+   },
+   {
+    "ad": "brian ortega",
+    "belirsiz": false
+   },
+   {
+    "ad": "aaron pico",
+    "belirsiz": false
+   },
+   {
+    "ad": "patricio pitbull",
+    "belirsiz": false
+   }
+  ],
+  "Horoz": [
+   {
+    "ad": "sean o'malley",
+    "belirsiz": false
+   },
+   {
+    "ad": "umar nurmagomedov",
+    "belirsiz": false
+   },
+   {
+    "ad": "mario bautista",
+    "belirsiz": false
+   },
+   {
+    "ad": "cory sandhagen",
+    "belirsiz": false
+   },
+   {
+    "ad": "song yadong",
+    "belirsiz": false
+   },
+   {
+    "ad": "aiemann zahabi",
+    "belirsiz": false
+   },
+   {
+    "ad": "david martinez",
+    "belirsiz": true
+   },
+   {
+    "ad": "deiveson figueiredo",
+    "belirsiz": false
+   },
+   {
+    "ad": "marlon vera",
+    "belirsiz": false
+   },
+   {
+    "ad": "payton talbott",
+    "belirsiz": false
+   },
+   {
+    "ad": "raul rosas jr",
+    "belirsiz": false
+   },
+   {
+    "ad": "elijah smith",
+    "belirsiz": true
+   }
+  ],
+  "Sinek": [
+   {
+    "ad": "manel kape",
+    "belirsiz": false
+   },
+   {
+    "ad": "brandon royval",
+    "belirsiz": false
+   },
+   {
+    "ad": "tatsuro taira",
+    "belirsiz": false
+   },
+   {
+    "ad": "kyoji horiguchi",
+    "belirsiz": false
+   },
+   {
+    "ad": "loneer kavanagh",
+    "belirsiz": false
+   },
+   {
+    "ad": "asu almabayev",
+    "belirsiz": false
+   },
+   {
+    "ad": "brandon moreno",
+    "belirsiz": false
+   },
+   {
+    "ad": "amir albazi",
+    "belirsiz": false
+   },
+   {
+    "ad": "ramazan temirov",
+    "belirsiz": true
+   },
+   {
+    "ad": "steve erceg",
+    "belirsiz": false
+   },
+   {
+    "ad": "joseph morales",
+    "belirsiz": false
+   }
+  ],
+  "Kadınlar Bantam": [
+   {
+    "ad": "kayla harrison",
+    "belirsiz": false
+   },
+   {
+    "ad": "julianna pena",
+    "belirsiz": false
+   },
+   {
+    "ad": "raquel pennington",
+    "belirsiz": false
+   },
+   {
+    "ad": "joselyne edwards",
+    "belirsiz": false
+   },
+   {
+    "ad": "norma dumont",
+    "belirsiz": false
+   },
+   {
+    "ad": "ailin perez",
+    "belirsiz": false
+   },
+   {
+    "ad": "yana santos",
+    "belirsiz": false
+   },
+   {
+    "ad": "luana santos",
+    "belirsiz": false
+   },
+   {
+    "ad": "macy chiasson",
+    "belirsiz": false
+   },
+   {
+    "ad": "jacqueline cavalcanti",
+    "belirsiz": false
+   },
+   {
+    "ad": "karol rosa",
+    "belirsiz": true
+   },
+   {
+    "ad": "miesha tate",
+    "belirsiz": false
+   },
+   {
+    "ad": "bia mesquita",
+    "belirsiz": false
+   }
+  ],
+  "Kadınlar Sinek": [
+   {
+    "ad": "valentina shevchenko",
+    "belirsiz": false
+   },
+   {
+    "ad": "natalia silva",
+    "belirsiz": false
+   },
+   {
+    "ad": "manon fiorot",
+    "belirsiz": false
+   },
+   {
+    "ad": "alexa grasso",
+    "belirsiz": false
+   },
+   {
+    "ad": "erin blanchfield",
+    "belirsiz": false
+   },
+   {
+    "ad": "rose namajunas",
+    "belirsiz": true
+   },
+   {
+    "ad": "maycee barber",
+    "belirsiz": true
+   },
+   {
+    "ad": "jasmine jasudavicius",
+    "belirsiz": false
+   },
+   {
+    "ad": "wang cong",
+    "belirsiz": true
+   },
+   {
+    "ad": "tracy cortez",
+    "belirsiz": false
+   },
+   {
+    "ad": "carli judice",
+    "belirsiz": false
+   }
+  ],
+  "Kadınlar Saman": [
+   {
+    "ad": "mackenzie dern",
+    "belirsiz": false
+   },
+   {
+    "ad": "zhang weili",
+    "belirsiz": false
+   },
+   {
+    "ad": "tatiana suarez",
+    "belirsiz": false
+   },
+   {
+    "ad": "virna jandiroba",
+    "belirsiz": false
+   },
+   {
+    "ad": "yan xiaonan",
+    "belirsiz": false
+   },
+   {
+    "ad": "gillian robertson",
+    "belirsiz": false
+   },
+   {
+    "ad": "fatima kline",
+    "belirsiz": false
+   },
+   {
+    "ad": "loopy godinez",
+    "belirsiz": true
+   },
+   {
+    "ad": "alexia thainara",
+    "belirsiz": false
+   },
+   {
+    "ad": "jessica andrade",
+    "belirsiz": false
+   },
+   {
+    "ad": "amanda lemos",
+    "belirsiz": false
+   },
+   {
+    "ad": "amanda ribas",
+    "belirsiz": false
+   },
+   {
+    "ad": "angela hill",
+    "belirsiz": true
+   }
+  ]
+ },
+ "TURK": [
+  {
+   "ad": "ibo aslan",
+   "belirsiz": false
+  },
+  {
+   "ad": "ibo aslan ufc",
+   "belirsiz": false
+  },
+  {
+   "ad": "gökhan sarıçam",
+   "belirsiz": false
+  },
+  {
+   "ad": "gökhan sarıçam ufc",
+   "belirsiz": false
+  },
+  {
+   "ad": "abdul rakhman yakhyaev",
+   "belirsiz": false
+  },
+  {
+   "ad": "yakhyaev",
+   "belirsiz": false
+  },
+  {
+   "ad": "islam dulatov",
+   "belirsiz": false
+  },
+  {
+   "ad": "dulatov",
+   "belirsiz": true
+  }
+ ],
+ "EMEKLI_BEKLEYEN": [
+  {
+   "ad": "jon jones",
+   "belirsiz": false
+  },
+  {
+   "ad": "khabib nurmagomedov",
+   "belirsiz": false
+  },
+  {
+   "ad": "nate diaz",
+   "belirsiz": false
+  },
+  {
+   "ad": "dustin poirier",
+   "belirsiz": false
+  },
+  {
+   "ad": "francis ngannou",
+   "belirsiz": false
+  },
+  {
+   "ad": "ronda rousey",
+   "belirsiz": false
+  },
+  {
+   "ad": "gökhan saki",
+   "belirsiz": false
+  },
+  {
+   "ad": "gokhan saki",
+   "belirsiz": false
+  },
+  {
+   "ad": "alptekin özkılıç",
+   "belirsiz": false
+  },
+  {
+   "ad": "anderson silva",
+   "belirsiz": false
+  },
+  {
+   "ad": "stipe miocic",
+   "belirsiz": false
+  },
+  {
+   "ad": "henry cejudo",
+   "belirsiz": false
+  },
+  {
+   "ad": "michael bisping",
+   "belirsiz": false
+  },
+  {
+   "ad": "amanda nunes",
+   "belirsiz": false
+  },
+  {
+   "ad": "brock lesnar",
+   "belirsiz": false
+  },
+  {
+   "ad": "georges st-pierre",
+   "belirsiz": false
+  },
+  {
+   "ad": "daniel cormier",
+   "belirsiz": false
+  }
+ ],
+ "KISALTMA": [
+  "ddp ufc",
+  "jdm ufc",
+  "mvp ufc",
+  "dc ufc",
+  "gsp ufc",
+  "suga sean",
+  "izzy adesanya",
+  "do bronx",
+  "chito vera",
+  "triple c cejudo",
+  "patricio pitbull",
+  "fiziev ataman"
+ ],
+ "KUME": [
+  "ufc dövüşçüleri",
+  "mma dövüşçüleri",
+  "dağıstanlı dövüşçüler",
+  "ufc kadın dövüşçüler",
+  "kadın ufc dövüşçüleri",
+  "en iyi mma dövüşçüleri",
+  "ufc champions",
+  "ufc rankings",
+  "ufc sıklet sıralaması",
+  "ufc weight classes",
+  "ufc sıralama",
+  "p4p ufc",
+  "ufc p4p",
+  "ağır siklet",
+  "welterweight",
+  "hafif sıklet kaç kilo",
+  "tüy sıklet",
+  "bantamweight",
+  "light heavyweight",
+  "ufc açılımı",
+  "ufc nedir"
+ ],
+ "ETKINLIK": [
+  "ufc 319",
+  "ufc 320",
+  "ufc 322",
+  "ufc 323",
+  "ufc 325",
+  "ufc 326",
+  "ufc 327",
+  "ufc 328",
+  "ufc 329",
+  "ufc 330",
+  "ufc 333",
+  "ufc beyaz saray kartı",
+  "ufc white house",
+  "ufc fight night",
+  "ufc maç takvimi",
+  "ufc takvim",
+  "ufc fikstür",
+  "ufc dövüş takvimi",
+  "bugünkü ufc maçları"
+ ]
+}

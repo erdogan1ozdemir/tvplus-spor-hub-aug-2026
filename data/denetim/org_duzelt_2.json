@@ -1,0 +1,22 @@
+{
+  "_aciklama": "Milli takim taksonomisi birlestirmesi ve Erzurumspor lig duzeltmesi. Kullanici onayiyla (2026-08-31) uygulandi. Yikici degildir: faset_notu kolonuna gerekce yazilir.",
+
+  "_milli_notu": "Milli Takim Karsilasmalari 251 satir tasiyordu ve iki farkli seyi karistiriyordu. Turkiye gecen satirlar A Milli kadrosuna baglanir; Turkiye gecmeyen satirlar (ispanya arjantin, fransa ingiltere gibi) A Milli'ye ait degildir, kendi organizasyonunda kalir ama adi netlestirilir.",
+
+  "ORG_TASI": {
+    "Voleybol Milli Karşılaşmaları": "Kadın Voleybol Milli Takımı"
+  },
+
+  "ORG_BOL": {
+    "Milli Takım Karşılaşmaları": {
+      "desen": "türkiye|turkiye|milli",
+      "eslesen": "A Milli Futbol Takımı",
+      "eslesmeyen": "Yabancı Milli Takım Karşılaşmaları"
+    }
+  },
+
+  "ORG_TAKIM_TASI": {
+    "erzurumspor": {"eski": "Süper Lig", "yeni": "TFF 1. Lig",
+      "gerekce": "Takim TFF 1. Lig'e dustu; satirlarin bir kismi Super Lig'de kalmisti"}
+  }
+}

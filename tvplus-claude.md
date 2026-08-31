@@ -692,3 +692,9 @@ Kullanıcı geri bildirimi: görselleştirme, dinamizm ve YoY açısından eksik
 - Ortak `inisKur()` yardımcısı eklendi. Eksen sabit yazılmıyor, matrisin o anki kırılım ekseninden geliyor; sabit eksen yazıldığında kapsam sıfıra düşüyordu (Futbol sayfa tipi sanılıyordu).
 - Doğrulandı: Futbol → 74 organizasyon → Süper Lig → 24 takım; iz şeridi hacimleri doğru, sekme değişmiyor.
 - Yorumun ikinci maddesi ("Grup detay için de aynısı geçerli") için üç nokta daha bağlandı: Sayfa tipi karne kartları, Hak Dışı organizasyon tablosu ve her iki sekmenin matrisi. `inAlt` sekme gövdesine taşındı, dördü aynı işleyiciyi paylaşıyor.
+
+### Milli takım taksonomisi birleştirildi, Erzurumspor ligi düzeltildi
+- `data/denetim/org_duzelt_2.json` + `scripts/org_duzelt_2_uygula.py` yazıldı (yıkıcı değil, gerekçe `faset_notu`'na yazılıyor, atomik yazma).
+- Öneri uygulanırken düzeltildi: "Milli Takım Karşılaşmaları" 251 satırın 210'u Türkiye'yi hiç içermiyordu ("ispanya arjantin" 5,1M, "fransa ingiltere" 3,4M). Hepsini A Milli'ye katmak yanlış olurdu; desene göre ikiye ayrıldı.
+- A Milli Futbol Takımı 64 satır / 51,3M → **105 satır / 70,3M**. Kadın Voleybol Milli Takımı 149 / 4,9M → **189 / 6,4M**. Yeni organizasyon: Yabancı Milli Takım Karşılaşmaları 210 satır / 25,9M.
+- Erzurumspor 35 satır Süper Lig'den TFF 1. Lig'e çekildi; artık 28 keyword'ün tamamı tek ligde.

@@ -698,3 +698,17 @@ Kullanıcı geri bildirimi: görselleştirme, dinamizm ve YoY açısından eksik
 - Öneri uygulanırken düzeltildi: "Milli Takım Karşılaşmaları" 251 satırın 210'u Türkiye'yi hiç içermiyordu ("ispanya arjantin" 5,1M, "fransa ingiltere" 3,4M). Hepsini A Milli'ye katmak yanlış olurdu; desene göre ikiye ayrıldı.
 - A Milli Futbol Takımı 64 satır / 51,3M → **105 satır / 70,3M**. Kadın Voleybol Milli Takımı 149 / 4,9M → **189 / 6,4M**. Yeni organizasyon: Yabancı Milli Takım Karşılaşmaları 210 satır / 25,9M.
 - Erzurumspor 35 satır Süper Lig'den TFF 1. Lig'e çekildi; artık 28 keyword'ün tamamı tek ligde.
+
+### Intent katmanı yeniden sınıflandırıldı
+- Önceki durumda 17.880 satırın 16.908'i "Bilgi" etiketindeydi (%98); faset hiçbir kırılımda ayrım üretmiyordu.
+- `data/denetim/intent_kurallari.json` + `scripts/intent_yeniden_siniflandir.py`: sıralı kural seti, ilk eşleşen kazanır, hiçbiri eşleşmezse Navigasyonel. Orijinal değer `intent_kaynak` kolonunda saklanıyor, kural değişirse yeniden çekim gerekmiyor.
+- Yeni dağılım: Navigasyonel 11.791 / 2,46B (%67,5) · Maç & Takvim 1.025 / 605,0M (%16,6) · Skor & Sonuç 320 / 387,0M (%10,6) · İzleme 955 / 113,6M (%3,1) · Bilgi 3.784 / 82,5M (%2,3) · Ticari 5.
+- "X maçı / X maçları" kalıbı (438 kw, 559,2M) Bilgi'ye değil Maç & Takvim'e bağlandı: bu sorguları tatmin eden sayfa fikstür sayfasıdır. Sayfa mimarisi sorusuna doğru cevap veren ayrım budur.
+- Sayfa Tipi sekmesindeki iki KPI kartı (Bilgi / Ticari) yeni dağılıma göre Navigasyonel ve Maç & Takvim ile değiştirildi.
+
+### Karar Ağacı'na lig bütünlüğü kuralı eklendi
+- Talep: bir ligde takım sayfası açılıyorsa ligin tamamı açılmalı; fikstür ve puan durumu sayfaları her takıma bağlantı verdiğinden açılmayan takım bağlantının ucunu boş bırakıyor.
+- Yeni bölüm: "Lig bütünlüğü · takım sayfası kapsamı". 12 ligde 355 takım sayfası, 236'sı bütünlük gereği.
+- Eşik (`TAKIM_KENDI_ESIK` 1M) sayfanın açılıp açılmayacağını değil gerekçesini ayırıyor. Tetikleyici koşul (`LIG_TETIK` 3): en az üç takımı kendi talebiyle eşiği geçen ligler kapsama girer. Bu olmadan FA Cup Alt Ligler 255 takım / 0'ı kendi talebiyle diye listeye giriyordu.
+- Kapsam dışı 9 lig / 617 takım ayrıca not olarak veriliyor.
+- Bulgu: Süper Lig (2,25B) Hub değil Veri Sayfası kovasında, çünkü yayın hakkı yok. Alt sayfa derinliği ölçütü de takım katmanını saymıyor; Süper Lig'in talebinin %80'i takım katmanında ama altPay %13,3 çıkıyor.

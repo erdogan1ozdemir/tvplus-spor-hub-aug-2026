@@ -895,8 +895,10 @@ window.TABS = (function(){
         h(C.Kpi,{label:'İzleme Intent\'i', value:fmtNum(topR12(izleme)), accent:true,
           sub:izleme.length.toLocaleString('tr-TR')+' keyword · bileşen bastırmıyor'}),
         h(C.Kpi,{label:'Veri Sayfası Talebi', value:fmtNum(topR12(veri)), sub:'bileşen cevabı veriyor'}),
-        h(C.Kpi,{label:'Bilgi Intent\'i', value:fmtNum(topR12(rows.filter(k=>k.it==='Bilgi')))}),
-        h(C.Kpi,{label:'Ticari Intent', value:fmtNum(topR12(rows.filter(k=>k.it==='Ticari')))})),
+        h(C.Kpi,{label:'Navigasyonel', value:fmtNum(topR12(rows.filter(k=>k.it==='Navigasyonel'))),
+          sub:'çıplak varlık adı · hub sayfası ister'}),
+        h(C.Kpi,{label:'Maç & Takvim', value:fmtNum(topR12(rows.filter(k=>k.it==='Maç & Takvim'))),
+          sub:'fikstür sayfası cevaplar'})),
       h(SezonTakvimi,{rows, viewMode, baslik:'Sayfa tipi sezonsallığı',
         inisModu: !!inAlt, onSelectGroup: inAlt || onSelectGroup}),
       h(C.SectionHeader,{icon:'karne', title:'Sayfa tipi karnesi',
@@ -1208,6 +1210,15 @@ window.TABS = (function(){
   // Sezon dışı taban: rolling penceredeki en sakin 6 ayın toplamı.
   // Oran değil mutlak hacim belirleyicidir; talep sezon dışında da sürüyorsa sayfa kapanmaz.
   const SEZON_DISI_ESIK = 500000;
+  // Bir lig için takım sayfası açılıyorsa ligin tamamı açılır: fikstür, puan
+  // durumu ve rakip eşleşmesi sayfaları lig içindeki her takıma bağlantı
+  // verir, açılmayan takım o bağlantıların ucunu boş bırakır. Eşik sayfanın
+  // açılıp açılmayacağına değil, gerekçesinin ne olduğuna karar verir.
+  const TAKIM_KENDI_ESIK = 1000000;
+  // Bütünlük yükümlülüğü ancak lig gerçekten sayfa hedefiyse doğar. Tek bir
+  // takımı eşiği geçen bir havuz (FA Cup alt ligleri, eleme turları) için
+  // takım sayfası açılmıyor demektir; orada bütünlük de aranmaz.
+  const LIG_TETIK = 3;
   function sezonDisi(roll){
     return [...(roll||[])].sort((a,b)=>a-b).slice(0,6).reduce((a,b)=>a+b,0);
   }
@@ -1246,7 +1257,8 @@ window.TABS = (function(){
 
     if(o.altPay>=0.12 && o.r12>=1200000)
       return {karar:'Hub',
-        gerekce:'Hem yüksek talep hem alt sayfa derinliği mevcut. Puan durumu, fikstür, takım ve oyuncu katmanı birlikte kurulabilir.' +
+        gerekce:'Hem yüksek talep hem alt sayfa derinliği mevcut. Puan durumu, fikstür, takım ve oyuncu katmanı birlikte kurulabilir. ' +
+          'Takım katmanı açıldığında lig içindeki takımların tamamı kapsanır; fikstür ve puan durumu sayfaları her takıma bağlantı verdiğinden eksik bırakılan takım bu bağlantıların ucunu boş bırakır.' +
           (o.spor==='Futbol' ? ' Takım ve oyuncu sayfaları futbol genelinde paylaşımlıdır; bir kez kurulduğunda bu organizasyonla birlikte diğer futbol organizasyonlarına da hizmet eder.' : '')};
 
     return {karar:'Landing',
@@ -1469,6 +1481,73 @@ window.TABS = (function(){
           fmtNum(SEZON_DISI_ESIK), ' üzerindeki organizasyonlarda sayfa yıl boyu açık tutulabilir; ',
           'talep etkinlik penceresi dışında da sürmektedir.')),
 
+      (function(){
+        // LİG BÜTÜNLÜĞÜ — takım sayfası açılan ligler tamamen kapsanır.
+        // Fikstür, puan durumu ve rakip eşleşmesi sayfaları lig içindeki her
+        // takıma bağlantı verir; açılmayan takım o bağlantıyı boşa düşürür.
+        // Bu yüzden eşik "açılsın mı" sorusunu değil "gerekçesi ne" sorusunu
+        // cevaplar: eşiğin üstü kendi talebiyle, altı bütünlük için açılır.
+        // Kapsam Hub ile sınırlı değil: takım katmanı taşıyan her lig için
+        // geçerlidir. Süper Lig yayın hakkı bulunmadığı için Veri Sayfası
+        // kovasında duruyor ama 24 takımlık bir fikstür ağı taşıyor.
+        const ligler = orgRows.filter(o=>o.karar!=='Şimdilik Değil').map(function(o){
+          const t = {};
+          for(const k of o.rows){ if(k.takim) t[k.takim] = (t[k.takim]||0) + (k.r12||0); }
+          const takimlar = Object.entries(t).map(([ad,v])=>({ad, v}))
+            .sort((a,b)=>b.v-a.v);
+          const kendi = takimlar.filter(x=>x.v >= TAKIM_KENDI_ESIK);
+          const butun = takimlar.filter(x=>x.v <  TAKIM_KENDI_ESIK);
+          return {...o, takimlar, kendi, butun,
+            butunHacim: butun.reduce((a,x)=>a+x.v,0)};
+        }).filter(o=>o.takimlar.length>=4).sort((a,b)=>b.takimlar.length-a.takimlar.length);
+        // Kapsam: en az LIG_TETIK takımı kendi talebiyle eşiği geçen ligler.
+        const kapsam = ligler.filter(o=>o.kendi.length >= LIG_TETIK);
+        const disi   = ligler.filter(o=>o.kendi.length <  LIG_TETIK);
+        if(!kapsam.length) return null;
+        const toplamTakim = kapsam.reduce((a,o)=>a+o.takimlar.length,0);
+        const toplamButun = kapsam.reduce((a,o)=>a+o.butun.length,0);
+        const disiTakim  = disi.reduce((a,o)=>a+o.takimlar.length,0);
+        return h(React.Fragment,null,
+          h(C.SectionHeader,{icon:'karar', title:'Lig bütünlüğü · takım sayfası kapsamı',
+            desc:`${kapsam.length} ligde toplam ${toplamTakim} takım sayfası · ${toplamButun}'i lig bütünlüğü gereği`}),
+          h('div',{className:'card'},
+            h('p',{className:'txt-3', style:{fontSize:12, lineHeight:1.6, marginBottom:12}},
+              'Bir lig için takım sayfası açıldığında ligin tamamı kapsanır. Fikstür, puan durumu ve ',
+              'rakip eşleşmesi sayfaları lig içindeki her takıma bağlantı verdiğinden, açılmayan bir ',
+              'takım bu bağlantıların ucunu boş bırakır. Aşağıdaki eşik sayfanın açılıp açılmayacağını ',
+              'değil, hangi gerekçeyle açıldığını ayırır: ', h('b',null, fmtNum(TAKIM_KENDI_ESIK)),
+              ' üzerindeki takımlar kendi talebini taşır, altındakiler lig bütünlüğü için açılır.'),
+            h('div',{className:'tbl-wrap'},
+              h('table',{className:'tbl'},
+                h('thead',null, h('tr',null,
+                  h('th',null,'Lig'),
+                  h('th',null,'Karar'),
+                  h('th',{className:'num'},'Takım'),
+                  h('th',{className:'num'},'Kendi talebiyle'),
+                  h('th',{className:'num'},'Lig bütünlüğü'),
+                  h('th',{className:'num'},'Bütünlük hacmi'),
+                  h('th',null,'Eşik altındaki takımlar'))),
+                h('tbody',null, kapsam.map(o=>
+                  h('tr',{key:o.label, className:'clickable',
+                    onClick:()=>onSelectGroup('org', o.ust)},
+                    h('td',{className:'kw-cell'}, o.label),
+                    h('td',null, h('span',{className:'pill', style:{
+                      background:`color-mix(in srgb, ${RENK[o.karar]} 15%, transparent)`,
+                      color:RENK[o.karar], fontWeight:600, whiteSpace:'nowrap'}}, o.karar)),
+                    h('td',{className:'num'}, o.takimlar.length),
+                    h('td',{className:'num', style:{color:'var(--green)', fontWeight:600}}, o.kendi.length),
+                    h('td',{className:'num', style:{color:'var(--gold)', fontWeight:600}}, o.butun.length),
+                    h('td',{className:'num'}, fmtNum(o.butunHacim)),
+                    h('td',{className:'cat-cell', style:{maxWidth:320}},
+                      o.butun.slice(0,6).map(x=>x.ad).join(' · ') +
+                      (o.butun.length>6 ? ' · +'+(o.butun.length-6) : '') || '-')))))),
+            disi.length ? h('p',{className:'txt-3', style:{fontSize:11, marginTop:10, lineHeight:1.55}},
+              'Kapsam dışı: ', h('b',null, disi.length+' lig'), ' · ', fmtNum(disiTakim), ' takım. ',
+              'Bu liglerde ', LIG_TETIK, "'ten az takım kendi talebiyle eşiği geçiyor, yani takım ",
+              'sayfası açılmıyor; bütünlük yükümlülüğü de doğmuyor. Eleme turları ve alt lig ',
+              'havuzları bu grupta yer alır (', disi.slice(0,3).map(o=>o.label).join(' · '),
+              disi.length>3 ? ' · +'+(disi.length-3) : '', ').') : null));
+      })(),
       (function(){
         // "Şimdilik Değil" dışındaki tüm organizasyonlar listelenir; bu kova
         // zaten yatırım yapılmayacak olanları topluyor, gerekçesi tektir.

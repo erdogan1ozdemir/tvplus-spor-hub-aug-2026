@@ -1,0 +1,13 @@
+{
+  "_aciklama": "Intent katmani yeniden siniflandirma kurallari. Kullanici onayiyla (2026-08-31) uygulandi. Onceki durumda 17.880 satirin 16.908'i 'Bilgi' etiketindeydi; faset hicbir yerde ayrim uretmiyordu.",
+  "_yontem": "Sira onemlidir, ilk eslesen kural kazanir. Hicbiri eslesmezse Navigasyonel: sorgu bir hedef belirtmiyorsa kullanici varliga gidiyordur. Orijinal deger intent_kaynak kolonunda saklanir.",
+  "_maç_notu": "'X maci / X maclari' kalibi (438 kw, 559,2M) Bilgi'ye degil Mac & Takvim'e baglandi: bu sorgulari tatmin eden sayfa fikstur sayfasidir, bilgi sayfasi degil. Sayfa mimarisi sorusuna dogru cevap veren ayrim budur.",
+  "KURALLAR": [
+    ["Ticari",       "bilet|forma|abonelik|satın al|kombine|kaç para|fiyat"],
+    ["İzleme",       "canlı izle|canli izle|\\bizle\\b|nerede izlen|hangi kanal|yayın akış|şifresiz|sifresiz|naklen|canlı yayın|canlı maç|maç izle|\\btv'?de\\b|yayınlan|canlı skor|canlı anlatım"],
+    ["Skor & Sonuç", "puan durumu|skor|maç sonuc|sonuçları|kaç kaç|maç özet|sıralama|kaç oldu|maç sonu"],
+    ["Maç & Takvim", "ne zaman|saat kaçta|hangi gün|maç var mı|kaçta|fikstür|fikstur|takvim|maç programı|kimin maçı|bugünkü maç|günün maç|maç saat|maçları$|maçı$|maçlari$"],
+    ["Bilgi",        "kimdir|nedir|kaç yaşında|nereli|istatistik|kadro|oyuncuları|futbolcuları|sporcuları|transfer|haber|tarihçe|kuruluş|stad|teknik direktör|hangi takımda|boyu|kilo|forması|logo|renk|başkan"]
+  ],
+  "VARSAYILAN": "Navigasyonel"
+}

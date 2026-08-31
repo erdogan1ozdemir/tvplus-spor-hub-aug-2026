@@ -46,6 +46,9 @@
     const [takimDahil, setTakimDahil] = React.useState(
       ()=>localStorage.getItem(K('takimDahil'))==='1');
     React.useEffect(()=>{ localStorage.setItem(K('takimDahil'), takimDahil?'1':'0'); },[takimDahil]);
+    // groupBy organizasyon ekseninde bu bayrağa bakar; her sekmeye tek tek
+    // taşımak yerine tek yerden okunur. Render'dan önce yazılmalı.
+    U.takimDahil = takimDahil;
     const [peakAy, setPeakAy] = React.useState([]);
     const [peakCeyrek, setPeakCeyrek] = React.useState([]);
     const [mevsim, setMevsim] = React.useState([]);

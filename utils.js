@@ -22,6 +22,13 @@ window.U = (function(){
     if (Math.abs(n) >= 1e3) return kisalt(n, 1e3, 'K');
     return n.toLocaleString('tr-TR');
   }
+  // 12 aylık toplamı aylık ortalamaya çevirip kısaltır. Tablolarda ve
+  // kartlarda varsayılan gösterim budur: toplam yalnızca özellikle toplam
+  // istendiğinde ve etiketinde "toplam" yazarak verilir.
+  function fmtOrt(n) {
+    if (n == null || isNaN(n)) return '–';
+    return fmtNum(n / 12);
+  }
   function fmtFull(n) {
     if (n == null || isNaN(n)) return '–';
     return Math.round(n).toLocaleString('tr-TR');
@@ -278,8 +285,20 @@ window.U = (function(){
     return out;
   }
 
+  // Organizasyon ekseninde, takım katmanı dahil bayrağı açıkken bir yarışmada
+  // oynayan kulüplerin satırları o yarışmanın altında da sayılır. Kulüp kendi
+  // ülke liginde kalmaya devam eder; bu yüzden satır çoğaltılır, taşınmaz.
+  // Bayrak U üzerinde tutulur, çünkü groupBy her sekmeden çağrılıyor ve
+  // eksenin nereden geldiğini bilmesi gerekmiyor.
+  function orgGenislet(rows){
+    const ek = [];
+    for(const k of rows) if(k.avrupa && k.avrupa !== k.org) ek.push({...k, org:k.avrupa});
+    return ek.length ? rows.concat(ek) : rows;
+  }
+
   // Grupla: herhangi bir faset ekseninde, rolling + takvim metrikleriyle
   function groupBy(rows, alan, altAlan){
+    if(alan==='org' && window.U && window.U.takimDahil) rows = orgGenislet(rows);
     const m = new Map();
     for(const k of rows){
       const v = k[alan]; if(v===undefined || v==='') continue;
@@ -447,7 +466,7 @@ window.U = (function(){
     ROLLING_LABELS, P12_LABELS, ymLabel,
     ROLLING_Q_LABELS, CALENDAR_Q_LABELS, quarterOptions, qLabel,
     quarterSums, peakQuarterIdx,
-    fmtNum, fmtFull, fmtPct, serialToMonthIdx, serialToRollingLabel, trendClass,
+    fmtNum, fmtOrt, fmtFull, fmtPct, orgGenislet, serialToMonthIdx, serialToRollingLabel, trendClass,
     aggregateMonthly, aggregateRolling, rollingOf, prevRollingOf,
     hmColor, hmText,
     toCSV, downloadCSV, debounce, sparkPath, quarterName,

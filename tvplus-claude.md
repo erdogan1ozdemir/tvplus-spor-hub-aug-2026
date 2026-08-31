@@ -772,3 +772,15 @@ Talep üzerine tüm takım ve organizasyon etiketleri güncel kaynaklardan doğr
 **Boş sonuç sekmeyi kaplamıyor.** Eskiden tüm ekran "Sonuç bulunamadı" olup kullanıcıyı tüm filtreleri temizlemeye itiyordu. Artık üstte ince bir şerit çıkıyor, sekme ve filtre çipleri yerinde kalıyor; hangi filtrenin daralttığı görülüp tek tek kaldırılabiliyor.
 
 **Yeni: "Organizasyona takımları ekle" düğmesi.** Bir yarışma seçiliyken o yarışmada oynayan kulüplerin kendi takım ve oyuncu aramaları da kapsama giriyor. Kulüp satırları kendi ülke liginde kalmaya devam ediyor (Real Madrid La Liga'da), ikincil `avrupa` alanı üzerinden eşleşiyor. Karar Ağacı'nda etki büyük: UEFA Şampiyonlar Ligi **50,5M → 1,66B** (Etkinlik Ölçekli → Hub), Avrupa Ligi 14,8M → 276M, Konferans Ligi 14,1M → 142M. Süper Lig değişmiyor, takımları zaten kendi ligindeydi. Görünüm bilinçli olarak iki yerde birden sayıyor; Karar Ağacı'nda bunu söyleyen bir şerit var.
+
+### Takım katmanı tüm sekmelerde, tüm metrikler aylık ortalamaya çevrildi
+**Takım katmanı dahil bayrağı artık her sekmede işliyor.** Karar Ağacı'na özel çözüm kaldırıldı; genişletme `groupBy`'ın içine, organizasyon ekseninde çalışacak şekilde taşındı (`U.takimDahil` + `U.orgGenislet`). Kırılım kendi ağacını kurduğu için oraya da ayrıca bağlandı. Gruplar sekmesinde UEFA Şampiyonlar Ligi 4,21M → **138M**, Kırılım'da aynı.
+
+**Tüm hacim gösterimleri aylık ortalama.** `fmtOrt(n) = fmtNum(n/12)` yardımcısı eklendi ve ~50 gösterim noktası çevrildi: Özet hero ve pazar özeti kartları, Gruplar tabloları, Takım Kümesi tablosu ve sezonsallığı, Grup Detayları, Kırılım karo ve sütun görünümleri, Karar Ağacı kova kartları ve tabloları, Paylaşımlı Katman tablosu, Sayfa Tipi, Yayın Hakkı Dışı, ShareBars ve karo metrikleri. Etiketler de güncellendi ("Toplam Arama · Son 12 Ay" → "Aylık Ort. Arama · Son 12 Ay").
+- Toplam yalnızca etiketinde açıkça "Toplam" yazan yerlerde kalıyor: Keyword KPI alt satırı, Master liste CSV kolonları, hücre tooltip'leri ("… arama · dönem toplamı").
+- Sezon dışı taban 6 aylık toplamdı, `sezonDisiOrt` ile aylık ortalamaya çevrildi (12'ye değil 6'ya bölünüyor).
+- Karo metrik şeridinde "Toplam" satırı yerine önceki dönemin ortalaması geldi: "Önceki 12 Ay Ort." + "Son 12 Ay Ort.".
+- Karar Ağacı Paylaşımlı Katman tablosunda tam sayılar kısaltıldı: Futbol takım talebi 179M.
+- Kısaltılmamış sayı taraması yapıldı, sayfada kalan uzun sayı yok (yalnızca keyword sayıları binlik ayraçla, ki doğrusu bu).
+
+Dokuz sekme 375px ve 1440px'te temiz.

@@ -2,7 +2,7 @@
 window.TABS = (function(){
   const h = React.createElement;
   const C = window.C;
-  const { fmtNum, fmtFull, fmtPct, TR_MONTHS, ROLLING_LABELS, qLabel,
+  const { fmtNum, fmtOrt, fmtFull, fmtPct, TR_MONTHS, ROLLING_LABELS, qLabel,
           groupBy, seriesFor, applyFacets, SEVIYELER, FACET_ETIKET,
           SEZ_RENK, HAK_RENK, aggregateRolling, aggregateMonthly,
           yoyFor, yoyEtiketFor, hacimFor, oncekiHacimFor,
@@ -38,7 +38,7 @@ window.TABS = (function(){
     const ust = ustDeger(g);
     return [
       (ust ? ust + ' / ' : '') + g.label,
-      `Son 12 Ay: ${fmtFull(g.r12)} · Önceki 12 Ay: ${fmtFull(g.p12)}` +
+      `Son 12 Ay ort.: ${fmtFull(Math.round(g.r12/12))}/ay · Önceki 12 Ay ort.: ${fmtFull(Math.round(g.p12/12))}/ay` +
         (g.ryoy!=null ? ` · YoY ${fmtPct(g.ryoy,1)}` : ''),
       `${g.kwCount.toLocaleString('tr-TR')} keyword · toplam talebin %${(g.share*100).toFixed(1).replace('.',',')}'i`,
       `Peak: ${g.peakLabel} · ${qLabel(viewMode==='calendar'?g.peakQCal:g.peakQ, viewMode)} · ${g.sezType}`,
@@ -58,15 +58,15 @@ window.TABS = (function(){
     if(viewMode==='calendar'){
       const ay26 = (D().months2026||[]).length;
       return [
+        {label:yil[0]+' Aylık Ort.', value:fmtNum(ort(g.cal24)), tip:fmtFull(ort(g.cal24))+' arama/ay'},
         {label:yil[1]+' Aylık Ort.', value:fmtNum(ort(g.cal25)), tip:fmtFull(ort(g.cal25))+' arama/ay'},
-        {label:yil[1]+' Toplam',     value:fmtNum(top(g.cal25)), tip:fmtFull(top(g.cal25))+' arama'},
         {label:yil[2]+' YTD Ort.',   value:fmtNum(ort((g.cal26||[]).slice(0,ay26))),
           tip:fmtFull(ort((g.cal26||[]).slice(0,ay26)))+' arama/ay · ilk '+ay26+' ay'},
       ];
     }
     return [
+      {label:'Önceki 12 Ay Ort.', value:fmtNum(ort(g.prev)), tip:fmtFull(ort(g.prev))+' arama/ay'},
       {label:'Son 12 Ay Ort.',    value:fmtNum(ort(g.roll)), tip:fmtFull(ort(g.roll))+' arama/ay'},
-      {label:'Son 12 Ay Toplam',  value:fmtNum(top(g.roll)), tip:fmtFull(top(g.roll))+' arama'},
     ];
   }
 
@@ -130,7 +130,7 @@ window.TABS = (function(){
     const hmRows = gruplar.map(g=>({
       label: g.label,
       sub: (()=>{ const u=ustDeger(g);
-        return (u && u!==g.label ? u+' · ' : '') + fmtNum(takvim ? g.tot25 : g.r12); })(),
+        return (u && u!==g.label ? u+' · ' : '') + fmtOrt(takvim ? g.tot25 : g.r12); })(),
       title: grupAciklama(g, viewMode),
       values: takvim ? g.cal25 : g.roll,
       prevValues: takvim ? g.cal24 : g.prev,
@@ -248,13 +248,13 @@ window.TABS = (function(){
                   h('div',{className:'kw-cell'}, g.label),
                   ust && ust!==g.label && h('div',{className:'cat-cell'}, ust),
                   h('div',{className:'kw-mobile-meta'},
-                    h('span',null, fmtNum(g.r12), ' · ', g.peakLabel),
+                    h('span',null, fmtOrt(g.r12), ' · ', g.peakLabel),
                     h('span',{className:'pill q'+(g.peakQ+1), style:{fontSize:10,padding:'1px 5px',marginLeft:6}},
                       qLabel(viewMode==='calendar'?g.peakQCal:g.peakQ, viewMode)))))),
-            h('td',{className:'num col-hide-sm', title:fmtFull(oncekiHacimFor(g, viewMode))+' arama'},
-              fmtNum(oncekiHacimFor(g, viewMode))),
-            h('td',{className:'num', title:fmtFull(hacimFor(g, viewMode))+' arama'},
-              h('strong',null, fmtNum(hacimFor(g, viewMode)))),
+            h('td',{className:'num col-hide-sm', title:fmtFull(oncekiHacimFor(g, viewMode))+' arama · dönem toplamı'},
+              fmtOrt(oncekiHacimFor(g, viewMode))),
+            h('td',{className:'num', title:fmtFull(hacimFor(g, viewMode))+' arama · dönem toplamı'},
+              h('strong',null, fmtOrt(hacimFor(g, viewMode)))),
             h('td',{className:'num'}, h(YoY,{v:yoyFor(g, viewMode), tip:yoyEtiketFor(viewMode)})),
             h('td',{className:'col-hide-sm', style:{width:110}},
               h(C.Sparkline,{values: viewMode==='calendar'?g.cal25:g.roll, w:100, h:28,
@@ -292,7 +292,7 @@ window.TABS = (function(){
           : adim(a.deger, i+1))),
       eksen && h('span',{className:'iz-eksen'},
         ZINCIR_ETIKET[eksen]+' kırılımı'),
-      h('span',{className:'iz-hacim'}, fmtNum(kapsamHacim)),
+      h('span',{className:'iz-hacim', 'data-tip':'Aylık ortalama arama hacmi'}, fmtOrt(kapsamHacim)),
       yol.length>0 && h('button',{className:'iz-geri',
         onClick:()=>setYol(yol.slice(0,-1)), 'data-tip':'Bir üst kırılıma dön'},'↑ Üst kırılım'));
   }
@@ -361,7 +361,7 @@ window.TABS = (function(){
           h('span',{className:'txt-3', style:{fontSize:11}}, i+1),
           h('span',null, h('div',{style:{fontWeight:500, fontSize:12.5}}, k.kw),
             h('div',{className:'txt-3', style:{fontSize:10.5}}, (k.spor||'')+' · '+(k.org||''))),
-          h('span',{className:'num', style:{fontSize:12, fontWeight:600}}, fmtNum(k.r12)),
+          h('span',{className:'num', style:{fontSize:12, fontWeight:600}}, fmtOrt(k.r12)),
           h(YoY,{v:k.ryoy})))));
 
     return h('div',{className:'tab-content-anim'},
@@ -387,12 +387,12 @@ window.TABS = (function(){
         desc:'TV+ spor portföyünün Son 12 Ay görünümü, Önceki 12 Ay ile karşılaştırmalı'}),
       h('div',{className:'hero-kpi'},
         h('div',{className:'hero-left'},
-          h('div',{className:'hero-label'}, takvim ? ('Toplam Arama · '+yilAd[1]) : 'Toplam Arama · Son 12 Ay'),
-          h('div',{className:'hero-value'}, fmtNum(r12)),
+          h('div',{className:'hero-label'}, takvim ? ('Aylık Ort. Arama · '+yilAd[1]) : 'Aylık Ort. Arama · Son 12 Ay'),
+          h('div',{className:'hero-value'}, fmtOrt(r12)),
           h('div',{className:'hero-sub'},
             h(YoY,{v:ryoy, tip:yoyEtiketFor(viewMode)}),
             h('span',{className:'txt-3', style:{marginLeft:8, fontSize:11.5}},
-              takvim ? ('vs. '+yilAd[0]+' ') : 'vs. Önceki 12 Ay ', fmtNum(p12)))),
+              takvim ? ('vs. '+yilAd[0]+' ort. ') : 'vs. Önceki 12 Ay ort. ', fmtOrt(p12)))),
         h('div',{className:'hero-chart'},
           h(C.LineChart,{series, height:150, labels, yFormat:fmtNum, legend:true, gradient:true})),
         h('div',{className:'hero-right'},
@@ -408,9 +408,9 @@ window.TABS = (function(){
           sub:'YoY +%5 üzeri', chip:'↑', chipClass:'pos'}),
         h(C.Kpi,{label:'Düşen', value:dusen.length.toLocaleString('tr-TR'),
           sub:'YoY −%5 altı', chip:'↓', chipClass:'neg'}),
-        h(C.Kpi,{label:'İzleme Intent\'i', value:fmtNum(topR12(izleme)),
+        h(C.Kpi,{label:'İzleme Intent\'i', value:fmtOrt(topR12(izleme)),
           sub:izleme.length.toLocaleString('tr-TR')+' keyword · TV+\'ın doğal alanı', accent:true}),
-        h(C.Kpi,{label:'Veri Sayfası Talebi', value:fmtNum(topR12(veriSayfa)),
+        h(C.Kpi,{label:'Veri Sayfası Talebi', value:fmtOrt(topR12(veriSayfa)),
           sub:'Google bileşeni cevabı veriyor'})),
 
       // Kapsam eylemleri: seçili kırılım diğer sekmelerde de geçerli olduğu
@@ -423,7 +423,7 @@ window.TABS = (function(){
             : 'Tüm portföy')),
         h('span',{className:'kapsam-sayi'},
           h('strong',null, rows.length.toLocaleString('tr-TR')), ' keyword · ',
-          h('strong',null, fmtNum(r12)), ' Son 12 Ay'),
+          h('strong',null, fmtOrt(r12)), ' aylık ort.'),
         h('button',{className:'chip-btn birincil',
           'data-tip':'Bu kapsamın keyword listesini aç',
           onClick:()=>gitSekme && gitSekme('keyword')},
@@ -446,7 +446,7 @@ window.TABS = (function(){
 
       h('div',{className:'insight-bar'},
         h('span',{className:'insight-arrow'},''),
-        h('span',null,'Son 12 ayda toplam arama hacmi ', h('strong',null, fmtNum(r12)),
+        h('span',null,'Aylık ortalama arama hacmi ', h('strong',null, fmtOrt(r12)),
           ' seviyesinde; önceki 12 aya kıyasla ',
           h('strong',{style:{color: ryoy>0?'var(--green)':'var(--red)'}}, fmtPct(ryoy,1)),
           ' değişim göstermiştir. ', h('strong',null, yukselen.length.toLocaleString('tr-TR')),
@@ -463,10 +463,10 @@ window.TABS = (function(){
         h('div',{className:'card'},
           h('div',{className:'card-title-row'},
             h('h3',{style:{fontSize:14}},
-              takvim ? 'Takvim Yılı Karşılaştırması' : '12 Aylık Toplam Arama Hacmi'),
+              takvim ? 'Takvim Yılı Karşılaştırması' : 'Aylık Arama Hacmi · Son 12 Ay'),
             h('div',{className:'meta-sag'},
-              h('div',null, takvim ? (yilAd[1]+' toplam: ') : 'Toplam Son 12 Ay: ',
-                h('strong',{style:{color:'var(--ink)'}}, fmtNum(r12))),
+              h('div',null, takvim ? (yilAd[1]+' aylık ort.: ') : 'Son 12 Ay aylık ort.: ',
+                h('strong',{style:{color:'var(--ink)'}}, fmtOrt(r12))),
               h('div',null, 'YoY: ',
                 h('strong',{style:{color: ryoy>0?'var(--green)':'var(--red)'}}, fmtPct(ryoy,0)),
                 ' · Peak: ', h('strong',{style:{color:'var(--ink)'}},
@@ -477,7 +477,7 @@ window.TABS = (function(){
         h('div',{className:'card'},
           h('div',{className:'card-title-row'},
             h('h3',{style:{fontSize:14}}, (ZINCIR_ETIKET[eksen]||'Grup')+' Pazar Payı'),
-            h('div',{className:'meta-sag'}, takvim ? (yilAd[1]+' toplamı') : 'Son 12 Ay toplamı')),
+            h('div',{className:'meta-sag'}, takvim ? (yilAd[1]+' aylık ort.') : 'Son 12 Ay aylık ort.')),
           h('div',{className:'chart-orta', style:{marginBottom:12}},
             h(C.Donut,{size:190, data: kirilim.slice(0,9).map(g=>({
               label:g.label, value:hacimFor(g,viewMode), color:renkAl(g)})),
@@ -532,7 +532,7 @@ window.TABS = (function(){
           onClick: it => in_(it.label)}),
         h('div',{className:'txt-3', style:{fontSize:10.5, marginTop:10, lineHeight:1.6}},
           'Kart başlığındaki yüzde rozeti ', h('strong',null,'YoY değişimdir'),
-          ' (Son 12 Ay / Önceki 12 Ay). Sağ alttaki değer ', h('strong',null,'Son 12 Ay toplam arama hacmidir'),
+          ' (Son 12 Ay / Önceki 12 Ay). Sağ alttaki değerler ', h('strong',null,'aylık ortalama arama hacmidir'),
           '. Çubukların üzerine gelindiğinde ilgili ayın hacmi ve önceki dönemin aynı ayına ',
           'kıyasla YoY değişimi görünür. Her kart kendi maksimumuna göre ölçeklenir; ',
           'bu nedenle kartlar arası çubuk yükseklikleri değil, hacim değerleri karşılaştırılabilir.')),
@@ -741,9 +741,9 @@ window.TABS = (function(){
             h('span',{className:'btn-ikon'}, h(C.Ikon,{ad:'kapat', size:12})), 'Kapat')),
         h('div',{className:'grid grid-kpi kpi-5', style:{margin:'12px 0'}},
           h(C.Kpi,{label: viewMode==='calendar' ? (D().meta.yillar[1]+' Toplam') : 'Son 12 Ay',
-            value:fmtNum(hacimFor(g,viewMode)), sub:g.kwCount+' keyword', accent:true}),
+            value:fmtOrt(hacimFor(g,viewMode)), sub:g.kwCount+' keyword · aylık ort.', accent:true}),
           h(C.Kpi,{label: viewMode==='calendar' ? (D().meta.yillar[0]+' Toplam') : 'Önceki 12 Ay',
-            value:fmtNum(oncekiHacimFor(g,viewMode)),
+            value:fmtOrt(oncekiHacimFor(g,viewMode)),
             chip: yoyFor(g,viewMode)==null?null:fmtPct(yoyFor(g,viewMode),1),
             chipClass: (yoyFor(g,viewMode)||0)>0?'pos':'neg'}),
           h(C.Kpi,{label:'Pay', value:(g.share*100).toFixed(1).replace('.',',')+'%'}),
@@ -847,12 +847,12 @@ window.TABS = (function(){
         h('p',null,'Trend etiketi Son 12 Ay / Önceki 12 Ay karşılaştırmasından gelir: ' +
           '+%5 üzeri Yükselen, −%5 altı Düşen, arası Stabil.')),
       h('div',{className:'grid grid-kpi kpi-4'},
-        sezG.map(s=>h(C.Kpi,{key:s.label, label:s.label, value:fmtNum(s.r12),
+        sezG.map(s=>h(C.Kpi,{key:s.label, label:s.label, value:fmtOrt(s.r12),
           sub:`${s.kwCount.toLocaleString('tr-TR')} keyword · %${(s.share*100).toFixed(1)}`,
           chip: s.ryoy==null?null:fmtPct(s.ryoy,0),
           chipClass: s.ryoy==null?'neu':(s.ryoy>0?'pos':'neg')}))),
       h(C.SectionHeader,{icon:'takvim', title:'Aylık talep ritmi',
-        desc:'Son 12 Ay · çubuğa gelin, ayın toplam hacmi görünür'}),
+        desc:'Son 12 Ay · çubuğa gelin, o ayın arama hacmi görünür'}),
       h('div',{className:'card'}, h(C.BarChart,{data:peakDag, height:230, yFormat:fmtNum, colorBy:'flat'})),
       h('div',{className:'grid grid-2', style:{marginTop:18}},
         h('div',{className:'card'},
@@ -891,12 +891,12 @@ window.TABS = (function(){
           'devreye girmez, SERP doğrudan web sonuçlarıyla başlar. Yayın hakkı sahibi bir platform ' +
           'için bu aile doğal üstünlük alanıdır.')),
       h('div',{className:'grid grid-kpi kpi-4'},
-        h(C.Kpi,{label:'İzleme Intent\'i', value:fmtNum(topR12(izleme)), accent:true,
+        h(C.Kpi,{label:'İzleme Intent\'i', value:fmtOrt(topR12(izleme)), accent:true,
           sub:izleme.length.toLocaleString('tr-TR')+' keyword · bileşen bastırmıyor'}),
-        h(C.Kpi,{label:'Veri Sayfası Talebi', value:fmtNum(topR12(veri)), sub:'bileşen cevabı veriyor'}),
-        h(C.Kpi,{label:'Navigasyonel', value:fmtNum(topR12(rows.filter(k=>k.it==='Navigasyonel'))),
+        h(C.Kpi,{label:'Veri Sayfası Talebi', value:fmtOrt(topR12(veri)), sub:'bileşen cevabı veriyor · aylık ort.'}),
+        h(C.Kpi,{label:'Navigasyonel', value:fmtOrt(topR12(rows.filter(k=>k.it==='Navigasyonel'))),
           sub:'çıplak varlık adı · hub sayfası ister'}),
-        h(C.Kpi,{label:'Maç & Takvim', value:fmtNum(topR12(rows.filter(k=>k.it==='Maç & Takvim'))),
+        h(C.Kpi,{label:'Maç & Takvim', value:fmtOrt(topR12(rows.filter(k=>k.it==='Maç & Takvim'))),
           sub:'fikstür sayfası cevaplar'})),
       h(SezonTakvimi,{rows, viewMode, baslik:'Sayfa tipi sezonsallığı',
         inisModu: !!inAlt, onSelectGroup: inAlt || onSelectGroup}),
@@ -912,7 +912,7 @@ window.TABS = (function(){
             metrics: kartMetrikleri(g, viewMode)})),
           onClick: it=>(inAlt ? inAlt('st', it.label) : onSelectGroup('st', it.label))}),
         h('div',{className:'txt-3', style:{fontSize:10.5, marginTop:10}},
-          'Sağ alttaki değer Son 12 Ay toplam arama hacmidir.')),
+          'Sağ alttaki değerler aylık ortalama arama hacmidir.')),
       h('div',{className:'grid grid-2', style:{marginTop:18}},
         h('div',{className:'card'}, h('h3',{style:{fontSize:14, marginBottom:12}},'Intent katmanı'),
           h(C.ShareBars,{rows:itG.map(g=>({label:g.label, value:g.r12, share:g.share, yoy:g.ryoy, title:grupAciklama(g, viewMode)}))})),
@@ -1044,15 +1044,15 @@ window.TABS = (function(){
                 onClick:()=>setKapsam(g[0])}, g[1]);
             })),
         h('div',{style:{marginLeft:'auto', fontSize:12.5}},
-          h('strong',null, fmtNum(topR12(kapsamli))), ' Son 12 Ay · ',
+          h('strong',null, fmtOrt(topR12(kapsamli))), ' aylık ort. · ',
           h('strong',null, fmtNum(kapsamli.length)), ' keyword')),
 
       h('div',{className:'grid grid-kpi kpi-4'},
         h(C.Kpi,{label:'Takım Kümesi', value:fmtNum(kumeler.length), accent:true,
           sub:'takım + oyuncularının aramaları birlikte'}),
-        h(C.Kpi,{label:'Takım Araması', value:fmtNum(tkTop),
+        h(C.Kpi,{label:'Takım Araması', value:fmtOrt(tkTop),
           sub:tkRows.length.toLocaleString('tr-TR')+' keyword'}),
-        h(C.Kpi,{label:'Oyuncu Araması', value:fmtNum(oyTop),
+        h(C.Kpi,{label:'Oyuncu Araması', value:fmtOrt(oyTop),
           sub:oyRows.length.toLocaleString('tr-TR')+' keyword'}),
         h(C.Kpi,{label:'Oyuncu Payı',
           value:'%'+(100*oyTop/((tkTop+oyTop)||1)).toFixed(1).replace('.',','),
@@ -1082,11 +1082,11 @@ window.TABS = (function(){
                   'data-tip':'Bu milli takımın keyword listesini aç',
                   onClick:()=>onNavigateKw({alan:'milli', deger:g.label})},
                   h('td',null, g.label),
-                  h('td',{className:'num'}, fmtNum(g.takimVol)),
+                  h('td',{className:'num'}, fmtOrt(g.takimVol)),
                   h('td',{className:'num col-hide-sm'}, (g.takimKw||0).toLocaleString('tr-TR')),
-                  h('td',{className:'num'}, fmtNum(g.oyuncuVol)),
+                  h('td',{className:'num'}, fmtOrt(g.oyuncuVol)),
                   h('td',{className:'num col-hide-sm'}, (g.oyuncuKw||0).toLocaleString('tr-TR')),
-                  h('td',{className:'num'}, h('strong',null, fmtNum(t))),
+                  h('td',{className:'num'}, h('strong',null, fmtOrt(t))),
                   h('td',{className:'num'},
                     h('span',{style:{fontWeight:600,
                       color: pay>=60 ? 'var(--accent-deep)' : 'var(--ink-2)'}},
@@ -1105,12 +1105,12 @@ window.TABS = (function(){
               showValues:true, showYoY:true,
               rows: kumeler.slice(0,25).map(function(g){
                 return {label:g.label,
-                  sub:[g.spor, g.org, fmtNum(g.r12)].filter(Boolean).join(' · '),
+                  sub:[g.spor, g.org, fmtOrt(g.r12)+'/ay'].filter(Boolean).join(' · '),
                   values: viewMode==='calendar'?g.cal25:g.roll,
                   prevValues: viewMode==='calendar'?g.cal24:g.prev,
                   peakIdx: viewMode==='calendar' ? g.peakIdxCal : g.peakIdx,
-                  title:[g.label,'Takım: '+fmtFull(g.takimVol),'Oyuncu: '+fmtFull(g.oyuncuVol),
-                    'Toplam: '+fmtFull(g.r12)].join('\n')};
+                  title:[g.label,'Takım: '+fmtOrt(g.takimVol)+'/ay','Oyuncu: '+fmtOrt(g.oyuncuVol)+'/ay',
+                    'Toplam: '+fmtOrt(g.r12)+'/ay · 12 ay toplamı '+fmtFull(g.r12)].join('\n')};
               }),
               // Satıra tıklandığında o takımın keyword'leri açılır:
               // takım aramaları ve oyuncularının aramaları birlikte.
@@ -1125,7 +1125,7 @@ window.TABS = (function(){
               {label:'Spor Dalı',key:'spor'},
               {label:'Takım Araması',key:'takimVol'},{label:'Takım KW',key:'takimKw'},
               {label:'Oyuncu Araması',key:'oyuncuVol'},{label:'Oyuncu KW',key:'oyuncuKw'},
-              {label:'Toplam Son 12 Ay',key:'r12'},{label:'Önceki 12 Ay',key:'p12'},
+              {label:'Son 12 Ay Toplam',key:'r12'},{label:'Önceki 12 Ay Toplam',key:'p12'},
               {label:'YoY %',get:r=>r.ryoy==null?'':(r.ryoy*100).toFixed(1)},
               {label:'Peak Ay',key:'peakLabel'}]))},
             h('span',{className:'btn-ikon'}, h(C.Ikon,{ad:'indir', size:13})), 'CSV')}),
@@ -1155,12 +1155,12 @@ window.TABS = (function(){
                               color:(window.SPOR_RENK||{})[g.spor]||'var(--ink-2)'}}, g.spor)),
                         h('div',{className:'cat-cell'}, g.org||'')))),
                   h('td',{style:{fontSize:12,color:'var(--ink-2)'}}, g.org||'–'),
-                  h('td',{className:'num', title:fmtFull(g.takimVol)+' arama'}, fmtNum(g.takimVol),
+                  h('td',{className:'num', title:fmtFull(g.takimVol)+' arama · dönem toplamı'}, fmtOrt(g.takimVol),
                     h('span',{className:'txt-3', style:{fontSize:10, marginLeft:5}}, g.takimKw+' kw')),
-                  h('td',{className:'num', title:fmtFull(g.oyuncuVol)+' arama'}, fmtNum(g.oyuncuVol),
+                  h('td',{className:'num', title:fmtFull(g.oyuncuVol)+' arama · dönem toplamı'}, fmtOrt(g.oyuncuVol),
                     h('span',{className:'txt-3', style:{fontSize:10, marginLeft:5}}, g.oyuncuKw+' kw')),
-                  h('td',{className:'num', title:fmtFull(g.r12)+' arama'},
-                    h('strong',null, fmtNum(g.r12))),
+                  h('td',{className:'num', title:fmtFull(g.r12)+' arama · dönem toplamı'},
+                    h('strong',null, fmtOrt(g.r12))),
                   h('td',{className:'num'}, '%'+(pay*100).toFixed(1).replace('.',',')),
                   h('td',{className:'num'}, h(YoY,{v:g.ryoy})),
                   h('td',{style:{width:110}}, h(C.Sparkline,{values:g.roll, w:100, h:26})),
@@ -1191,11 +1191,11 @@ window.TABS = (function(){
         h('p',null,'Öte yandan bu sorguların büyük bölümü Google\'ın spor bileşeni tarafından ' +
           'karşılandığından tıklama beklentisi ölçülü tutulmalıdır.')),
       h('div',{className:'grid grid-kpi kpi-4'},
-        h(C.Kpi,{label:'Yayın Hakkı Dışı Talep', value:fmtNum(topR12(disi)), accent:true,
+        h(C.Kpi,{label:'Yayın Hakkı Dışı Talep', value:fmtOrt(topR12(disi)), accent:true,
           sub:`toplam talebin %${(100*topR12(disi)/toplam).toFixed(1)}'i`}),
         h(C.Kpi,{label:'Organizasyon', value:orgG.length}),
         h(C.Kpi,{label:'Keyword', value:fmtNum(disi.length)}),
-        h(C.Kpi,{label:'İzleme Talebi', value:fmtNum(topR12(disi.filter(k=>k.it==='İzleme')))})),
+        h(C.Kpi,{label:'İzleme Talebi', value:fmtOrt(topR12(disi.filter(k=>k.it==='İzleme')))})),
       h(SezonTakvimi,{rows:disi, viewMode, baslik:'Hak dışı talep sezonsallığı',
         inisModu: !!inAlt, onSelectGroup: inAlt || onSelectGroup}),
       h(C.SectionHeader,{icon:'sinyal', title:'Hakkı olmayan organizasyonlar'}),
@@ -1227,6 +1227,8 @@ window.TABS = (function(){
   function sezonDisi(roll){
     return [...(roll||[])].sort((a,b)=>a-b).slice(0,6).reduce((a,b)=>a+b,0);
   }
+  // Sezon dışı taban 6 aylık toplamdır; gösterimde aylık ortalamaya çevrilir.
+  const sezonDisiOrt = n => fmtNum(Math.round((n||0)/6));
 
   // ══════════════════════════════════════════ KARAR AĞACI
   const KOVA_TANIM = {
@@ -1269,9 +1271,9 @@ window.TABS = (function(){
     if(o.sezType==='Spike'){
       if(surekli)
         return {karar:'Etkinlik Ölçekli · Sürekli Açık',
-          gerekce:`Talep etkinlik penceresinde yığılıyor ancak sezon dışında da sürüyor: en sakin altı ayın toplamı ${fmtNum(sd)}. Sayfa yıl boyu açık tutulabilir; etkinlik döneminde fikstür, sonuç ve yayın modülleriyle derinleşir, dönem dışında kadro, geçmiş karşılaşmalar ve genel bilgi katmanına iner.`};
+          gerekce:`Talep etkinlik penceresinde yığılıyor ancak sezon dışında da sürüyor: en sakin altı ayın aylık ortalaması ${sezonDisiOrt(sd)}. Sayfa yıl boyu açık tutulabilir; etkinlik döneminde fikstür, sonuç ve yayın modülleriyle derinleşir, dönem dışında kadro, geçmiş karşılaşmalar ve genel bilgi katmanına iner.`};
       return {karar:'Etkinlik Ölçekli',
-        gerekce:`Talep tek bir pencereye yığılıyor ve sezon dışı taban zayıf (en sakin altı ay ${fmtNum(sd)}). Aktif dönemde derinleşen, dönem bitince tek özet sayfaya inen yapı uygundur.` +
+        gerekce:`Talep tek bir pencereye yığılıyor ve sezon dışı taban zayıf (en sakin altı ayın aylık ortalaması ${sezonDisiOrt(sd)}). Aktif dönemde derinleşen, dönem bitince tek özet sayfaya inen yapı uygundur.` +
           (o.km==='Milli Takım' ? ' Milli takım kalıcı bir varlık olduğundan sayfa tamamen kapatılmak yerine kadro, geçmiş karşılaşmalar ve gelecek maç takvimiyle ince bir katmanda açık tutulabilir.' : '')};
     }
 
@@ -1284,7 +1286,7 @@ window.TABS = (function(){
 
     return {karar:'Landing',
       gerekce:'Talep anlamlı ancak alt sayfa derinliği sınırlı. Tek güçlü sayfa üzerinde izleme intent\'ine odaklanılabilir; veri tabloları sayfa içinde modül olarak durur.' +
-        (surekli ? ` Sezon dışı taban güçlü (${fmtNum(sd)}), sayfa yıl boyu açık kalabilir.` : '')};
+        (surekli ? ` Sezon dışı taban güçlü (aylık ort. ${sezonDisiOrt(sd)}), sayfa yıl boyu açık kalabilir.` : '')};
   }
 
   function KararTab({rows, viewMode, onSelectGroup, setKeywordModal, takimDahil}){
@@ -1295,13 +1297,7 @@ window.TABS = (function(){
     // altında da sayılır. Kulüp kendi ülke liginde kalmaya devam eder; bu görünüm
     // bilinçli olarak iki yerde birden sayar, çünkü soru "bu yarışma için sayfa
     // açarsam ne kadar talep kapsanır" sorusudur.
-    const kararRows = React.useMemo(()=>{
-      if(!takimDahil) return rows;
-      const ek = rows.filter(k=>k.avrupa && k.avrupa !== k.org)
-                     .map(k=>({...k, org:k.avrupa}));
-      return ek.length ? rows.concat(ek) : rows;
-    },[rows, takimDahil]);
-    const orgRows = React.useMemo(()=>groupBy(kararRows,'org').map(g=>{
+    const orgRows = React.useMemo(()=>groupBy(rows,'org').map(g=>{
       // Alt sayfa derinliği: hub altında ayrı URL hak eden her katman.
       // Takım ve oyuncu katmanı da buraya dahildir; yalnızca veri sayfalarına
       // bakmak takım ağırlıklı ligleri olduğundan sığ gösteriyordu (Süper Lig
@@ -1321,7 +1317,7 @@ window.TABS = (function(){
       const km = (g.rows.find(k=>k.km)||{}).km || '';
       const o = {...g, altPay: g.r12 ? alt/g.r12 : 0, omurga, izleme:izl, hak, spor, km};
       return {...o, ...kararVer(o)};
-    }),[kararRows]);
+    }),[rows, takimDahil]);
     const tabloSatir = tabloKova ? orgRows.filter(o=>o.karar===tabloKova) : orgRows;
     const kovalar=['Hub','Landing','Etkinlik Ölçekli · Sürekli Açık','Etkinlik Ölçekli','Veri Sayfası','Şimdilik Değil'];
     const RENK={'Hub':'#2E7D32','Landing':'#4E79A7','Etkinlik Ölçekli · Sürekli Açık':'#59A14F',
@@ -1350,7 +1346,7 @@ window.TABS = (function(){
             h('div',{className:'bar', style:{background:RENK[k]}}),
             h('div',{className:'label'}, k, ' ', h('span',{className:'kova-i'},'\u24D8')),
             h('div',{className:'value'}, sec.length),
-            h('div',{className:'sub'}, fmtNum(sec.reduce((a,o)=>a+o.r12,0))+' Son 12 Ay'));
+            h('div',{className:'sub'}, fmtOrt(sec.reduce((a,o)=>a+o.r12,0))+' aylık ort.'));
         })),
       acikKova ? (function(){
         const sec = orgRows.filter(o=>o.karar===acikKova);
@@ -1427,13 +1423,13 @@ window.TABS = (function(){
                         x.spor)),
                     h('td',{className:'num'}, x.orgAdet),
                     h('td',{className:'num'}, x.tkKw.toLocaleString('tr-TR')),
-                    h('td',{className:'num'}, h('strong',null, fmtFull(x.tkVol))),
+                    h('td',{className:'num'}, h('strong',null, fmtOrt(x.tkVol))),
                     h('td',{className:'num'}, x.oyKw.toLocaleString('tr-TR')),
-                    h('td',{className:'num'}, fmtFull(x.oyVol)),
-                    h('td',{className:'num'}, h('strong',null, fmtNum(x.toplam))),
+                    h('td',{className:'num'}, fmtOrt(x.oyVol)),
+                    h('td',{className:'num'}, h('strong',null, fmtOrt(x.toplam))),
                     h('td',{className:'num'}, x.dgKw.toLocaleString('tr-TR')),
-                    h('td',{className:'num'}, fmtFull(x.dgVol)),
-                    h('td',{className:'num'}, h('strong',null, fmtNum(x.dikeyToplam))));
+                    h('td',{className:'num'}, fmtOrt(x.dgVol)),
+                    h('td',{className:'num'}, h('strong',null, fmtOrt(x.dikeyToplam))));
                 })))),
             h('div',{className:'txt-3', style:{fontSize:10.5, padding:'10px 14px',
               borderTop:'1px solid var(--line)'}},
@@ -1505,10 +1501,10 @@ window.TABS = (function(){
                 h('td',null, h('span',{className:'pill', style:{
                   background:`color-mix(in srgb, ${RENK[o.karar]} 15%, transparent)`,
                   color:RENK[o.karar], fontWeight:600, whiteSpace:'nowrap'}}, o.karar)),
-                h('td',{className:'num', title:fmtFull(oncekiHacimFor(o, viewMode))+' arama'},
-                  fmtNum(oncekiHacimFor(o, viewMode))),
-                h('td',{className:'num', title:fmtFull(hacimFor(o, viewMode))+' arama'},
-                  fmtNum(hacimFor(o, viewMode))),
+                h('td',{className:'num', title:fmtFull(oncekiHacimFor(o, viewMode))+' arama · dönem toplamı'},
+                  fmtOrt(oncekiHacimFor(o, viewMode))),
+                h('td',{className:'num', title:fmtFull(hacimFor(o, viewMode))+' arama · dönem toplamı'},
+                  fmtOrt(hacimFor(o, viewMode))),
                 h('td',{className:'num'}, h(YoY,{v:yoyFor(o, viewMode), tip:yoyEtiketFor(viewMode)})),
                 h('td',{style:{width:110}}, h(C.Sparkline,{values:o.roll, w:100, h:26,
                   color:RENK[o.karar]})),
@@ -1518,16 +1514,16 @@ window.TABS = (function(){
                 h('td',{className:'num'}, '%'+(o.altPay*100).toFixed(1)),
                 h('td',{className:'num', title:'En sakin altı ayın toplam arama hacmi'},
                   h('span',{style:{color: sd>=SEZON_DISI_ESIK ? 'var(--green)' : 'var(--ink-3)',
-                    fontWeight: sd>=SEZON_DISI_ESIK ? 600 : 400}}, fmtNum(sd))),
-                h('td',{className:'num'}, fmtNum(o.izleme)),
+                    fontWeight: sd>=SEZON_DISI_ESIK ? 600 : 400}}, sezonDisiOrt(sd))),
+                h('td',{className:'num'}, fmtOrt(o.izleme)),
                 h('td',null, h('span',{style:{color:SEZ_RENK[o.sezType], fontWeight:600}}, o.sezType)),
                 h('td',null, h('span',{className:'pill '+
                   (o.hak==='TV+ Var'?'pos':o.hak==='TV+ Yok'?'neg':'neu')}, o.hak)));
             })))),
         h('div',{className:'txt-3', style:{fontSize:10.5, padding:'10px 14px',
           borderTop:'1px solid var(--line)'}},
-          'Sezon Dışı kolonu, Son 12 Ay penceresindeki en sakin altı ayın toplam arama hacmidir. ',
-          fmtNum(SEZON_DISI_ESIK), ' üzerindeki organizasyonlarda sayfa yıl boyu açık tutulabilir; ',
+          'Sezon Dışı kolonu, Son 12 Ay penceresindeki en sakin altı ayın aylık ortalama arama hacmidir. ',
+          sezonDisiOrt(SEZON_DISI_ESIK), ' aylık ortalamayı aşan organizasyonlarda sayfa yıl boyu açık tutulabilir; ',
           'talep etkinlik penceresi dışında da sürmektedir.')),
 
       (function(){
@@ -1564,7 +1560,7 @@ window.TABS = (function(){
               'Bir lig için takım sayfası açıldığında ligin tamamı kapsanır. Fikstür, puan durumu ve ',
               'rakip eşleşmesi sayfaları lig içindeki her takıma bağlantı verdiğinden, açılmayan bir ',
               'takım bu bağlantıların ucunu boş bırakır. Aşağıdaki eşik sayfanın açılıp açılmayacağını ',
-              'değil, hangi gerekçeyle açıldığını ayırır: ', h('b',null, fmtNum(TAKIM_KENDI_ESIK)),
+              'değil, hangi gerekçeyle açıldığını ayırır: ', h('b',null, fmtOrt(TAKIM_KENDI_ESIK)+'/ay'),
               ' üzerindeki takımlar kendi talebini taşır, altındakiler lig bütünlüğü için açılır.'),
             h('div',{className:'tbl-wrap'},
               h('table',{className:'tbl'},
@@ -1586,7 +1582,7 @@ window.TABS = (function(){
                     h('td',{className:'num'}, o.takimlar.length),
                     h('td',{className:'num', style:{color:'var(--green)', fontWeight:600}}, o.kendi.length),
                     h('td',{className:'num', style:{color:'var(--gold)', fontWeight:600}}, o.butun.length),
-                    h('td',{className:'num'}, fmtNum(o.butunHacim)),
+                    h('td',{className:'num'}, fmtOrt(o.butunHacim)),
                     h('td',{className:'cat-cell', style:{maxWidth:320}},
                       o.butun.slice(0,6).map(x=>x.ad).join(' · ') +
                       (o.butun.length>6 ? ' · +'+(o.butun.length-6) : '') || '-')))))),
@@ -1613,9 +1609,9 @@ window.TABS = (function(){
               const tipDagilim = {};
               altRows.forEach(k=>{ tipDagilim[k.st]=(tipDagilim[k.st]||0)+(k.r12||0); });
               const tipMetin = Object.entries(tipDagilim).sort((a,b)=>b[1]-a[1])
-                .map(([t,v])=>t+' '+fmtNum(v)).join(' · ') || 'alt sayfa sorgusu yok';
+                .map(([t,v])=>t+' '+fmtOrt(v)).join(' · ') || 'alt sayfa sorgusu yok';
               const top5 = altRows.slice().sort((a,b)=>(b.r12||0)-(a.r12||0)).slice(0,5)
-                .map(k=>k.kw+' ('+fmtNum(k.r12)+')').join('\n');
+                .map(k=>k.kw+' ('+fmtOrt(k.r12)+'/ay)').join('\n');
               // 2026 ortalaması gerçek 2026 aylarından alınır; r12/12 değil,
               // çünkü son 12 ay penceresi 2025 aylarını da içeriyor.
               const ay26 = aggregateMonthly(o.rows, 'm26');
@@ -1633,9 +1629,9 @@ window.TABS = (function(){
                     background:`color-mix(in srgb, ${RENK[o.karar]} 16%, transparent)`,
                     color:RENK[o.karar], fontWeight:600}}, o.karar)),
                 h('dl',{className:'gerekce-olcut'},
-                  h('dt',{className:'ipuclu', 'data-tip':fmtFull(o.r12)+' arama'},
+                  h('dt',{className:'ipuclu', 'data-tip':fmtFull(o.r12)+' arama · 12 ay toplamı'},
                     'Son 12 ay toplam hacim'),
-                  h('dd',null, fmtNum(o.r12)),
+                  h('dd',null, fmtOrt(o.r12)),
                   h('dt',{className:'ipuclu',
                     'data-tip':'2026 yılının ölçülen aylarının ortalaması, '+donem26
                       +'. Son 12 ay penceresi 2025 aylarını da içerdiği için bundan ayrışır.'},
@@ -1807,6 +1803,10 @@ window.TABS = (function(){
       d.v[0]+=k.r12||0; d.k[0]++;
       if(i>0){ d.v[i]+=k.r12||0; d.k[i]++; }
     };
+    // Takım katmanı dahil bayrağı açıkken bir yarışmada oynayan kulüplerin
+    // satırları o yarışmanın altında da sayılır. groupBy ile aynı kural; ağaç
+    // kendi toplamını kurduğu için burada da uygulanması gerekiyor.
+    if(U.takimDahil) rows = U.orgGenislet(rows);
     for(const k of rows){
       const s=k.spor||'Diğer', o=k.org||'Belirsiz', t=k.takim||null;
       if(!kok.has(s)) kok.set(s, bos(s));
@@ -1819,7 +1819,7 @@ window.TABS = (function(){
     return diz(kok);
   }
 
-  function KirilimTab({rows, onNavigateKw}){
+  function KirilimTab({rows, onNavigateKw, takimDahil}){
     const [gorunum, setGorunum] = React.useState(function(){
       try { return localStorage.getItem('tvplus.kirilim.gorunum') || 'karo'; }
       catch(e){ return 'karo'; }
@@ -1837,7 +1837,7 @@ window.TABS = (function(){
       try { localStorage.setItem('tvplus.kirilim.gorunum', gorunum); } catch(e){}
     }, [gorunum]);
 
-    const agac = React.useMemo(()=>kirilimAgaci(rows), [rows]);
+    const agac = React.useMemo(()=>kirilimAgaci(rows), [rows, takimDahil]);
 
     // Yol boyunca ilerleyip bulunulan seviyenin listesini döndürür
     const konum = React.useMemo(function(){
@@ -1897,7 +1897,7 @@ window.TABS = (function(){
       const t=d.v[1]||0, o=d.v[2]||0, s=t+o;
       if(!s) return null;
       return h('span',{className:'kr-bar',
-        'data-tip':'Takım araması '+fmtNum(t)+' · oyuncu araması '+fmtNum(o)},
+        'data-tip':'Takım araması '+fmtOrt(t)+'/ay · oyuncu araması '+fmtOrt(o)+'/ay'},
         h('i',{className:'t', style:{width:(100*t/s).toFixed(1)+'%'}}),
         h('i',{className:'o', style:{width:(100*o/s).toFixed(1)+'%'}}));
     }
@@ -1934,7 +1934,7 @@ window.TABS = (function(){
                   'data-tip': alt ? 'Aç: '+alt+' '+KIRILIM_SEVIYE[lv+1][1].toLocaleLowerCase('tr')
                                   : 'Keyword listesine git'},
                   h('span',{className:'kr-karo-ad', title:d.n}, d.n),
-                  h('span',{className:'kr-karo-hacim'}, fmtNum(d.v[kapsam])),
+                  h('span',{className:'kr-karo-hacim'}, fmtOrt(d.v[kapsam])),
                   h('span',{className:'kr-karo-alt'},
                     d.k[kapsam].toLocaleString('tr-TR')+' kw' +
                     (alt ? ' · '+alt+' '+(lv===0?'org':'takım') : '')),
@@ -1977,7 +1977,7 @@ window.TABS = (function(){
                     onClick:()=>tikla(lv,d),
                     'data-tip': d.k[kapsam].toLocaleString('tr-TR')+' keyword'},
                     h('span',{className:'kr-sat-ad', title:d.n}, d.n),
-                    h('span',{className:'kr-sat-hacim'}, fmtNum(d.v[kapsam]))))
+                    h('span',{className:'kr-sat-hacim'}, fmtOrt(d.v[kapsam]))))
                 : h('div',{className:'kr-bos'},
                     lv>yol.length ? 'Soldaki sütundan seçin' : 'Bu kapsamda kayıt yok')));
         }));
@@ -2020,7 +2020,7 @@ window.TABS = (function(){
             h('span',{className:'kr-etiket'},'Min hacim'),
             h('input',{type:'range', min:0, max:KIRILIM_ESIK.length-1, step:1, value:esik,
               onChange:e=>setEsik(+e.target.value)}),
-            h('b',null, esik===0 ? 'yok' : fmtNum(KIRILIM_ESIK[esik]))),
+            h('b',null, esik===0 ? 'yok' : fmtOrt(KIRILIM_ESIK[esik])+'/ay')),
 
           (yol.length>0 || q || esik>0 || kapsam>0) &&
             h('button',{className:'chip-btn sessiz',
@@ -2037,7 +2037,7 @@ window.TABS = (function(){
           h('span',{className:'kr-iz-ozet'},
             h('strong',null, KIRILIM_SEVIYE[seviyeIdx][1]), ' · ',
             h('strong',null, gorunenler.length.toLocaleString('tr-TR')), ' kayıt · ',
-            h('strong',null, fmtNum(toplamHacim)), ' Son 12 Ay · ',
+            h('strong',null, fmtOrt(toplamHacim)), ' aylık ort. · ',
             h('strong',null, toplamKw.toLocaleString('tr-TR')), ' keyword',
             kapsam>0 && h('span',{className:'kr-iz-kapsam'}, ' (yalnız '+kapsamAd+')')),
           yol.length>0 && h('button',{className:'chip-btn sessiz kr-ust',

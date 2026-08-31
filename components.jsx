@@ -1,6 +1,6 @@
 // Reusable components
 window.C = (function(){
-  const { fmtNum, fmtFull, fmtPct, TR_MONTHS, TR_MONTHS_LONG, hmColor, hmText, sparkPath, serialToMonthIdx } = U;
+  const { fmtNum, fmtOrt, fmtFull, fmtPct, TR_MONTHS, TR_MONTHS_LONG, hmColor, hmText, sparkPath, serialToMonthIdx } = U;
   const h = React.createElement;
   const BRAND_SLUG = ((window.BRAND && window.BRAND.slug) || 'dashboard').replace(/[^a-z0-9-]/gi, '').toLowerCase() || 'dashboard';
 
@@ -249,7 +249,8 @@ window.C = (function(){
               title: r.title||undefined}, r.label),
               r.share != null && h('span',{className:'txt-3', style:{marginLeft:6}}, ' ' + (r.share*100).toFixed(1).replace('.',',')+'%')
             ),
-            h('div',{className:'num', style:{fontWeight:600}, title: fmtFull(r.value)}, fmtNum(r.value),
+            h('div',{className:'num', style:{fontWeight:600},
+              title: fmtFull(r.value)+' arama · dönem toplamı'}, fmtOrt(r.value),
               r.yoy != null && h('span',{style:{marginLeft:8}}, h(YoYPill,{yoy:r.yoy}))
             )
           ),
@@ -791,7 +792,7 @@ window.C = (function(){
   // Grid of mini line/bar charts - one per category, all on same y-scale optional
   // items: [{label, color, values, sub}]
   function SmallMultiples({ items, height=56, monthsLabels=TR_MONTHS, yScale='shared', onClick,
-                            toplamEtiket='Son 12 Ay', yoyEtiket='YoY' }) {
+                            toplamEtiket='Son 12 Ay ort.', yoyEtiket='YoY' }) {
     const globalMax = yScale === 'shared' ? Math.max(1, ...items.flatMap(it => it.values)) : null;
     return h('div',{className:'small-mults'},
       items.map((it, idx) => h(SmallMultipleItem, {
@@ -803,7 +804,7 @@ window.C = (function(){
   }
 
   function SmallMultipleItem({ item: it, max, height, monthsLabels, onClick,
-                               toplamEtiket='Son 12 Ay', yoyEtiket='YoY' }) {
+                               toplamEtiket='Son 12 Ay ort.', yoyEtiket='YoY' }) {
     const [hoverI, setHoverI] = React.useState(null);
     const svgRef = React.useRef(null);
     const peakI = it.values.indexOf(Math.max(...it.values));

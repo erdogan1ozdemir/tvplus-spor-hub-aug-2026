@@ -42,40 +42,6 @@ window.C = (function(){
   }
 
   // ======== Tooltip singleton ========
-  function useTooltip() {
-    const [tip, setTip] = React.useState(null);
-    const tipRef = React.useRef(null);
-    const showTip = (e, content) => {
-      setTip({ x: e.clientX, y: e.clientY, content });
-    };
-    const moveTip = (e) => {
-      setTip(t => t ? { ...t, x: e.clientX, y: e.clientY } : null);
-    };
-    const hideTip = () => setTip(null);
-
-    // Adjust position after render to keep tip on-screen
-    React.useLayoutEffect(() => {
-      const el = tipRef.current;
-      if (!el || !tip) return;
-      const w = el.offsetWidth, hh = el.offsetHeight;
-      const pad = 12;
-      let left = tip.x + 14;
-      let top  = tip.y - 10;
-      if (left + w + pad > window.innerWidth)  left = tip.x - w - 14;
-      if (top  + hh + pad > window.innerHeight) top  = tip.y - hh - 14;
-      if (left < pad) left = pad;
-      if (top  < pad) top  = pad;
-      el.style.left = left + 'px';
-      el.style.top  = top  + 'px';
-    });
-
-    const tipEl = tip && h('div', {
-      ref: tipRef,
-      className:'chart-tip',
-      style:{ left: -9999, top: -9999 }
-    }, tip.content);
-    return { tipEl, showTip, moveTip, hideTip };
-  }
 
 
   // ======== İkon seti ========

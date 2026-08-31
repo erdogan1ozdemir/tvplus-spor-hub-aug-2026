@@ -1,5 +1,7 @@
 node_modules/
 data/raw/_wiki_cache/
+data/raw/_wiki_kadro_cache/
+data/raw/_tm_cache/
 data/raw/_*.txt
 .DS_Store
 *.log

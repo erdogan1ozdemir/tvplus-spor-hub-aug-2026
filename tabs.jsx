@@ -27,10 +27,6 @@ window.TABS = (function(){
     const sirali = Object.entries(say).sort((a,b)=>b[1]-a[1]);
     return sirali.length ? sirali[0][0] : null;
   }
-  function tamYol(g){
-    const u = ustDeger(g);
-    return u && u !== g.label ? u + ' / ' + g.label : g.label;
-  }
   // Grup başlığına gelince ne içerdiğini anlatan metin
   function grupAciklama(g, viewMode){
     if(!g.rows || !g.rows.length) return g.label;

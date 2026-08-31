@@ -720,3 +720,21 @@ Kullanıcı geri bildirimi: görselleştirme, dinamizm ve YoY açısından eksik
 - **Mevsimsellik dalı onarıldı:** `Spike` kontrolündeki `altPay<0.12` kısıtı, genişletilmiş derinlik ölçütüyle hiç sağlanmaz olmuş ve "Etkinlik Ölçekli · Sürekli Açık" kovasını boşaltmıştı. Kısıt kaldırıldı; mevsimsellik derinlikten önce geliyor.
 - **Sayı biçimi:** `fmtNum` üç anlamlı basamağa geçti (1.500 → 1,5K · 2.340.000 → 2,34M · 336.300.000 → 336M). Karar Ağacı, Gruplar, Yayın Hakkı Dışı ve Takım & Oyuncu tablolarındaki tam sayılar kısaltıldı; tam değer hücre tooltip'inde duruyor. Keyword tablosu değiştirilmedi.
 - Dokuz sekme 375px ve 1440px'te taşma/sıkışma denetiminden temiz geçti.
+
+### Repo denetimi
+Talep üzerine tüm repo tarandı. Bulunanlar ve yapılanlar:
+
+**Düzeltildi**
+- `.gitignore`'da dizin adı yanlıştı (`_wiki_cache/` yazılmış, gerçek adlar `_wiki_kadro_cache/` ve `_tm_cache/`). 405 scrape HTML dosyası (91 MB) git'te izleniyordu; takipten çıkarıldı, diskte duruyor. `.git` 145 MB.
+- `package.json` var olmayan `scripts/build-data.test.js` dosyasına işaret ediyordu; `test` script'i kaldırıldı.
+- Build çıktısı "Keyword: 19296" yazıyordu ama dashboard 17.880 gösteriyordu. Artık ikisini birden yazıyor: kapsamda / okunan / mükerrer / mantık denetimiyle kapsam dışı.
+- Ölü fonksiyonlar silindi: `tamYol` (tabs.jsx), `useTooltip` (components.jsx).
+- README tamamen eskiydi (4.059 keyword, 13 ay, 9 sekme, "Organizasyonlar" sekmesi). Gerçek duruma göre yeniden yazıldı; kırılım yolu, karar çerçevesi ve düzeltme script'leri eklendi.
+- **Erzurumspor düzeltmesi eksik kalmış:** kural yalnızca keyword metnine bakıyordu, oyuncu satırlarında takım adı `kulup` kolonunda duruyor. 72 satır Süper Lig'de kalmıştı. Kural `kulup` kolonunu da eşleştirecek şekilde genişletildi, 304 satır taşındı. Küme artık tek ligde: TFF 1. Lig 7,6M.
+
+**Karar bekleyen bulgular**
+- Aynı kulüp iki ligde: antalyaspor (TFF 1. Lig 11,8M / Süper Lig 908K), kayserispor, pendikspor, fatih karagümrük. Erzurumspor'la aynı sınıf; hangi ligde olacakları karar gerektiriyor.
+- Aynı kulüp iki takım anahtarında: celta vigo / rc celta de vigo / rc vigo · hull city / hull afc / hull city afc. La Liga ve Premier Lig takım sayıları bu yüzden şişkin.
+- Wikipedia kaynaklı 14 İngilizce takım anahtarı (4,6M) Türkçe adlarına eşlenmemiş: `vakıfbank s.k. (women's volleyball)`, `beşiktaş j.k. (basketball)`, `fenerbahçe basketball` gibi.
+- Küçük çapraz sızıntı: 43 takım birden çok organizasyonda (fenerbahçe Ligue 1'de 50,7K, trabzonspor Premier Lig'de 105,1K).
+- Portföyün yarısı (8.610 satır) 1.000 altında hacim taşıyor; 172 satır sıfır.

@@ -321,7 +321,8 @@ const ryoy = oran(DATA.meta.toplamR12, DATA.meta.toplamP12);
 console.log(`Dosya       : ${dosyalar.join(', ')}`);
 console.log(`Takvim      : ${yillar.join(' / ')}  (${AY.length} ay: ${AY[0]} → ${AY[AY.length-1]})`);
 console.log(`Rolling     : Son 12 ${monthsR12[0]}→${monthsR12[11]} | Önceki 12 ${monthsP12[0]||'–'}→${monthsP12[11]||'–'}`);
-console.log(`Keyword     : ${keywords.length} (mükerrer elenen: ${mukerrer})`);
+console.log(`Keyword     : ${jenerik.length} kapsamda · ${keywords.length} okundu ` +
+  `(mükerrer elenen: ${mukerrer}, mantık denetimiyle kapsam dışı: ${keywords.length - jenerik.length})`);
 console.log(`Son 12 Ay   : ${DATA.meta.toplamR12.toLocaleString('tr-TR')}`);
 console.log(`Önceki 12 Ay: ${DATA.meta.toplamP12.toLocaleString('tr-TR')}  → YoY ${ryoy==null?'–':(ryoy*100).toFixed(1)+'%'}`);
 console.log(`Çıktı       : data/dashboard.js (${mb} MB)`);

@@ -46,8 +46,12 @@ for d in dosyalar:
                 r["organizasyon"] = yeni
                 sayac[f"{org} -> {yeni}"] += 1; degisti = True
 
+        # Eşleşme hem keyword metnine hem kulüp kolonuna bakar: oyuncu
+        # satırlarında takım adı keyword'de geçmez, yalnızca kulup alanında
+        # durur. Sadece keyword'e bakmak bu satırları geride bırakıyordu.
+        kulup = (r.get("kulup") or "").strip().lower()
         for ad, k in TAKIM.items():
-            if ad in kw and org == k["eski"]:
+            if (ad in kw or ad == kulup) and org == k["eski"]:
                 r["faset_notu"] = f"Lig düzeltmesi: {k['eski']} yerine {k['yeni']} · {k['gerekce']}"
                 r["organizasyon"] = k["yeni"]
                 sayac[f"{ad}: {k['eski']} -> {k['yeni']}"] += 1; degisti = True

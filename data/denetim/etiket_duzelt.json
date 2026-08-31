@@ -190,19 +190,11 @@
     "Avrupa Ligi Elemeleri": "UEFA Avrupa Ligi",
     "Konferans Ligi Elemeleri": "UEFA Konferans Ligi"
   },
-  "_spor_haric_notu": "Ayni kulubun farkli branslari ayni adi tasiyorsa anahtar bolunmez; satirlar tek kumede kalir ve kulup her iki organizasyonda da sayilir. Bolme yalnizca gercekten farkli kulupler icin gecerlidir (tokat belediye plevne futbol kulubu ile voleybol kulubu gibi).",
+  "_spor_haric_notu": "Ayni kulubun basketbol ve voleybol takimlari ayni adi tasiyorsa anahtar bolunmez; satirlar tek kumede kalir ve kulup her iki organizasyonda da sayilir. Futbol ile basketbol arasindaki ad cakismalari (olympiakos, panathinaikos, partizan, maccabi, hapoel, zalgiris, baskonia, bayern munih) ayri kuluplerdir ve bolunur: birlestirilince futbolcular basketbol ligine, Avrupa kupasi etiketi de basketbol oyuncusuna tasiniyordu.",
   "SPOR_AYIRMA_HARIC": [
     "fenerbahçe opet",
     "beşiktaş",
     "galatasaray",
-    "fenerbahçe",
-    "olympiakos",
-    "panathinaikos",
-    "partizan",
-    "maccabi tel aviv",
-    "hapoel tel aviv",
-    "zalgiris",
-    "baskonia",
-    "bayern münih"
+    "fenerbahçe"
   ]
 }

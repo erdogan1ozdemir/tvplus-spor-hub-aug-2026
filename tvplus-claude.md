@@ -799,3 +799,14 @@ Doğrulanan etki (UEFA Şampiyonlar Ligi, aylık ort.):
 - Sayfa Tipi & Intent · organizasyon eksenine inildiğinde aynı şekilde
 
 Etkilenmeyenler (tasarım gereği): Keyword ve Master liste satır listeleridir, orada satır çoğaltmak yanlış olur; Takım & Oyuncu küme tablosu takım bazlıdır, organizasyon toplamı taşımaz.
+
+### Filtre sızıntısı ve Avrupa etiketi çakışmaları giderildi
+**Filtre sızıntısı.** Organizasyon filtresi seçiliyken bayrak açıldığında kulüplerin kendi ligleri de listede kalıyordu (UCL seçiliyken Süper Lig, La Liga, Premier Lig satırları). Sebebi: `applyFacets` satırı yalnızca eşleştirip bırakıyordu, satır kendi `org` değerini koruyordu. Artık `avrupa` üzerinden kapsama giren satır o yarışmaya **taşınıyor**; aynı düzeltme `yoluUygula`'ya da uygulandı. UCL filtresiyle Gruplar tek satır, Kırılım tek spor dalı gösteriyor.
+
+**Kırılım'daki basketbol sızıntısı.** `bayern münih` anahtarı futbol ve basketbol kulübünü birlikte taşıyordu ve Şampiyonlar Ligi etiketi basketbol oyuncusuna (andreas obst, 33,3K) da yazılıyordu. Futbol/basketbol ad çakışmaları ayrı kulüptür, spor ayrımı listesinden çıkarıldı.
+
+**Kapsam kuralı netleşti.** `SPOR_AYIRMA_HARIC` yalnızca aynı kulübün basketbol-voleybol takımları için geçerli (talebiniz buydu). Futbol/basketbol çakışmaları (olympiakos, panathinaikos, partizan, maccabi, hapoel, zalgiris, baskonia, bayern münih) bölünüyor; birleştirildiğinde 204 futbolcu satırı basketbol ligine yazılıyordu.
+
+**Kupa çelişkisi kuralı.** Eleme birleştirmesi bir kulübü yanlış kupanın altına koyabiliyordu: Union Saint-Gilloise Şampiyonlar Ligi elemesinde oynayıp Avrupa Ligi lig aşamasına düştü. Güncel üyelik `avrupa` alanındadır, `org` ondan alınıyor. 16 satır düzeldi.
+
+**Etiket çakışma taraması (son durum):** oyuncu-kulüp organizasyon uyuşmazlığı 0 · Avrupa etiketi futbol dışı satırda 0 · kupa çelişkisi 0 · çoklu sporlu takım 1 (fenerbahçe opet, kasıtlı) · çoklu organizasyonlu takım 5 (hepsi gerçek çift üyelik).

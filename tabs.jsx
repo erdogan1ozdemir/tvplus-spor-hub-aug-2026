@@ -1003,8 +1003,14 @@ window.TABS = (function(){
         const k = takimKumeleri(r, adim.eksen).find(g=>g.label===adim.deger);
         r = k ? k.rows : [];
       } else if(takimDahil && adim.eksen==='org'){
-        // Organizasyon kırılımında o yarışmada oynayan kulüpler de kapsama girer
-        r = r.filter(k => k.org === adim.deger || k.avrupa === adim.deger);
+        // Yarışmada oynayan kulüpler kapsama girer ve o yarışmaya taşınır;
+        // kulübün kendi ligi kırılımda ayrı bir satır olarak kalmaz.
+        const yeni = [];
+        for(const k of r){
+          if(k.org === adim.deger) yeni.push(k);
+          else if(k.avrupa === adim.deger) yeni.push({...k, org:adim.deger});
+        }
+        r = yeni;
       } else {
         r = r.filter(k => k[adim.eksen] === adim.deger);
       }

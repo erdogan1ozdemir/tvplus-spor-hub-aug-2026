@@ -299,6 +299,10 @@ for(const k of keywords){
   if(k.takim && ETIKET.LIG_2627[k.takim]) k.org = ETIKET.LIG_2627[k.takim];
   if(k.takim && ETIKET.AVRUPA_2627[k.takim]) k.avrupa = ETIKET.AVRUPA_2627[k.takim];
   else if(k.avrupa && !ETIKET.AVRUPA_2627[k.takim]) delete k.avrupa;
+  // Eleme turu birleştirmesi bir kulübü yanlış kupanın altına koyabiliyor:
+  // Union Saint-Gilloise Şampiyonlar Ligi elemesinde oynayıp Avrupa Ligi lig
+  // aşamasına düştü. Güncel üyelik avrupa alanındadır, org ondan alınır.
+  if(k.avrupa && /^UEFA /.test(k.org || '') && k.org !== k.avrupa) k.org = k.avrupa;
 }
 
 // ——————————————————————————— tek takım, tek organizasyon

@@ -274,9 +274,19 @@ window.U = (function(){
     for(const [alan, degerler] of Object.entries(f||{})){
       if(!degerler || !degerler.length) continue;
       const s = new Set(degerler);
-      out = (takimDahil && alan==='org')
-        ? out.filter(r => s.has(r.org) || s.has(r.avrupa))
-        : out.filter(r => s.has(r[alan]));
+      if(takimDahil && alan==='org'){
+        // Kulüp ikincil üyeliğiyle kapsama giriyorsa satır o yarışmaya taşınır.
+        // Yalnızca eşleştirip bıraksaydık kulübün kendi ligi de (Real Madrid
+        // için La Liga) seçili organizasyonun yanında listelenirdi.
+        const yeni = [];
+        for(const r of out){
+          if(s.has(r.org)) yeni.push(r);
+          else if(s.has(r.avrupa)) yeni.push({...r, org:r.avrupa});
+        }
+        out = yeni;
+      } else {
+        out = out.filter(r => s.has(r[alan]));
+      }
     }
     if(arama && arama.trim()){
       const q = arama.trim().toLowerCase();

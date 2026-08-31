@@ -784,3 +784,18 @@ Talep üzerine tüm takım ve organizasyon etiketleri güncel kaynaklardan doğr
 - Kısaltılmamış sayı taraması yapıldı, sayfada kalan uzun sayı yok (yalnızca keyword sayıları binlik ayraçla, ki doğrusu bu).
 
 Dokuz sekme 375px ve 1440px'te temiz.
+
+### Takım katmanı bayrağı gerçekten çalışır hale getirildi
+Bir önceki turda bayrağı `groupBy` içine koymak yetmemişti: sonuçlar `React.useMemo` ile önbellekleniyor ve bağımlılık listesinde bayrak yoktu, bu yüzden bayrak değişince önbellekteki gruplar dönüyordu. Ekranda hiçbir şey değişmiyordu.
+
+Düzeltme: `takimDahil` prop olarak SezonTakvimi'ne, OzetTab'a, GruplarTab'a, SayfaTipiTab'a ve HakDisiTab'a geçirildi ve ilgili üç memo bağımlılık listesine eklendi (SezonTakvimi grupları, GruplarTab grupları, OzetTab kırılımı).
+
+Doğrulanan etki (UEFA Şampiyonlar Ligi, aylık ort.):
+- Özet · pazar payı ve donut: 4,21M / %1,6 → **138M / %31,6**
+- Gruplar · sezonsallık matrisi ve grup tablosu: 4,21M → **138M**
+- Kırılım · karo ve sütun görünümü: 4,21M → **138M**
+- Karar Ağacı · kova kartları ve karar tablosu: Etkinlik Ölçekli 4,21M → **Hub 138M**
+- Yayın Hakkı Dışı · organizasyon tablosu: UCL listede yokken **120M** ile giriyor
+- Sayfa Tipi & Intent · organizasyon eksenine inildiğinde aynı şekilde
+
+Etkilenmeyenler (tasarım gereği): Keyword ve Master liste satır listeleridir, orada satır çoğaltmak yanlış olur; Takım & Oyuncu küme tablosu takım bazlıdır, organizasyon toplamı taşımaz.

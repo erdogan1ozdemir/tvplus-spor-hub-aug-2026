@@ -96,7 +96,7 @@ window.TABS = (function(){
 
   function SezonTakvimi({rows, viewMode, onSelectGroup, baslik, aciklama,
                           seviye:dSeviye, setSeviye:dSet, entFiltre:dEnt, setEntFiltre:dEntSet,
-                          gruplarDis, eksenDis, onGrupDetay, inisModu}){
+                          gruplarDis, eksenDis, onGrupDetay, inisModu, takimDahil}){
     const [iSeviye, iSet] = React.useState('spor');
     const [iEnt, iEntSet] = React.useState('');
     const seviye = dSeviye || iSeviye;
@@ -123,7 +123,9 @@ window.TABS = (function(){
       else if(sirala==='yoyDown') g = [...g].sort((a,b)=>(a.ryoy??9)-(b.ryoy??9));
       else if(sirala==='az') g = [...g].sort((a,b)=>a.label.localeCompare(b.label,'tr'));
       return g;
-    },[rowsF, seviye, sirala, gruplarDis]);
+      // takimDahil groupBy'ın içinde okunuyor; React göremediği için bağımlılığa
+      // açıkça yazılmalı, yoksa bayrak değişince önbellekteki gruplar dönüyor.
+    },[rowsF, seviye, sirala, gruplarDis, takimDahil]);
 
     const takvim = viewMode==='calendar';
     const etiketler = takvim ? TR_MONTHS : ROLLING_LABELS;
@@ -298,7 +300,7 @@ window.TABS = (function(){
   }
 
   function OzetTab({rows:tumRows, viewMode, setKeywordModal, onSelectGroup, onNavigateKw,
-                    gitSekme, yol, setYol}){
+                    gitSekme, yol, setYol, takimDahil}){
     const M = D().meta;
     const takvim = viewMode==='calendar';
     const yilAd = D().meta.yillar;
@@ -331,7 +333,7 @@ window.TABS = (function(){
     const izleme   = rows.filter(k=>k.it==='İzleme');
     const veriSayfa= rows.filter(k=>k.st==='Puan Durumu'||k.st==='Fikstür');
     const kirilim  = React.useMemo(()=>eksen ? kirilimGruplari(rows, eksen) : [],
-                                   [rows, eksen]);
+                                   [rows, eksen, takimDahil]);
     const {series, labels} = seriesFor({roll, prev, cal24:aggregateMonthly(rows,'m24'),
       cal25:aggregateMonthly(rows,'m25'), cal26:aggregateMonthly(rows,'m26')}, viewMode);
 
@@ -508,7 +510,7 @@ window.TABS = (function(){
           h('p',null,'Seviye düğmeleriyle kırılım ekseni, sıralama düğmeleriyle satır sırası ' +
             'değiştirilebilir; varlık tipi düğmeleri matrisi takım, oyuncu, maç veya lig ' +
             'satırlarıyla sınırlar. Satıra tıklandığında o grubun detayı açılır.'))}),
-      eksen && h(SezonTakvimi,{rows, viewMode, baslik:'Sezonsallık',
+      eksen && h(SezonTakvimi,{rows, viewMode, baslik:'Sezonsallık', takimDahil,
         gruplarDis: kirilim, eksenDis: eksen,
         onSelectGroup: (_a, deger) => in_(deger),
         onGrupDetay: deger => eksen==='takim'
@@ -677,7 +679,7 @@ window.TABS = (function(){
   ];
 
   // ══════════════════════════════════════════ GRUPLAR
-  function GruplarTab({rows, viewMode, secili, setSecili, setKeywordModal, onSelectGroup,
+  function GruplarTab({rows, viewMode, secili, setSecili, setKeywordModal, onSelectGroup, takimDahil,
                         onNavigateKw, seviye, setSeviye, entFiltre, setEntFiltre,
                         peakGizli, setPeakGizli, yol, setYol}){
     const [altSeviye, setAltSeviye] = React.useState('');
@@ -697,7 +699,7 @@ window.TABS = (function(){
     // Varlık filtresi hem sezonsallık matrisini hem alttaki grup tablosunu daraltır
     const rowsF = entFiltre ? rows.filter(r=>r.ent===entFiltre) : rows;
     const gruplar = React.useMemo(()=>groupBy(rowsF, seviye, altSeviye||null),
-      [rowsF, seviye, altSeviye]);
+      [rowsF, seviye, altSeviye, takimDahil]);
     const g = secili ? gruplar.find(x=>x.ust===secili.deger) : null;
 
     return h('div',{className:'tab-content-anim'},
@@ -759,7 +761,7 @@ window.TABS = (function(){
           'Bu grubun tüm keyword\'lerini gör',
           h('span',{className:'btn-ikon'}, h(C.Ikon,{ad:'okSag', size:13})))),
 
-      h(SezonTakvimi,{rows, viewMode, baslik:'Sezonsallık',
+      h(SezonTakvimi,{rows, viewMode, baslik:'Sezonsallık', takimDahil,
         onSelectGroup: inAlt ? (_a, deger)=>inAlt(deger) : onSelectGroup,
         onGrupDetay: inAlt ? (deger)=>onSelectGroup(seviye, deger) : null,
         seviye, setSeviye:(v)=>{setSeviye(v); setSecili(null);},
@@ -876,7 +878,7 @@ window.TABS = (function(){
   }
 
   // ══════════════════════════════════════════ SAYFA TİPİ & INTENT
-  function SayfaTipiTab({rows, viewMode, setKeywordModal, onSelectGroup, yol, setYol}){
+  function SayfaTipiTab({rows, viewMode, setKeywordModal, onSelectGroup, yol, setYol, takimDahil}){
     // Bir grup seçilince aynı sekmede yol uzar, sekme değişmez. Matris, karne
     // kartları ve grup tablosu aynı işleyiciyi paylaşır.
     const inAlt = inisKur(yol, setYol);
@@ -898,7 +900,7 @@ window.TABS = (function(){
           sub:'çıplak varlık adı · hub sayfası ister'}),
         h(C.Kpi,{label:'Maç & Takvim', value:fmtOrt(topR12(rows.filter(k=>k.it==='Maç & Takvim'))),
           sub:'fikstür sayfası cevaplar'})),
-      h(SezonTakvimi,{rows, viewMode, baslik:'Sayfa tipi sezonsallığı',
+      h(SezonTakvimi,{rows, viewMode, baslik:'Sayfa tipi sezonsallığı', takimDahil,
         inisModu: !!inAlt, onSelectGroup: inAlt || onSelectGroup}),
       h(C.SectionHeader,{icon:'karne', title:'Sayfa tipi karnesi',
         desc:'her sayfa tipi kendi ölçeğinde · Son 12 Ay'}),
@@ -1178,7 +1180,7 @@ window.TABS = (function(){
   }
 
   // ══════════════════════════════════════════ YAYIN HAKKI DIŞI
-  function HakDisiTab({rows, viewMode, setKeywordModal, onSelectGroup, yol, setYol}){
+  function HakDisiTab({rows, viewMode, setKeywordModal, onSelectGroup, yol, setYol, takimDahil}){
     const inAlt = inisKur(yol, setYol);
     const disi = rows.filter(k=>k.hak==='TV+ Yok');
     const orgG = groupBy(disi,'org');
@@ -1196,7 +1198,7 @@ window.TABS = (function(){
         h(C.Kpi,{label:'Organizasyon', value:orgG.length}),
         h(C.Kpi,{label:'Keyword', value:fmtNum(disi.length)}),
         h(C.Kpi,{label:'İzleme Talebi', value:fmtOrt(topR12(disi.filter(k=>k.it==='İzleme')))})),
-      h(SezonTakvimi,{rows:disi, viewMode, baslik:'Hak dışı talep sezonsallığı',
+      h(SezonTakvimi,{rows:disi, viewMode, baslik:'Hak dışı talep sezonsallığı', takimDahil,
         inisModu: !!inAlt, onSelectGroup: inAlt || onSelectGroup}),
       h(C.SectionHeader,{icon:'sinyal', title:'Hakkı olmayan organizasyonlar'}),
       h(GrupTablosu,{gruplar:orgG, seviye:'org', onSelectGroup, viewMode,

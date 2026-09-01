@@ -826,3 +826,16 @@ Son durum: **1 satır** işaretli ("wimbledon kimdir", 130 hacim — AFC Wimbled
 **Arayüz çaprazlama testi.** 14 senaryo × 10 sekme = 140 render. Senaryolar: tekli ve çoklu faset, takım katmanı bayrağı açık/kapalı, Rolling ve Takvim Yılı modu, kırılım yolu, çelişkili filtre (boş sonuç). Sonuç: boş sekme yok, konsol hatası yok, çelişkili senaryoda boş şerit doğru çıkıyor ve sekmeler yerinde kalıyor. Kırılım yolu ile filtre çipi senkron ("Tüm portföy › Süper Lig 188M" ↔ "Organizasyon: Süper Lig ×").
 
 Responsive: on sekme 375px ve 1440px'te temiz.
+
+### CSV ile ekran aynı veriyi veriyor, sütun adları ortalama olduğunu söylüyor
+**Bulgu:** Tablolar aylık ortalamaya çevrilmişti ama CSV çıktıları ham `r12`/`p12` yazıyordu; Karar Ağacı tablosunda 3,84M görünen değer CSV'de 46.079.990 olarak iniyordu.
+
+**Düzeltme:** Ortak `CSV_HACIM` kolon seti tanımlandı ve altı CSV çıktısına da uygulandı (Karar, Gruplar, Sezonsallık, Takım Kümesi, Keyword, Master). Her CSV artık önce ekranla aynı değeri, sonra tam dönem toplamını veriyor:
+`Önceki 12 Ay Aylık Ort. · Son 12 Ay Aylık Ort. · Önceki 12 Ay Toplam · Son 12 Ay Toplam`
+Karar CSV'sinde ayrıca `Sezon Dışı Aylık Ort.` (6'ya bölünmüş) + `Sezon Dışı 6 Ay Toplam` ve `İzleme Talebi Aylık Ort.` ayrıştırıldı. Takım Kümesi CSV'sinde takım/oyuncu araması hem ortalama hem toplam olarak veriliyor.
+
+Doğrulama: UEFA Şampiyonlar Ligi tabloda 3,84M · CSV "Son 12 Ay Aylık Ort." 3.839.999 · "Son 12 Ay Toplam" 46.079.990.
+
+**Sütun adları.** Ortalama gösteren tüm ekran başlıklarına ibare eklendi: Karar tablosu (`Önceki/Son 12 Ay Ort.`, `Sezon Dışı Ort.`, `İzleme Ort.`), grup tabloları, Takım Kümesi tablosu (`Takım/Oyuncu Araması Ort.`, `Toplam Ort.`), Paylaşımlı Katman tablosu (`Takım Talebi Ort.`, `Oyuncu Talebi Ort.`, `Paylaşımlı Toplam Ort.`, `Diğer Talep Ort.`, `Dikey Toplam Ort.`), lig bütünlüğü tablosu (`Bütünlük Hacmi Ort.`).
+
+Ayrıca Master CSV'de `Aylık Ortalama` adlı kolon aslında DataForSEO'nun ham aylık hacmini taşıyordu; hesaplanan ortalamayla karışmaması için `Kaynak Aylık Hacim (DfS)` olarak adlandırıldı.
